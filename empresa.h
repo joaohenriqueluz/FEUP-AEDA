@@ -5,10 +5,14 @@
 #include "utilizador.h"
 #include "projeto.h"
 
-class empresa {
-	vector<projeto *> projetos;
-	vector<utilizador *> utilizadores;
-	
+class Empresa {
+	vector<Projeto *> projetos;
+	vector<Utilizador *> utilizadores;
+public:
+	void novoUser(string nome);
+	void removeUser();
+	void novoProjeto();
+	void removeProjeto();
 
 };
 
