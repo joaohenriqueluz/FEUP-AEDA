@@ -27,7 +27,7 @@ Utilizador::Utilizador(string nome, int d, int m, int a,string email)
 {
     _nome = nome;
     dataNascimento.setData(d,m,a);
-    _email;
+    _email = email;
 }
 
 //---------------------------------------------------------------------
