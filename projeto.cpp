@@ -24,15 +24,15 @@ unsigned int Projeto::lastId = 0;
 
 Projeto::Projeto(string nome){
     _nome = nome;
-    id = ++lastId;
+    _id = ++lastId;
 }
 
 string Projeto::getNome (){
 	return _nome;
 }
 
-string Projeto::getId(){
-	return id;
+unsigned int Projeto::getId(){
+	return _id;
 }
 
 void Projeto::addCommit(Commit cm){

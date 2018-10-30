@@ -24,7 +24,7 @@ public:
 
 class Projeto {
     string _nome;
-    unsigned int id;
+    unsigned int _id;
     static unsigned int lastId;
     string _chaveAcesso;
     vector<Commit> _commits;
@@ -32,7 +32,7 @@ class Projeto {
 public:
     Projeto(string nome);
     string getNome ();
-    string getId();
+    unsigned int getId();
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
     void sortRanking(); //por fazer: ordenar conforme o volume e a frequencia de commits
