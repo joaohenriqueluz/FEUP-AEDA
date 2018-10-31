@@ -1,7 +1,3 @@
-//
-// Created by Francisco Rodrigues on 30/10/2018.
-//
-
 #ifndef PROJ_AEDA_PROJETO_H
 #define PROJ_AEDA_PROJETO_H
 
