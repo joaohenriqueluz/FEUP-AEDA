@@ -1,7 +1,3 @@
-//
-// Created by Francisco Rodrigues on 30/10/2018.
-//
-
 #ifndef PROJ_AEDA_EMPRESA_H
 #define PROJ_AEDA_EMPRESA_H
 
@@ -13,13 +9,14 @@
 using namespace std;
 
 class Empresa {
-    vector<Projeto *> projetos;
-    vector<Utilizador *> utilizadores;
+    vector<Projeto *> _projetos;
+    vector<Utilizador *> _utilizadores;
 public:
-    void novoUser(string nome);
-    void removeUser();
+    void novoUtilizador();
+    void removeUtilizador(Utilizador * UtilizadorARemover);
     void novoProjeto();
-    void removeProjeto();
+    void removeProjeto(Projeto * proj);
+    void imprimeSalarios();	 //Gestores têm salarios?
 
 };
 

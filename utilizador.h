@@ -43,7 +43,7 @@ protected:
     float _salario;
 
 public:
-    Coder(string nome, int d, int m, int a,string email, float salario, float reputacao);
+    Coder(string nome, int d, int m, int a,string email);
     float getReputacao();
     float getSalario();
     void setReputacao(float reputacao);
@@ -71,7 +71,7 @@ public:
 
 class Junior :public Coder {
 public:
-    Junior(string nome, int d, int m, int a,string email,float salario, float reputacao, int NIF);
+    Junior(string nome, int d, int m, int a,string email, float reputacao, int NIF);
     void setSalario();
 
 };
