@@ -61,9 +61,9 @@ bool Utilizador::removeProjeto (int id){
 }
 //---------------------------------------------------------------------
 
-Coder::Coder(string nome, int d, int m, int a,string email, float salario, float reputacao): Utilizador(nome,d,m,a,email){
-    _reputacao= reputacao;
-    _salario = salario;
+Coder::Coder(string nome, int d, int m, int a,string email): Utilizador(nome,d,m,a,email){
+    _reputacao= 0;
+    _salario = 0;
 
 }
 
@@ -85,7 +85,7 @@ Gestor::Gestor(string nome, int d, int m, int a,string email): Utilizador(nome,d
 //---------------------------------------------------------------------
 
 Senior::Senior(string nome, int d, int m, int a,string email,float salario, float reputacao, int NIF):
-        Coder(nome,d,m,a,email,salario,reputacao){
+        Coder(nome,d,m,a,email){
     _NIF = NIF;
 }
 
@@ -102,8 +102,10 @@ void Senior::setSalario(float salario){
 }
 //---------------------------------------------------------------------
 
-Junior::Junior(string nome, int d, int m, int a,string email,float salario, float reputacao, int NIF):
-        Coder(nome,d,m,a,email,salario,reputacao){}
+Junior::Junior(string nome, int d, int m, int a,string email, float reputacao, int NIF):
+        Coder(nome,d,m,a,email){
+	setSalario();
+}
 
 void Junior::setSalario(){
 	if (_reputacao <= 999){

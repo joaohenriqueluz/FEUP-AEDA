@@ -6,7 +6,7 @@ int main() {
 	cout << "Bases de código \n\n";
 	cout << "Selecione o que pretende fazer: \n"
 			<< "1 - Ver rankings\n" // rankings de atividade mensal de cada elemento do projeto .....
-			<< "2 - Ver salários de todos o pessoal" //lista com salários e valor total
+			<< "2 - Ver salários de todos o pessoal\n" //lista com salários e valor total
 			<< "3 - Adicionar utilizador/projeto\n"
 			<< "4 - Entrar com utilizador\n"; //----|
 	//ver informações (ranking, tipo de utilizador (e caracteristicas da classe utilizador), projetos, salário, reputaçao.
