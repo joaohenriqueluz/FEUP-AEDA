@@ -200,12 +200,6 @@ void Avancado::merge(string nome1, string nome2)
 
 }
 
-vector <Commit> Projeto::getCommitUser(string name) const{
-	for (unsigned int i = 0; i < _commits.size(); ++i) {
-		if(_commits.at(i).getUser() == name)
-	}
-	return _commits;
-}
 
 
 

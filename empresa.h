@@ -9,21 +9,21 @@
 using namespace std;
 
 class Empresa {
-    vector<Projeto *> _projetos;
-    vector<Utilizador *> _utilizadores;
+	vector<Projeto *> _projetos;
+	vector<Utilizador *> _utilizadores;
 public:
-    void novoUtilizador();
-    void removeUtilizador(Utilizador * UtilizadorARemover);
-    void novoProjeto();
-    void removeProjeto(Projeto * proj);
-    void imprimeSalarios();	
+	void novoUtilizador();
+	void removeUtilizador(Utilizador * UtilizadorARemover);
+	void novoProjeto();
+	void removeProjeto(Projeto * proj);
+	void imprimeSalarios();
 	bool existeUser(string nome, Utilizador* pointer);
 	int getVolume(string nome) const;
-	int getFreq (string nome) const;
+	int getFreq(string nome) const;
 	void sortRanking();
 
 
-
+};
 template<class T>
 void removeObjeto(vector<T> & V, T objeto){
 	for(unsigned int i = 0; i < V.size(); i++)

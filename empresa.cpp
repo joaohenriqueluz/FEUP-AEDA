@@ -1,5 +1,6 @@
 #include "empresa.h"
-//using namespace std;
+
+using namespace std;
 
 void Empresa::novoProjeto(){
 	string nome;
@@ -112,7 +113,7 @@ bool Empresa::existeUser(string nome, Utilizador* pointer)
 int Empresa::getVolume(string nome) const {
     int volume = 0;
     for(unsigned int i = 0; i < _projetos.size(); i++){
-        volume += _projetos.at(i)->getVolume();
+        volume += _projetos.at(i)->getVolume(nome);
     }
     return volume;
 }
@@ -120,7 +121,7 @@ int Empresa::getVolume(string nome) const {
 int Empresa::getFreq(string nome) const {
     int volume = 0;
     for(unsigned int i = 0; i < _projetos.size(); i++){
-        volume += _projetos.at(i)->getFreq();
+        volume += _projetos.at(i)->getFreq(nome);
     }
     return volume;
 }
