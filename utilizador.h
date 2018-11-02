@@ -34,7 +34,7 @@ protected:
 
 public:
     Utilizador(string nome, int d, int m, int a,string email, float salario, int NIF);
-	Utilizador() {};
+	Utilizador() {_NIF = 0; _salario = 0;};
     virtual ~Utilizador(){};
     string getNome() const;
     Data getDataNascimento()const;

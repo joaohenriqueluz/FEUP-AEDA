@@ -131,16 +131,16 @@ void Empresa::sortRanking() {
     {
         bool troca = false;
         for (unsigned int i = 0; i < j; i++)
-            if (getVolume(_utilizadores.at(i+1)->getNome()) > getVolume(_utilizadores[i]->getNome()))
+            if (getVolume(_utilizadores.at(i+1)->getNome()) > getVolume(_utilizadores.at(i)->getNome()))
             {
-                std::swap(_utilizadores[i], _utilizadores[i + 1]);
+                std::swap(_utilizadores.at(i), _utilizadores.at(i + 1));
                 troca = true;
             }
-            else if (getVolume(_utilizadores[i + 1]->getNome()) == getVolume(_utilizadores[i]->getNome()))
+            else if (getVolume(_utilizadores.at(i + 1)->getNome()) == getVolume(_utilizadores.at(i)->getNome()))
             {
-                if (getFreq(_utilizadores[i + 1]->getNome()) > getFreq(_utilizadores[i]->getNome()))
+                if (getFreq(_utilizadores.at(i + 1)->getNome()) > getFreq(_utilizadores.at(i)->getNome()))
                 {
-                    std::swap(_utilizadores[i], _utilizadores[i + 1]);
+                    std::swap(_utilizadores.at(i), _utilizadores.at(i + 1));
                     troca = true;
                 }
             }
