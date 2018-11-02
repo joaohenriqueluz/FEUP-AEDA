@@ -20,4 +20,17 @@ public:
 
 };
 
+
+
+template<class T>
+void removeObjeto(vector<T> & V, T objeto){
+	for(unsigned int i = 0; i < V.size(); i++)
+			if(V.at(i)== objeto)
+			{
+				cout<< "Removido.\n";
+				V.erase(V.begin()+i);
+			}
+}
+
+
 #endif //PROJ_AEDA_EMPRESA_H

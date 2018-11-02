@@ -1,14 +1,17 @@
 #include <iostream>
 #include "projeto.h"
-
+#include "utilizador.h"
+#include<bits/stdc++.h>
 using namespace std;
 
-Commit::Commit(Utilizador user, int volume, int d, int m, int a): _userC(user){
+unsigned int Commit::_lastC=0;
+Commit::Commit(Utilizador* user, int volume, int d, int m, int a): _userC(user){
+	_idC=++_lastC;
     _volume = volume;
     _dataC.setData(d,m,a);
 }
 
-Utilizador Commit::getUser (){
+Utilizador* Commit::getUser (){
 	return _userC;
 }
 
@@ -51,6 +54,24 @@ string Projeto::getChaveAcesso(){
 void Projeto::setChaveAcesso(string chave){
 	_chaveAcesso = chave;
 }
+
+
+/*
+void Projeto::sortCommits(){
+	for(unsigned int j=_commits.size()-1; j>0; j--)
+	{
+		bool troca=false;
+		for(unsigned int i = 0; i<j; i++)
+			if(_commits[i+1].getData() < _commits[i].getData()) {
+				swap(_commits[i],_commits[i+1]);
+				troca = true;
+			}
+		if (!troca) return;
+}
+}
+*/
+
+
 //---------------------------------------------------------------------
 Basico::Basico(string nome): Projeto(nome){}
 

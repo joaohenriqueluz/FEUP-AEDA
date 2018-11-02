@@ -22,12 +22,29 @@ void Data::setData(int d, int m, int a){
     ano=a;
 }
 
+/*
+bool Data::operator <(Data & other)
+{
+	if (getAno() < other.getAno())
+		return true;
+	if (getAno() == other.getAno() && getMes() < other.getMes())
+		return true;
+	if (getAno() == other.getAno() && getMes() == other.getMes() &&
+							getDia() < other.getDia())
+		return true;
+	return false;
+}
+*/
+
+
 //---------------------------------------------------------------------
-Utilizador::Utilizador(string nome, int d, int m, int a,string email)
+Utilizador::Utilizador(string nome, int d, int m, int a,string email,float salario, int NIF)
 {
     _nome = nome;
     dataNascimento.setData(d,m,a);
     _email = email;
+    _salario=salario;
+    _NIF= NIF;
 }
 
 string Utilizador::getNome(){
@@ -61,26 +78,16 @@ bool Utilizador::removeProjeto (int id){
 }
 //---------------------------------------------------------------------
 
-Coder::Coder(string nome, int d, int m, int a,string email): Utilizador(nome,d,m,a,email){
-    _reputacao= 0;
-    _salario = 0;
+Coder::Coder(string nome, int d, int m, int a,string email): Utilizador(nome,d,m,a,email,0){}
 
-}
 
-float Coder::getReputacao(){
-	return _reputacao;
-}
 
-float Coder::getSalario(){
-	return _salario;
-}
 
-void Coder::setReputacao(float reputacao){
-	_reputacao = reputacao;
-}
 //---------------------------------------------------------------------
 
-Gestor::Gestor(string nome, int d, int m, int a,string email): Utilizador(nome,d,m,a,email){}
+Gestor::Gestor(string nome, int d, int m, int a,string email,float salario): Utilizador(nome,d,m,a,email,salario){
+
+}
 
 //---------------------------------------------------------------------
 
@@ -89,11 +96,11 @@ Senior::Senior(string nome, int d, int m, int a,string email,float salario, floa
     _NIF = NIF;
 }
 
-int Senior::getNIF(){
+int Utilizador::getNIF(){
 	return _NIF;
 }
 
-void Senior::setNIF(int NIF){
+void Utilizador::setNIF(int NIF){
 	_NIF = NIF;
 }
 
@@ -140,4 +147,13 @@ void Junior::setSalario(){
 		}
 }
 
+float Junior::getReputacao(){
+	return _reputacao;
+}
+
+
+
+void Junior::setReputacao(int reputacao){
+	_reputacao = reputacao;
+}
 

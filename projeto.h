@@ -8,12 +8,14 @@
 using namespace std;
 
 class Commit {
-    Utilizador _userC;
+	unsigned int _idC;
+	static unsigned int _lastC;
+    Utilizador* _userC;
     int _volume;
     Data _dataC;
 public:
-    Commit(Utilizador user, int volume, int d, int m, int a);
-    Utilizador getUser ();
+    Commit(Utilizador* user, int volume, int d, int m, int a);
+    Utilizador* getUser ();
     int getVolume ();
     Data getData();
 };
