@@ -16,9 +16,9 @@ public:
     void removeUtilizador(Utilizador * UtilizadorARemover);
     void novoProjeto();
     void removeProjeto(Projeto * proj);
-    void imprimeSalarios();	 //Gestores têm salarios?
-
-};
+    void imprimeSalarios();	
+	bool existeUser(string nome, Utilizador* pointer);
+	void sortRanking();
 
 
 

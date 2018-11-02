@@ -15,12 +15,24 @@ class Commit {
     Data _dataC;
 public:
     Commit(Utilizador* user, int volume, int d, int m, int a);
-    Utilizador* getUser ();
-    int getVolume ();
-    Data getData();
+    Utilizador* getUser ()const;
+    int getVolume () const;
+    Data getData() const;
 };
 
+class Branch {
+	string _nome;
+	vector<Commit> _commits;
+public:
+	Branch(string nome) { _nome = nome;}
+	string getNome() { return _nome;}
+	vector<Commit> getCommits() { return _commits; }
+	void setNome(string nome) { _nome = nome;}
+	void adicionaCommit(Commit cm);
+	void addCommitVec(vector<Commit> vec);
+};
 class Projeto {
+protected:
     string _nome;
     unsigned int _id;
     static unsigned int lastId;
@@ -37,19 +49,23 @@ public:
     //remover utilizador e commits?
     string getChaveAcesso();
     void setChaveAcesso(string chave);
-
+	int getVolume(string nome_user)const;
+	float getFreq(string user) const;
+	void sortRanking(vector<Utilizador> &vec);
 };
 
-class Basico : public Projeto {
-public:
-    Basico(string nome);
 
-};
 
 class Avancado : public Projeto {
+	vector<Branch> _branches;
     //branches (cria/elimina/merge-senior)
 public:
     Avancado(string nome);
+	bool addBranch(string nome);//nao deixa adicionar um nome repetido;
+	bool removeBranch(string nome);
+	void merge(string nome);
+	void merge(string nome1, string nome2);
+	Branch existeBranch(string nome);
 };
 
 #endif //PROJ_AEDA_PROJETO_H

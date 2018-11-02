@@ -10,7 +10,7 @@ void Empresa::novoProjeto(){
     cout << "Projeto " << nome << "criado com ID " << novoProjeto->getId() << endl;
 
 }
-/*
+
 void Empresa::removeProjeto(Projeto* proj){
 	removeObjeto<Projeto*>(_projetos, proj);
 }
@@ -42,18 +42,18 @@ void Empresa::novoUtilizador(){
 	cout <<"Email: ";
 	cin >> email;
 	string status;
+	cout << "Digite NIF: ";
+	cin >> NIF;
 	cout << "Tipo(Gestor(G)/Programador(S/J)): ";
 	cin>> status;
 	if(status == "G")
-		novoUtilizador = new Gestor(nome,d,m,a,email,2500);
+		novoUtilizador = new Gestor(nome,d,m,a,email,2500,NIF);
 	else if(status == "S"){
-		cout << "Digite NIF: ";
-	cin >> NIF;
+		
 		novoUtilizador = new Senior(nome,d,m,a,email,1000,NIF);//string nome, int d, int m, int a,string email,float salario,int NIF
 	}
 		else if(status == "J")
-		{cout << "Digite NIF: ";
-			cin >> NIF;
+		{
 		cout << "Reputacao: ";
 		cin >> reput;
 		novoUtilizador = new Junior(nome,d,m,a,email,reput,NIF);
@@ -61,7 +61,7 @@ void Empresa::novoUtilizador(){
 
 	_utilizadores.push_back(novoUtilizador);
 }
-/*
+
 void Empresa::removeUtilizador(Utilizador * utilizador)
 {
 	removeObjeto<Utilizador*>(_utilizadores, utilizador);
@@ -93,4 +93,18 @@ void Empresa::imprimeSalarios(){
 	 Soma+= _utilizadores.at(i)->getSalario();
  }
  cout <<"Soma total dos salarios: "<<Soma<<endl;
+}
+
+bool Empresa::existeUser(string nome, Utilizador* pointer)
+{
+	
+	for (unsigned int i = 0; i < _utilizadores.size(); i++)
+	{
+		if (_utilizadores.at(i)->getNome() == nome)
+		{
+			pointer = _utilizadores.at(i);
+			return true;
+		}
+	}
+	return false;
 }

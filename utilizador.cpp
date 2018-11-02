@@ -22,8 +22,8 @@ void Data::setData(int d, int m, int a){
     ano=a;
 }
 
-/*
-bool Data::operator <(Data & other)
+
+bool Data::operator <(const Data & other)const
 {
 	if (getAno() < other.getAno())
 		return true;
@@ -34,7 +34,7 @@ bool Data::operator <(Data & other)
 		return true;
 	return false;
 }
-*/
+
 
 
 //---------------------------------------------------------------------
@@ -47,15 +47,15 @@ Utilizador::Utilizador(string nome, int d, int m, int a,string email,float salar
     _NIF= NIF;
 }
 
-string Utilizador::getNome(){
+string Utilizador::getNome()const {
 	return _nome;
 }
 
-Data Utilizador::getDataNascimento(){
+Data Utilizador::getDataNascimento()const {
 	return dataNascimento;
 }
 
-string Utilizador::getEmail(){
+string Utilizador::getEmail()const {
 	return _email;
 }
 
@@ -76,41 +76,59 @@ bool Utilizador::removeProjeto (int id){
 	}
 	return false;
 }
-//---------------------------------------------------------------------
-
-Coder::Coder(string nome, int d, int m, int a,string email): Utilizador(nome,d,m,a,email,0){}
 
 
-
-
-//---------------------------------------------------------------------
-
-Gestor::Gestor(string nome, int d, int m, int a,string email,float salario): Utilizador(nome,d,m,a,email,salario){
-
-}
-
-//---------------------------------------------------------------------
-
-Senior::Senior(string nome, int d, int m, int a,string email,float salario, float reputacao, int NIF):
-        Coder(nome,d,m,a,email){
-    _NIF = NIF;
-}
-
-int Utilizador::getNIF(){
+int Utilizador::getNIF()const {
 	return _NIF;
 }
 
-void Utilizador::setNIF(int NIF){
+void Utilizador::setNIF(int NIF) {
 	_NIF = NIF;
 }
+
+
+
+
+
+//---------------------------------------------------------------------
+
+Coder::Coder(string nome, int d, int m, int a,string email,int NIF): Utilizador(nome,d,m,a,email,0,NIF){}
+
+
+
+
+//---------------------------------------------------------------------
+
+Gestor::Gestor(string nome, int d, int m, int a,string email,float salario,int NIF): Utilizador(nome,d,m,a,email,salario,NIF){
+
+}
+
+void Gestor::instucoes(){
+	cout << "Gestor: Adiciona/Remove utilizadores\n";
+	
+}
+//---------------------------------------------------------------------
+
+Senior::Senior(string nome, int d, int m, int a,string email,float salario, int NIF):
+        Coder(nome,d,m,a,email,NIF){}
 
 void Senior::setSalario(float salario){
 	_salario = salario;
 }
+
+
+
+
+
+
+
+
+
 //---------------------------------------------------------------------
 
-Junior::Junior(string nome, int d, int m, int a,string email, float reputacao, int NIF):
-        Coder(nome,d,m,a,email){
+Junior::Junior(string nome, int d, int m, int a,string email, int reputacao, int NIF):
+        Coder(nome,d,m,a,email, NIF){
+	_reputacao = reputacao;
 	setSalario();
 }
 
@@ -147,7 +165,7 @@ void Junior::setSalario(){
 		}
 }
 
-float Junior::getReputacao(){
+int Junior::getReputacao(){
 	return _reputacao;
 }
 
@@ -156,4 +174,3 @@ float Junior::getReputacao(){
 void Junior::setReputacao(int reputacao){
 	_reputacao = reputacao;
 }
-
