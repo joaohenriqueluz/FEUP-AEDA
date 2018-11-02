@@ -1,6 +1,7 @@
 #include <iostream>
 #include "empresa.h"
-using namespace std;
+
+//using namespace std;
 
 
 string opcao;
@@ -28,15 +29,15 @@ void Login(Empresa &emp){
 
 
 int main() {
-	cout << "Bases de código \n\n";
+	cout << "Bases de cï¿½digo \n\n";
 	cout << "Selecione o que pretende fazer: \n"
 			<< "1 - Ver rankings\n" // rankings de atividade mensal de cada elemento do projeto .....
-			<< "2 - Ver salarios de todos o pessoal\n" //lista com salários e valor total
+			<< "2 - Ver salarios de todos o pessoal\n" //lista com salï¿½rios e valor total
 			<< "3 - Adicionar utilizador\n"
 			<< "4-  Adicionar projeto\n"
 			<< "5 - Entrar com utilizador\n";//----|
-	//ver informações (ranking, tipo de utilizador (e caracteristicas da classe utilizador), projetos, salário, reputaçao.
-	//entrar num projeto (pedindo codigo de acesso) para : ver informaçoes (caracteristicas da classe projeto), fazer novos commits;
+	//ver informaï¿½ï¿½es (ranking, tipo de utilizador (e caracteristicas da classe utilizador), projetos, salï¿½rio, reputaï¿½ao.
+	//entrar num projeto (pedindo codigo de acesso) para : ver informaï¿½oes (caracteristicas da classe projeto), fazer novos commits;
 											 //	criar, eliminar ou juntar (merge) branches (conforme tipo de utilizadors e projetos).
 
 	cin >> opcao;

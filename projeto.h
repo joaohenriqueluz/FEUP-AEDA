@@ -52,6 +52,7 @@ public:
 	int getVolume(string nome_user)const;
 	float getFreq(string user) const;
 	void sortRanking(vector<Utilizador> &vec);
+	vector <Commit> getCommitVec() const;
 };
 
 

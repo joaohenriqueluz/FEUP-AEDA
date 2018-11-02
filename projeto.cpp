@@ -11,7 +11,7 @@ void Projeto::sortRanking(vector<Utilizador> &vec){
 	{
 		bool troca = false;
 		for (unsigned int i = 0; i < j; i++)
-			if (getVolume(vec[i + 1].getNome()) >getVolume(vec[i].getNome()))
+			if (getVolume(vec[i + 1].getNome()) > getVolume(vec[i].getNome()))
 			{
 				std::swap(vec[i], vec[i + 1]);
 				troca = true;
@@ -198,6 +198,13 @@ void Avancado::merge(string nome1, string nome2)
 	_branches.at(n1).addCommitVec(_branches.at(n2).getCommits());
 	_branches.erase(_branches.begin() + n2);
 
+}
+
+vector <Commit> Projeto::getCommitUser(string name) const{
+	for (unsigned int i = 0; i < _commits.size(); ++i) {
+		if(_commits.at(i).getUser() == name)
+	}
+	return _commits;
 }
 
 

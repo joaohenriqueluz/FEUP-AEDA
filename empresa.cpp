@@ -1,10 +1,10 @@
 #include "empresa.h"
-using namespace std;
+//using namespace std;
 
 void Empresa::novoProjeto(){
 	string nome;
     cout <<"Nome do Projeto? \n";
-    cin >> nome; // Como é que implemento uma exception se ele der uma string vazia?
+    cin >> nome; // Como ï¿½ que implemento uma exception se ele der uma string vazia?
     Projeto* novoProjeto= new Projeto(nome);
     _projetos.push_back(novoProjeto);
     cout << "Projeto " << nome << "criado com ID " << novoProjeto->getId() << endl;
@@ -107,4 +107,44 @@ bool Empresa::existeUser(string nome, Utilizador* pointer)
 		}
 	}
 	return false;
+}
+
+int Empresa::getVolume(string nome) const {
+    int volume = 0;
+    for(unsigned int i = 0; i < _projetos.size(); i++){
+        volume += _projetos.at(i)->getVolume();
+    }
+    return volume;
+}
+
+int Empresa::getFreq(string nome) const {
+    int volume = 0;
+    for(unsigned int i = 0; i < _projetos.size(); i++){
+        volume += _projetos.at(i)->getFreq();
+    }
+    return volume;
+}
+
+void Empresa::sortRanking() {
+    for (unsigned int j = _projetos.size() - 1; j > 0; j--)
+    {
+        bool troca = false;
+        for (unsigned int i = 0; i < j; i++)
+            if (getVolume(_utilizadores.at(i+1)->getNome()) > getVolume(_utilizadores[i]->getNome()))
+            {
+                std::swap(_utilizadores[i], _utilizadores[i + 1]);
+                troca = true;
+            }
+            else if (getVolume(_utilizadores[i + 1]->getNome()) == getVolume(_utilizadores[i]->getNome()))
+            {
+                if (getFreq(_utilizadores[i + 1]->getNome()) > getFreq(_utilizadores[i]->getNome()))
+                {
+                    std::swap(_utilizadores[i], _utilizadores[i + 1]);
+                    troca = true;
+                }
+            }
+        if (!troca) break;
+    }
+
+
 }

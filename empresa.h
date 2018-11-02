@@ -18,6 +18,8 @@ public:
     void removeProjeto(Projeto * proj);
     void imprimeSalarios();	
 	bool existeUser(string nome, Utilizador* pointer);
+	int getVolume(string nome) const;
+	int getFreq (string nome) const;
 	void sortRanking();
 
 
