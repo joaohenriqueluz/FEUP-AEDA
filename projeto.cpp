@@ -5,32 +5,6 @@ using namespace std;
 
 unsigned int Commit::_lastC=0;
 
-void Projeto::sortRanking(vector<Utilizador> &vec){
-	
-	for (unsigned int j = vec.size() - 1; j > 0; j--)
-	{
-		bool troca = false;
-		for (unsigned int i = 0; i < j; i++)
-			if (getVolume(vec[i + 1].getNome()) > getVolume(vec[i].getNome()))
-			{
-				std::swap(vec[i], vec[i + 1]);
-				troca = true;
-			}
-			else if (getVolume(vec[i + 1].getNome()) ==getVolume(vec[i].getNome()))
-			{
-				if (getFreq(vec[i + 1].getNome()) > getFreq(vec[i].getNome()))
-				{
-					std::swap(vec[i], vec[i + 1]);
-					troca = true;
-				}
-			}
-		if (!troca) break;
-	}
-
-
-}
-
-
 
 void sortCommits(vector<Commit> &commits);
 Commit::Commit(Utilizador* user, int volume, int d, int m, int a): _userC(user){
@@ -49,6 +23,11 @@ int Commit::getVolume () const{
 
 Data Commit::getData() const{
 	return _dataC;
+}
+
+
+unsigned int Commit::getID() const{
+	return _idC;
 }
 //---------------------------------------------------------------------
 
@@ -80,11 +59,35 @@ unsigned int Projeto::getId(){
 void Projeto::addCommit(Commit cm){
 	_commits.push_back(cm);
 	sortCommits(_commits);
+	if(cm.getUser()->getCargo()== "Junior")
+	{
+		cm.getUser()->setReputacao(cm.getUser()->getReputacao() + cm.getVolume() / 10);
+	}
+	
 }
 
 void Projeto::addUtilizador (Utilizador * user){
 	_ranking.push_back(user);
 	//ordenar
+}
+
+void Projeto::imprimeUsers()
+{
+	cout << "Utilizadores do projeto com ID " << getId() << endl;
+for (unsigned int i = 0; i < _ranking.size(); i++)
+	{
+		cout <<i+1<<"# "<< _ranking.at(i)->getNome()<<"     Cargo: "<<_ranking.at(i)->getCargo()<< endl;
+	}
+}
+
+void Projeto::imprimeCoders()
+{
+	for (unsigned int i = 0; i < _ranking.size(); i++)
+	{
+		if (_ranking.at(i)->getCargo() == "Gestor")
+			continue;
+		cout << i + 1 << "# " << _ranking.at(i)->getNome() << _ranking.at(i)->getCargo() << endl;
+	}
 }
 
 string Projeto::getChaveAcesso(){
@@ -95,30 +98,54 @@ void Projeto::setChaveAcesso(string chave){
 	_chaveAcesso = chave;
 }
 
-int Projeto::getVolume(string nome_user) const
-{
+int Projeto::getVolume(string nome_user, Data d1, Data d2) const {
 	int volume = 0;
-	for (unsigned int i = 0; i < _commits.size(); i++)
-	{
+	for (unsigned int i = 0; i < _commits.size(); i++) {
 		if (_commits.at(i).getUser()->getNome() == nome_user) {
-			volume += _commits.at(i).getVolume();
+			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) { //não quer de um periodo especifico
+				volume += _commits.at(i).getVolume();
+			}
+			else if (_commits.at(i).getData() >= d1 && _commits.at(i).getData() <= d2) {
+				volume += _commits.at(i).getVolume();
+			}
 		}
 	}
 	return volume;
 }
 
-float Projeto::getFreq(string user) const
+void Projeto::imprimeHistorico()
 {
-	 float n = 0;
-	for (unsigned int i = 0; i < _commits.size(); i++)
+	for (unsigned int i = 0;i < _commits.size(); i++)
 	{
-		if (_commits.at(i).getUser()->getNome() == user)
-		{
-			n++;
+		cout << "Commit: " << _commits.at(i).getID()
+			<< "Autor: " << _commits.at(i).getUser()->getNome()
+			<< "Data: " << _commits.at(i).getData().getDia() 
+						<< "/" << _commits.at(i).getData().getMes()
+						<< "/" << _commits.at(i).getData().getAno()
+			<<"Volume: "<< _commits.at(i).getVolume()<<endl;
+	}
+	   	 
+}
+
+float Projeto::getFreq(string user, Data d1, Data d2) const {
+	float userCommit = 0, totalCommits = 0;
+	for (unsigned int i = 0; i < _commits.size(); i++) {
+		if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) {
+			totalCommits = _commits.size();
+			if (_commits.at(i).getUser()->getNome() == user) {
+				userCommit++;
+			}
+		}
+		else if (_commits.at(i).getData() >= d1 && _commits.at(i).getData() <= d2) {
+			totalCommits++;
+			if (_commits.at(i).getUser()->getNome() == user) {
+				userCommit++;
+			}
 		}
 	}
-	return n/_commits.size();
+	return userCommit / totalCommits;
 }
+
 
 void sortCommits(vector<Commit> &commits)//por data
 {

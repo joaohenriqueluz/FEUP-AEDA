@@ -14,19 +14,23 @@ class Empresa {
 public:
 	void novoUtilizador();
 	void removeUtilizador(Utilizador * UtilizadorARemover);
-	void novoProjeto();
+	int novoProjeto();
 	void removeProjeto(Projeto * proj);
 	void imprimeSalarios();
-	bool existeUser(string nome, Utilizador* pointer);
-	int getVolume(string nome) const;
-	int getFreq(string nome) const;
-	void sortRanking();
+	Utilizador* existeUser(string nome, bool & existe);
+	Utilizador* existeUser(string nome);
+	int getVolume(string nome, Data d1, Data d2) const;
+	float getFreq(string nome, Data d1, Data d2) const;
+	vector<Projeto *> getProjetos() const { return _projetos; }
+	vector<Utilizador*>&  getUsers() { return _utilizadores; }
+	void imprimeUser();
+	void imprimeCoders();
+	void imprimeProjetos();
 	void readUsers();
-	void readProjetos();
-	void readProjetosAvancados();
-
+	void converteJunior(Utilizador* junior);
 
 };
+
 template<class T>
 void removeObjeto(vector<T> & V, T objeto){
 	for(unsigned int i = 0; i < V.size(); i++)

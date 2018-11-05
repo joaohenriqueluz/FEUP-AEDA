@@ -10,7 +10,7 @@ using namespace std;
 class Commit {
 	unsigned int _idC;
 	static unsigned int _lastC;
-    Utilizador* _userC;
+    Utilizador * _userC;
     int _volume;
     Data _dataC;
 public:
@@ -18,6 +18,7 @@ public:
     Utilizador* getUser ()const;
     int getVolume () const;
     Data getData() const;
+	unsigned int getID() const;
 };
 
 class Branch {
@@ -45,13 +46,16 @@ public:
     unsigned int getId();
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
-    void sortRanking(); //por fazer: ordenar conforme o volume e a frequencia de commits
-    //remover utilizador e commits?
+	void imprimeUsers();
+	void imprimeCoders();
     string getChaveAcesso();
     void setChaveAcesso(string chave);
-	int getVolume(string nome_user)const;
-	float getFreq(string user) const;
-	void sortRanking(vector<Utilizador> &vec);
+	int getVolume(string nome_user, Data d1, Data d2) const;
+	void imprimeHistorico();
+	float getFreq(string user, Data d1, Data d2) const;
+	vector<Utilizador *> getUsers() { return _ranking; };
+	vector<Utilizador*>& getUserRef() { return _ranking;}
+	
 };
 
 
@@ -67,5 +71,31 @@ public:
 	void merge(string nome1, string nome2);
 	Branch existeBranch(string nome);
 };
+
+
+
+
+template <class T>
+void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), Data d2 = Data(0, 0, 0)) {
+	bool troca = false;
+	for (unsigned int i = 0; i < vec.size() - 1; i++) {
+		if (vec.at(i)->getCargo() == "Gestor")
+			continue;
+		if (objeto->getVolume(vec.at(i + 1)->getNome(), d1, d2) > objeto->getVolume(vec.at(i)->getNome(), d1, d2))
+		{
+			std::swap(vec.at(i), vec.at(i + 1));
+			troca = true;
+		}
+		else if (objeto->getVolume(vec.at(i + 1)->getNome(), d1, d2) == objeto->getVolume(vec.at(i)->getNome(), d1, d2))
+		{
+			if (objeto->getFreq(vec.at(i + 1)->getNome(), d1, d2) > objeto->getFreq(vec.at(i)->getNome(), d1, d2))
+			{
+				std::swap(vec.at(i), vec.at(i + 1));
+				troca = true;
+			}
+		}
+		if (!troca) break;
+	}
+}
 
 #endif //PROJ_AEDA_PROJETO_H

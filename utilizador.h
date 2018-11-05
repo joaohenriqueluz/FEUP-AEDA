@@ -18,6 +18,10 @@ public:
     int getAno()const {return ano;}
     int getDia()const{return dia;}
     bool operator <(const Data & other)const;
+	bool operator <=(const Data & other)const;
+	bool operator >=(const Data & other)const;
+	bool operator ==(const Data & other)const;
+
 };
 
 
@@ -26,6 +30,7 @@ class Utilizador
 {
 protected:
     string _nome;
+	string _cargo;
     Data dataNascimento;
     string _email;
     vector<int> _projetos;
@@ -33,7 +38,7 @@ protected:
     int _NIF;
 
 public:
-    Utilizador(string nome, int d, int m, int a,string email, float salario, int NIF);
+    Utilizador(string nome, int d, int m, int a,string email, float salario, int NIF,string cargo);
 	Utilizador() {_NIF = 0; _salario = 0;};
     virtual ~Utilizador(){};
     string getNome() const;
@@ -42,20 +47,24 @@ public:
     void setEmail(string email);
     void addProjeto (int id);
     bool removeProjeto (int id);
-	virtual string getCargo() const { return ""; };
+	virtual string getCargo() const { return _cargo; }
     float getSalario()const {return _salario;}
     int getNIF()const;
     void setNIF(int NIF);
-	bool operator <(const Utilizador & other)const;
+	void imprimeProjetos();
+	vector<int> getProjetos() { return _projetos; }
+	//bool operator <(const Utilizador & other)const;
 	//virtual void instucoes(){};
+	void getInfo();
+	virtual void setReputacao(int reputacao){};
+	virtual int getReputacao() const { return 0; }
 
 };
 
 class Coder: public Utilizador
 {
-
 public:
-    Coder(string nome, int d, int m, int a,string email,int NIF);
+    Coder(string nome, int d, int m, int a,string email,int NIF, string cargo);
 
 };
 
@@ -64,9 +73,9 @@ public:
 class Gestor: public Utilizador
 {
 public:
-    Gestor(string nome, int d, int m, int a,string email, float salario,int NIF);
-    string getCargo(){return "Gestor";}
-	void instucoes();
+    Gestor(string nome, int d, int m, int a,string email, float salario,int NIF, string cargo);
+	//void instrucoes();
+	
 
 };
 
@@ -74,22 +83,20 @@ class Senior:public Coder
 {
 
 public:
-    Senior(string nome, int d, int m, int a,string email,float salario,int NIF);
+    Senior(string nome, int d, int m, int a,string email,float salario,int NIF, string cargo);
     void setSalario(float salario);
-    string getCargo(){return "Programador Senior";}
-	void instucoes();
+	//void instucoes();
 
 };
 
 class Junior :public Coder {
 	int _reputacao;
 public:
-    Junior(string nome, int d, int m, int a,string email, int reputacao, int NIF);
+    Junior(string nome, int d, int m, int a,string email, int reputacao, int NIF, string cargo);
     void setSalario();
-    int getReputacao();
+    int getReputacao() const;
     void setReputacao(int reputacao);
-    string getCargo(){return "Programador Junior";}
-	void instucoes();
+	//void instucoes();
 
 };
 
