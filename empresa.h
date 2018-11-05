@@ -21,6 +21,9 @@ public:
 	int getVolume(string nome) const;
 	int getFreq(string nome) const;
 	void sortRanking();
+	void readUsers();
+	void readProjetos();
+	void readProjetosAvancados();
 
 
 };

@@ -1,3 +1,8 @@
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <string>
+#include <sstream>
 #include "empresa.h"
 
 using namespace std;
@@ -33,7 +38,7 @@ void Empresa::removeProjeto(Projeto * projetoARemover){
 void Empresa::novoUtilizador(){
 
 	Utilizador* novoUtilizador;
-	string nome,email;
+	string nome,email,status;
 	int d,m,a,NIF,reput;
 
 	cout << "Nome do Utilizador: ";
@@ -42,7 +47,6 @@ void Empresa::novoUtilizador(){
 	cin >>d>>m>>a; //VERIFICACAO
 	cout <<"Email: ";
 	cin >> email;
-	string status;
 	cout << "Digite NIF: ";
 	cin >> NIF;
 	cout << "Tipo(Gestor(G)/Programador(S/J)): ";
@@ -148,4 +152,87 @@ void Empresa::sortRanking() {
     }
 
 
+}
+
+void Empresa::readUsers(){
+	ifstream file;
+	file.open("utilizadores.txt");
+	string nome, rank, email, data, n, ids;
+	char ch, b;
+    int d,m,a,id,nif;
+    vector <int> dataV;
+	vector <int> projId;
+
+	if (file.is_open()){
+	    while (file.good()) {
+            getline(file, nome);
+            cout << nome << endl;
+            getline(file, rank);
+            cout << rank << endl;
+            file >> d >> b >> m >> b >> a;
+            cout << d << b << m << b << a << endl;
+            getline(file,n);
+            cout << n;
+            getline(file, email);
+            cout << email << endl;
+            projId.clear();
+            while (1) {
+                getline(file, ids);
+                if (ids == "end") break;
+                int id = stoi(ids);
+                projId.push_back(id);
+            }
+            for (int i = 0; i < projId.size(); ++i) {
+                cout << projId.at(i) << endl;
+            }
+            file >> nif;
+            cout << nif << endl;
+            getline(file,n);
+            cout << n;
+            getline(file,n);
+            cout << n;
+        }
+		file.close();
+
+	} else{
+		cout << "File not found" << endl;
+	}
+}
+
+void Empresa::readProjetos() {
+    ifstream file;
+    file.open("projetos.txt");
+    string tipo, nome, pass, temp;
+    vector <int> usersID;
+    vector <int> commitID;
+    if (file.is_open()){
+        while (file.good()){
+            getline(file,tipo);
+            cout << tipo << endl;
+            getline(file,nome);
+            cout << nome << endl;
+            getline(file,pass);
+            cout << pass << endl;
+            getline(file,temp);
+            cout << temp << endl;
+            while (1){ //ciclo para ler os usersID de um projeto
+                getline(file, temp);
+                if (temp == "endU") break;
+                int id = stoi(temp);
+                usersID.push_back(id);
+            }
+            for (int i = 0; i < usersID.size(); ++i) {
+                cout << usersID.at(i) << endl;
+            }
+            getline(file,temp);
+            cout << temp << endl;
+            getline(file,)
+            while (1){ //ciclo para ler os ID dos commits de um projeto
+                getline(file, temp);
+                if (temp == "endC") break;
+                int id = stoi(temp);
+                usersID.push_back(id);
+            }
+
+    }
 }
