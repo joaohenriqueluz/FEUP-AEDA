@@ -27,7 +27,9 @@ public:
 	void imprimeCoders();
 	void imprimeProjetos();
 	void readUsers();
+	void readProjetos();
 	void converteJunior(Utilizador* junior);
+	Avancado* converteBasico(Projeto * proj);
 
 };
 

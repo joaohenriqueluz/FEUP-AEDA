@@ -43,8 +43,9 @@ void Branch::addCommitVec(vector<Commit> vec)
 //---------------------------------------------------------------------
 unsigned int Projeto::lastId = 0;
 
-Projeto::Projeto(string nome){
+Projeto::Projeto(string nome,string tipo){
     _nome = nome;
+	_tipo = tipo;
     _id = ++lastId;
 }
 
@@ -166,14 +167,14 @@ void sortCommits(vector<Commit> &commits)//por data
 
 //---------------------------------------------------------------------
 
-Avancado::Avancado(string nome): Projeto(nome){}
+Avancado::Avancado(string nome): Projeto(nome,"Avancado"){}
 
 bool Avancado::addBranch(string nome)
 {
-	Branch newbranch(nome);
+	Branch* newbranch= new Branch(nome);
 	for (unsigned int i = 0; i < _branches.size(); i++)
 	{
-		if (_branches.at(i).getNome() == nome)
+		if (_branches.at(i)->getNome() == nome)
 			return false;
 	}
 	_branches.push_back(newbranch);
@@ -184,7 +185,7 @@ bool Avancado::removeBranch(string nome)
 {
 	for(unsigned int i =0; i < _branches.size(); i++)
 	{
-		if (_branches.at(i).getNome() == nome)
+		if (_branches.at(i)->getNome() == nome)
 		{
 			_branches.erase(_branches.begin() + i);
 			return true;
@@ -198,9 +199,9 @@ void Avancado::merge(string nome)
 	vector<Commit> v;
 	for(unsigned int i = 0; i < _branches.size(); i++)
 	{
-		if (_branches.at(i).getNome() == nome)
+		if (_branches.at(i)->getNome() == nome)
 		{
-			v = _branches.at(i).getCommits();
+			v = _branches.at(i)->getCommits();
 			_commits.insert(_commits.begin(),v.begin(), v.end());
 			sortCommits(_commits);
 			_branches.erase(_branches.begin() + i);
@@ -213,20 +214,25 @@ void Avancado::merge(string nome1, string nome2)
 	int n1=0, n2=0;
 	for (unsigned int i = 0; i < _branches.size(); i++)
 	{
-		if (_branches.at(i).getNome() == nome1)
+		if (_branches.at(i)->getNome() == nome1)
 		{
 			n1 = i;
 		}
-		if (_branches.at(i).getNome() == nome2)
+		if (_branches.at(i)->getNome() == nome2)
 		{
 			n2 = i;
 		}
 	}
-	_branches.at(n1).addCommitVec(_branches.at(n2).getCommits());
+	_branches.at(n1)->addCommitVec(_branches.at(n2)->getCommits());
 	_branches.erase(_branches.begin() + n2);
 
 }
 
 
-
+void Avancado::imprimeBranches() {
+	for(unsigned int i = 0; i < _branches.size(); i++)
+	{
+		cout<<i+1<<"#  " << _branches.at(i)->getNome()<< endl;
+	}
+}
 

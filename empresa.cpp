@@ -4,13 +4,32 @@
 using namespace std;
 
 int Empresa::novoProjeto(){
-	string nome;
+	string nome,tipo;
+	Avancado* projA;
+	Projeto* projB;
     cout <<"Nome do Projeto? \n";
-    cin >> nome; // Como � que implemento uma exception se ele der uma string vazia?
-    Projeto* novoProjeto= new Projeto(nome);
-    _projetos.push_back(novoProjeto);
-    cout << "Projeto " << nome << "criado com ID " << novoProjeto->getId() << endl;
-	return novoProjeto->getId();
+    cin >> nome;
+TIPO:	
+	cout << "Projeto Basico ou Avançado?(B/A)\n";
+	cin >> tipo;// Como � que implemento uma exception se ele der uma string vazia?
+	if (tipo == "B")
+	{
+		projB = new Projeto(nome, "Basico");
+		_projetos.push_back(projB);
+		cout << "Projeto " << nome << " criado com ID " << projB->getId() << endl;
+		return projB->getId();
+	}
+	else if (tipo == "A")
+	{
+		projA = new Avancado(nome);
+		_projetos.push_back(projA);
+		cout << "Projeto " << nome << " criado com ID " << projA->getId() << endl;
+		return projA->getId();
+	}
+	else
+		goto TIPO;
+	
+	
 }
 
 void Empresa::removeProjeto(Projeto* proj){
@@ -36,7 +55,7 @@ void Empresa::novoUtilizador(){
 	Gestor* gestor;
 	Senior* senior;
 	Junior* junior;
-	string nome,email;
+	string nome,email,status;
 	int d,m,a,NIF,reput;
 
 	cout << "Nome do Utilizador: ";
@@ -45,7 +64,6 @@ void Empresa::novoUtilizador(){
 	cin >>d>>m>>a; //VERIFICACAO
 	cout <<"Email: ";
 	cin >> email;
-	string status;
 	cout << "Digite NIF: ";
 	cin >> NIF;
 	cout << "Tipo(Gestor(G)/Programador(S/J)): ";
@@ -211,7 +229,7 @@ void Empresa::readUsers() {
 				cout << projId.at(i) << endl;
 			}
 			file >> nif;
-			cout << nif << endl;
+			cout<< "NIF "<< nif << endl;
 			getline(file, n);
 			cout << n;
 			if (rank != "J") {
@@ -250,6 +268,45 @@ void Empresa::readUsers() {
 	}
 }
 
+void Empresa::readProjetos()
+{
+	ifstream file;
+	file.open("projetos.txt");
+	string tipo, nome, pass, temp;
+	vector <int> usersID;
+	vector <int> commitID;
+	if (file.is_open()) {
+		while (file.good()) {
+			getline(file, tipo);
+			cout << tipo << endl;
+			getline(file, nome);
+			cout << nome << endl;
+			getline(file, pass);
+			cout << pass << endl;
+			getline(file, temp);
+			cout << temp << endl;
+			while (1) { //ciclo para ler os usersID de um projeto
+				getline(file, temp);
+				if (temp == "endU") break;
+				int id = stoi(temp);
+				usersID.push_back(id);
+			}
+			for (int i = 0; i < usersID.size(); ++i) {
+				cout << usersID.at(i) << endl;
+			}
+			getline(file, temp);
+			cout << temp << endl;
+			getline(file, temp);
+			while (1) { //ciclo para ler os ID dos commits de um projeto
+				getline(file, temp);
+				if (temp == "endC")
+					break;
+				int id = stoi(temp);
+				usersID.push_back(id);
+			}
+		}
+	}
+}
 
 void Empresa::converteJunior(Utilizador * junior)
 {
@@ -261,9 +318,43 @@ void Empresa::converteJunior(Utilizador * junior)
 		int ano = junior->getDataNascimento().getAno();
 		int NIF = junior->getNIF();
 		string email = junior->getEmail();
-		Utilizador* novoSenior = new Senior(nome, dia, mes, ano, email, 1000, NIF, "Senior");
+		Utilizador* novoSenior = new Senior(nome, dia, mes, ano, email, 1000, NIF, "Senior"); // Utilizador ou Senior?
 		removeUtilizador(junior);
 		getUsers().push_back(novoSenior);
 
 	}
+}
+
+
+Avancado* Empresa::converteBasico(Projeto * proj) {
+	Avancado* novoAvancado;
+	string nome = proj->getNome();
+	vector<Commit> commits = proj->getCommits();
+	unsigned int id = proj->getId();
+	vector<Utilizador *> ranking = proj->getUsers();
+	string chaveAcesso = proj->getChaveAcesso();
+	proj->alteraID(-1);
+	novoAvancado = new Avancado(nome);
+
+	for (unsigned int i = 0; i < ranking.size(); i++)
+		novoAvancado->addUtilizador(ranking.at(i));
+
+	for (unsigned int i = 0; i < commits.size(); i++)
+		novoAvancado->addCommit(commits.at(i));
+
+	novoAvancado->setID(id);
+
+	novoAvancado->setChaveAcesso(chaveAcesso);
+
+	for (unsigned int i = 0; i < _projetos.size(); i++)
+	{
+		if(_projetos.at(i)->getId() == proj->getId())
+		{
+			_projetos.erase(_projetos.begin() + i);
+		}
+	}
+
+	_projetos.push_back(novoAvancado);
+
+
 }

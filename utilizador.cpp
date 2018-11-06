@@ -112,6 +112,11 @@ void Utilizador::setNIF(int NIF) {
 }
 
 void Utilizador::imprimeProjetos(){
+	if(_projetos.size()==0)
+	{
+		cout << getNome() << " nao tem projetos.\n";
+		return;
+	}
 	for (unsigned int i = 0; i < _projetos.size(); i++)
 	{
 		cout << i + 1 << "º" << _projetos.at(i) << endl;

@@ -40,8 +40,8 @@ int main() {
 			empresa.imprimeSalarios();
 			break;
 		case 3:
-			//empresa.novoUtilizador();
-			empresa.readUsers();
+			empresa.novoUtilizador();
+			//empresa.readUsers();
 			break;
 		case 4:
 			Login(empresa);
@@ -65,13 +65,13 @@ void Login(Empresa &emp) {
 		
 		if (logger->getCargo() == "Gestor")
 		{
-			
-
 			rotinaGestor(logger,emp);
 		}
 			//if (logger->getCargo() == "Serior")
 		if (logger->getCargo() == "Junior")
+		{
 			rotinaJunior(logger, emp);
+		}
 	}
 
 }
@@ -162,7 +162,10 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 	
 	cin >> opcao;
 	switch (opcao)
-	{case 1:
+	{
+	case 0: Login(empresa);
+			break;
+	case 1:
 		logger->imprimeProjetos();
 		break;
 	case 2:
@@ -171,7 +174,7 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 		cin >> opcao;
 
 		if (opcao == 0)
-			break;
+			rotinaJunior(logger, empresa);
 
 		proj = editProj(opcao, empresa);
 		cout << "Volume do commit: ";
@@ -202,7 +205,123 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 }
 
 
+void rotinaSenior(Utilizador* logger, Empresa& empresa) {
+	int opcao, volume, dia, mes, ano;
+	Projeto * proj;
+	Commit * newCommit;
+	Branch* newBranch;
+	string nomeBranch;
 
+	cout << "1- Ver Projetos;\n"
+		<< "2- Fazer commit num projeto;\n"
+		<< "3- Ver historico de commits;\n"
+		<< "4- Criar um branch num projeto;\n"
+		<< "5- Apagar branch de um projeto;\n"
+		<< "6- Fazer merge de dois branches;\n"
+		<< "0- Voltar atras;\n";
+
+	cin >> opcao;
+	switch (opcao)
+	{
+	case 0: Login(empresa);
+		break;
+	case 1:
+		logger->imprimeProjetos();
+		break;
+	case 2:
+		logger->imprimeProjetos();
+		cout << "Selecione um projeto: ";
+		cin >> opcao;
+
+		if (opcao == 0)
+			rotinaJunior(logger, empresa);
+
+		proj = editProj(opcao, empresa);
+		cout << "Volume do commit: ";
+		cin >> volume;
+		cout << "Data do commit(dd/mm/aa): ";
+		cin >> dia >> mes >> ano;
+		newCommit = new Commit(logger, volume, dia, mes, ano);
+		proj->addCommit(*newCommit);
+		empresa.converteJunior(logger);
+
+		break;
+
+	case 3:
+		logger->imprimeProjetos();
+		cout << "Selecione um projeto: ";
+		cin >> opcao;
+
+		if (opcao == 0)
+			break;
+
+		proj = editProj(opcao, empresa);
+		proj->imprimeHistorico();
+		break;
+
+	case 4:
+		//cria branch
+		logger->imprimeProjetos();
+		cout << "Selecione um projeto: ";
+		cin >> opcao;
+
+		if (opcao == 0)
+			break;
+
+		proj = editProj(opcao, empresa);
+		cout << "Digite o nome do branch: ";
+		cin >> nomeBranch;
+		if (proj->getTipo() == "Basico")
+		{
+			proj = empresa.converteBasico(proj);
+		}
+		proj->addBranch(nomeBranch);
+		
+		break;
+	case 5:
+		//apaga branch
+		logger->imprimeProjetos();
+		cout << "Selecione um projeto: ";
+		cin >> opcao;
+
+		if (opcao == 0)
+			break;
+
+		proj = editProj(opcao, empresa);
+		proj->imprimeBranches();
+		cout << "Digite o nome do branch: ";
+		cin >> nomeBranch;
+		if (!proj->removeBranch(nomeBranch))
+			cout << "Nao existe um branch com o nome " << nomeBranch << endl;
+		break;
+
+	case 6:
+		// Merge
+		string nome1, nome2;
+		logger->imprimeProjetos();
+		cout << "Selecione um projeto: ";
+		cin >> opcao;
+
+		if (opcao == 0)
+			break;
+
+		proj = editProj(opcao, empresa);
+		proj->imprimeBranches();
+		cout << "Digite o nome do primeiro branch (MASTER para fazer merge com o branch principal) : ";
+		cin >> nome1;
+		cout << "Digite o nome do segundo branch (MASTER para fazer merge com o branch principal) : ";
+		cin >> nome2;
+		if (nome1 == "MASTER" && nome2 != "MASTER")
+			proj->merge(nome2);
+		if (nome1 != "MASTER" && nome2 == "MASTER")
+			proj->merge(nome1);
+		if (nome1 != "MASTER" && nome2 != "MASTER")
+			proj->merge(nome1, nome2);
+		break;
+
+
+	}
+}
 
 
 

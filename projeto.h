@@ -40,10 +40,17 @@ protected:
     string _chaveAcesso;
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
+	vector<Branch*> _branches;
+	string _tipo; //Basico ou avançado
 public:
-    Projeto(string nome);
+    Projeto(string nome,string tipo);
     string getNome ();
+	void setTipo(string tipo) { _tipo = tipo; }
+	string getTipo() const { return _tipo; }
     unsigned int getId();
+	vector<Commit> getCommits() const { return _commits; }
+	void alteraID(int i) { lastId += i; }
+	void setID(unsigned int id) { _id = id; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
 	void imprimeUsers();
@@ -55,13 +62,17 @@ public:
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
-	
+	virtual bool addBranch(string nome) { return true;}
+	virtual bool removeBranch(string nome) { return true; }
+	virtual void merge(string nome) {}
+	virtual void merge(string nome1, string nome2){}
+	virtual void imprimeBranches(){}
 };
 
 
 
 class Avancado : public Projeto {
-	vector<Branch> _branches;
+	
     //branches (cria/elimina/merge-senior)
 public:
     Avancado(string nome);
@@ -69,7 +80,8 @@ public:
 	bool removeBranch(string nome);
 	void merge(string nome);
 	void merge(string nome1, string nome2);
-	Branch existeBranch(string nome);
+	void imprimeBranches();
+	Branch* existeBranch(string nome);
 };
 
 
