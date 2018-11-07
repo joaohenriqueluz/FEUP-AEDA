@@ -53,6 +53,21 @@ public:
 	void setID(unsigned int id) { _id = id; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
+    /**
+     * @brief Verifica se o Utilizador de nome "nome" ja existe no projeto;
+     * @param nome
+     * @return verdadeiro de o utilizador de nome "nome" pertence ao vetor de utilizadores do projeto, senao devolve falso;
+     */
+    bool existeUser(string nome);
+    /**
+     * @brief Elimina do vetor de utilizadores do projeto o utilizador de nome "nome"
+     * @param nome
+     */
+    void removeUser(string nome);
+    /**
+     * @brief Desassocia todos os utilizadores a este projeto;
+     */
+    void removeAUsers();
 	void imprimeUsers();
 	void imprimeCoders();
     string getChaveAcesso();

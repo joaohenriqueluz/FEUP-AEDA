@@ -5,7 +5,7 @@ using namespace std;
 
 string opcao;
 
-
+int rotinaEmpresa(Empresa empresa);
 void Login(Empresa &emp);
 Projeto* editProj(int id, Empresa & emp);
 void rotinaGestor(Utilizador* logger, Empresa &empresa);
@@ -14,13 +14,38 @@ void removeAUsers(Projeto * proj);
 void rotinaJunior(Utilizador* logger, Empresa & empresa);
 void rotinaSenior(Utilizador* logger, Empresa& empresa);
 
-int main() {
-	int op=1;
+int main(){
+	int opcão;
 	Empresa empresa;
+	cout << "#####################";
+	cout << "#                   #";
+	cout << "#  Bases de codigo  #";
+	cout << "#                   #";
+	cout << "#####################\n\n";
+	cout << "Selecione a opcao: \n";
+	cout << "1 - Nova Empresa(empresa sem projetos nem utilizadores)\n"
+		 << "2 - Retomar uma empresa\n";
+
+	cin >>opcao;
+	if(opcao == 1)
+		rotinaEmpresa(empresa);
+	else
+		if(opcao == 2)
+			{
+				empresa.readUsers();
+				rotinaEmpresa(empresa);
+			}
+
+
+	return 0;
+}
+int rotinaEmpresa(Empresa & empresa) {
+	int op=1;
 	while(op != 0)
 	{
-		cout << "Bases de codigo \n\n";
-		cout << "Selecione o que pretende fazer: \n" << "1 - Ver rankings\n"
+
+		cout << "Selecione o que pretende fazer: \n"
+				<< "1 - Ver rankings\n"
 				// rankings de atividade mensal de cada elemento do projeto .....
 				<< "2 - Ver salarios de todos o pessoal\n"
 				//lista com salarios e valor total
@@ -55,6 +80,7 @@ int main() {
 
 
 void Login(Empresa &emp) {
+
 	bool existe=false;
 	string nome;
 	cout << "Digite nome do utilizador: ";
@@ -79,6 +105,7 @@ void Login(Empresa &emp) {
 	}
 
 }
+
 void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 	int opcao,novoProjeto;
 	string nome;
@@ -86,10 +113,12 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 	Utilizador * user;
 	do
 	{
-		cout <<endl<< "1-Criar novo projeto\n"
-			<< "2- Adicionar/Remover utilizadores a Projeto.\n"
-			<< "3- Remover projeto\n"
-			<< "4 -Ver projetos\n"
+		cout <<endl
+			<< "1-Criar novo projeto\n"
+			<< "2- Adicionar utilizadores a Projeto.\n"
+			<< "3- Remover utilizadores a projeto\n"
+			<< "4- Remover projeto\n"
+			<< "5 -Ver projetos\n"
 			<< "0- Voltar atrás\n";
 		cin >> opcao;
 		switch (opcao)
@@ -99,6 +128,7 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 			logger->addProjeto(novoProjeto);
 			break;
 
+AD_UTI:
 		case 2:
 
 			if (logger->getProjetos().size() == 0)
@@ -119,12 +149,38 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 				empresa.imprimeUser();
 				cout << "Selecione o Utilizador: ";
 				cin >> nome;
+				if(proj->existeUser(nome))
+					{
+					cout<<nome << " ja pertence a este projeto.\n";
+					goto AD_UTI;
+					}
 				user = empresa.existeUser(nome);
 				proj->addUtilizador(user);
 				user->addProjeto(proj->getId());
 			}
 			break;
+REM_UTI:
 		case 3:
+			cout << "Projetos: \n";
+			logger->imprimeProjetos();
+			cout << "Selecione um projeto: ";
+			cin >> opcao;
+			proj = editProj(opcao,empresa);
+			proj->imprimeUsers();
+			cout << "Utilizadores da empresa: " << endl;
+			empresa.imprimeUser();
+			cout << "Selecione o Utilizador: ";
+			cin >> nome;
+			if(!(proj->existeUser(nome)))
+				{
+				cout<<nome << " nao pertence a este projeto.\n";
+				goto REM_UTI;
+				}
+			user= empresa.existeUser(nome);
+			user->removeProjeto(proj->getId());
+			proj.remove
+			break;
+		case 4:
 			cout << "Projetos: \n";
 			logger->imprimeProjetos();
 			cout << "Selecione um projeto: ";
@@ -138,7 +194,7 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 			removeAUsers(proj);
 			empresa.removeProjeto(proj);
 			break;
-		case 4:
+		case 5:
 			logger->imprimeProjetos();
 			break;
 
@@ -263,6 +319,7 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 		proj->imprimeHistorico();
 		break;
 
+CRIA_BRANCH:
 	case 4:
 		//cria branch
 		logger->imprimeProjetos();
@@ -273,12 +330,14 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 			break;
 
 		proj = editProj(opcao, empresa);
-		cout << "Digite o nome do branch: ";
-		cin >> nomeBranch;
 		if (proj->getTipo() == "Basico")
 		{
-			proj = empresa.converteBasico(proj);
+			cout<< "Este é do tipo Basico (sem branches)\n"
+				   " Selecione outro Projeto\n";
+			goto CRIA_BRANCH;
 		}
+		cout << "Digite o nome do branch: ";
+		cin >> nomeBranch;
 		proj->addBranch(nomeBranch);
 		
 		break;
@@ -326,22 +385,6 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 
 	}
 }
-
-
-
-Projeto* editProj(int id, Empresa & emp) {
-	for (unsigned int i = 0; i < emp.getProjetos().size(); i++)
-	{
-		if (emp.getProjetos().at(i)->getId() == id)
-			return emp.getProjetos().at(i);
-	}
-}
-
-void removeAUsers(Projeto * proj) {
-	for (unsigned int i = 0; i < proj->getUsers().size(); i++)
-		proj->getUsers().at(i)->removeProjeto(proj->getId());
-}
-
 
 
 

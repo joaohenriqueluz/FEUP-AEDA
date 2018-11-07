@@ -19,6 +19,12 @@ public:
 	void imprimeSalarios();
 	Utilizador* existeUser(string nome, bool & existe);
 	Utilizador* existeUser(string nome);
+	/**
+	 *
+	 * @param id ID do projeto a ser retornado
+	 * @return apontador para Projeto com ID igual a id
+	 */
+	Projeto * editProj(int id);
 	int getVolume(string nome, Data d1, Data d2) const;
 	float getFreq(string nome, Data d1, Data d2) const;
 	vector<Projeto *> getProjetos() const { return _projetos; }

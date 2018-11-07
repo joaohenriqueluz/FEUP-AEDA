@@ -72,6 +72,30 @@ void Projeto::addUtilizador (Utilizador * user){
 	//ordenar
 }
 
+
+bool Projeto::existeUser(string nome){
+	for(unsigned int i=0; i< _ranking.size();i++)
+	{
+		if(_ranking.at(i)->getNome()== nome)
+			return true;
+	}
+	return false;
+}
+
+void Projeto::removeUser(string nome){
+	for(unsigned int i = 0; i <_ranking.size();i++)
+	{
+		if(_ranking.at(i)->getNome()== nome)
+		{
+			_ranking.erase(_ranking.begin()+i);
+		}
+	}
+}
+
+void Projeto::removeAUsers(){
+	for(unsigned int i = 0; i < getUsers().size(); i++)
+		getUsers().at(i)->removeProjeto(_id);
+}
 void Projeto::imprimeUsers()
 {
 	cout << "Utilizadores do projeto com ID " << getId() << endl;

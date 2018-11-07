@@ -144,6 +144,15 @@ Utilizador* Empresa::existeUser(string nome)
 }
 
 
+Projeto* Empresa::editProj(int id){
+	for (unsigned int i = 0; i < getProjetos().size(); i++)
+	{
+		if (getProjetos().at(i)->getId() == id)
+			return getProjetos().at(i);
+	}
+}
+
+
 int Empresa::getVolume(string nome, Data d1, Data d2) const {
 	int volume = 0;
 	for (unsigned int i = 0; i < _projetos.size(); i++) {
