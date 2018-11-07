@@ -32,6 +32,22 @@ public:
 	void adicionaCommit(Commit cm);
 	void addCommitVec(vector<Commit> vec);
 };
+
+class NoSuchBranch{
+	string name;
+public:
+	NoSuchBranch(string n){name = n;}
+	string getName() const {return name;}
+};
+
+class BranchRepetido{
+	string name;
+public:
+	BranchRepetido(string n){name = n;}
+	string getName() const {return name;}
+};
+
+
 class Projeto {
 protected:
     string _nome;
@@ -44,30 +60,29 @@ protected:
 	string _tipo; //Basico ou avançado
 public:
     Projeto(string nome,string tipo);
+    virtual ~Projeto(){};
     string getNome ();
 	void setTipo(string tipo) { _tipo = tipo; }
 	string getTipo() const { return _tipo; }
     unsigned int getId();
 	vector<Commit> getCommits() const { return _commits; }
-	void alteraID(int i) { lastId += i; }
-	void setID(unsigned int id) { _id = id; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
     /**
-     * @brief Verifica se o Utilizador de nome "nome" ja existe no projeto;
-     * @param nome
-     * @return verdadeiro de o utilizador de nome "nome" pertence ao vetor de utilizadores do projeto, senao devolve falso;
-     */
-    bool existeUser(string nome);
-    /**
-     * @brief Elimina do vetor de utilizadores do projeto o utilizador de nome "nome"
-     * @param nome
-     */
-    void removeUser(string nome);
-    /**
-     * @brief Desassocia todos os utilizadores a este projeto;
-     */
-    void removeAUsers();
+        * @brief Verifica se o Utilizador de nome "nome" ja existe no projeto;
+        * @param nome
+        * @return verdadeiro de o utilizador de nome "nome" pertence ao vetor de utilizadores do projeto, senao devolve falso;
+        */
+       bool existeUser(string nome);
+       /**
+        * @brief Elimina do vetor de utilizadores do projeto o utilizador de nome "nome"
+        * @param nome
+        */
+       void removeUser(string nome);
+       /**
+        * @brief Desassocia todos os utilizadores a este projeto;
+        */
+       void removeAUsers();
 	void imprimeUsers();
 	void imprimeCoders();
     string getChaveAcesso();
@@ -77,8 +92,8 @@ public:
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
-	virtual bool addBranch(string nome) { return true;}
-	virtual bool removeBranch(string nome) { return true; }
+	virtual void addBranch(string nome) {}
+	virtual void removeBranch(string nome) {}
 	virtual void merge(string nome) {}
 	virtual void merge(string nome1, string nome2){}
 	virtual void imprimeBranches(){}
@@ -91,15 +106,21 @@ class Avancado : public Projeto {
     //branches (cria/elimina/merge-senior)
 public:
     Avancado(string nome);
-	bool addBranch(string nome);//nao deixa adicionar um nome repetido;
-	bool removeBranch(string nome);
+	void addBranch(string nome);
+	void removeBranch(string nome);
 	void merge(string nome);
 	void merge(string nome1, string nome2);
 	void imprimeBranches();
-	Branch* existeBranch(string nome);
+	//Branch* existeBranch(string nome); /// VER EXCECAO
 };
 
 
+class NoSuchProject{
+	unsigned int id;
+public:
+	NoSuchProject(unsigned int i){id = i;}
+	unsigned int getId() const {return id;}
+};
 
 
 template <class T>

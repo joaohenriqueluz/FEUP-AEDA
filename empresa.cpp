@@ -3,155 +3,160 @@
 
 using namespace std;
 
-int Empresa::novoProjeto(){
-	string nome,tipo;
+int Empresa::novoProjeto() {
+	string nome, tipo;
 	Avancado* projA;
 	Projeto* projB;
-    cout <<"Nome do Projeto? \n";
-    cin >> nome;
-TIPO:	
-	cout << "Projeto Basico ou AvanÃ§ado?(B/A)\n";
-	cin >> tipo;// Como ï¿½ que implemento uma exception se ele der uma string vazia?
-	if (tipo == "B")
-	{
+	cout << "Nome do Projeto? \n";
+	cin >> nome;
+	TIPO: cout << "Projeto Basico ou AvanÃ§ado?(B/A)\n";
+	cin >> tipo; // Como e que implemento uma exception se ele der uma string vazia?
+	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
 		_projetos.push_back(projB);
-		cout << "Projeto " << nome << " criado com ID " << projB->getId() << endl;
+		cout << "Projeto " << nome << " criado com ID " << projB->getId()
+				<< endl;
 		return projB->getId();
-	}
-	else if (tipo == "A")
-	{
+	} else if (tipo == "A") {
 		projA = new Avancado(nome);
 		_projetos.push_back(projA);
-		cout << "Projeto " << nome << " criado com ID " << projA->getId() << endl;
+		cout << "Projeto " << nome << " criado com ID " << projA->getId()
+				<< endl;
 		return projA->getId();
-	}
-	else
+	} else {
+		cout << "Opcao invalida! Tenta outra vez. \n\n";
 		goto TIPO;
-	
-	
+	}
+
 }
 
-void Empresa::removeProjeto(Projeto* proj){
+void Empresa::removeProjeto(Projeto* proj) {
 	removeObjeto<Projeto*>(_projetos, proj);
 }
 /*
-void Empresa::removeProjeto(Projeto * projetoARemover){
-	for(unsigned int i = 0; i < _projetos.size(); i++)
-	{
-		if(_projetos.at(i) == projetoARemover)
-		{
-			cout << "Projeto " << projetoARemover->getNome() <<" removido. \n";
-			_projetos.erase(_projetos.begin() + i);
-			return;
-		}
-	}
-}
-*/
+ void Empresa::removeProjeto(Projeto * projetoARemover){
+ for(unsigned int i = 0; i < _projetos.size(); i++)
+ {
+ if(_projetos.at(i) == projetoARemover)
+ {
+ cout << "Projeto " << projetoARemover->getNome() <<" removido. \n";
+ _projetos.erase(_projetos.begin() + i);
+ return;
+ }
+ }
+ }
+ */
 
-
-void Empresa::novoUtilizador(){
+void Empresa::novoUtilizador() {
 
 	Gestor* gestor;
 	Senior* senior;
 	Junior* junior;
-	string nome,email,status;
-	int d,m,a,NIF,reput;
+	string nome, email, status;
+	int d, m, a, NIF, reput;
 
 	cout << "Nome do Utilizador: ";
 	cin >> nome;
+
+	try {
+		existeUser(nome);
+	} catch (UserRepetido &e) {
+		cout << e.getName() << " já existe. Introduza outro nome.\n\n";
+		novoUtilizador();
+	}
+
 	cout << "Data de Nascimento(d/m/a): ";
-	cin >>d>>m>>a; //VERIFICACAO
-	cout <<"Email: ";
+	cin >> d >> m >> a; //VERIFICACAO
+	cout << "Email: ";
 	cin >> email;
 	cout << "Digite NIF: ";
 	cin >> NIF;
+
+	try {
+		existeNIF(NIF);
+	} catch (NIFRepetido &e) {
+		cout << e.getNIF()
+				<< " já existe. Introduza um utilizador com um NIF diferente.\n\n";
+		novoUtilizador();
+	}
+
 	cout << "Tipo(Gestor(G)/Programador(S/J)): ";
-	cin>> status;
-	if (status == "G")
-	{
-		gestor = new Gestor(nome, d, m, a, email, 2500, NIF,"Gestor");
+	cin >> status;
+	if (status == "G") {
+		gestor = new Gestor(nome, d, m, a, email, 2500, NIF, "Gestor");
 		cout << "\nGestor criado!\n";
 		_utilizadores.push_back(gestor);
-	}
-	else if(status == "S"){
-		
-		senior = new Senior(nome,d,m,a,email,1000,NIF,"Senior");
-		cout << "\nSenior criado!\n";	//string nome, int d, int m, int a,string email,float salario,int NIF
+	} else if (status == "S") {
+
+		senior = new Senior(nome, d, m, a, email, 1000, NIF, "Senior");
+		cout << "\nSenior criado!\n";
 		_utilizadores.push_back(senior);
 
-	}
-		else if(status == "J")
-		{
+	} else if (status == "J") {
 		cout << "Reputacao: ";
 		cin >> reput;
-		junior = new Junior(nome,d,m,a,email,reput,NIF,"Junior");
+		junior = new Junior(nome, d, m, a, email, reput, NIF, "Junior");
 		cout << "\nJunior criado!\n";
 		_utilizadores.push_back(junior);
-		}
+	}
 
-	
 }
 
-void Empresa::removeUtilizador(Utilizador * utilizador)
-{
-	removeObjeto<Utilizador*>(_utilizadores, utilizador);
+bool Empresa::removeUtilizador(Utilizador * utilizador) {
+	return removeObjeto<Utilizador*>(_utilizadores, utilizador);
 }
 
-void Empresa::imprimeSalarios(){
+void Empresa::imprimeSalarios() {
 	/*
-	if(_utilizadores.size() == 0)
-		{cout << "Nao existem utilizadores.\n";
-		return;}*/
- float Soma=0;
- for(unsigned int i =0; i < _utilizadores.size();i++)
- {
-	 cout <<"Nome: "<< _utilizadores.at(i)->getNome()
-		  << " Cargo: " << _utilizadores.at(i)->getCargo()
-		  << " Salario: "<< _utilizadores.at(i)->getSalario()<< endl;
-	 Soma+= _utilizadores.at(i)->getSalario();
- }
- cout <<"Soma total dos salarios: "<<Soma<<endl;
+	 if(_utilizadores.size() == 0)
+	 {cout << "Nao existem utilizadores.\n";
+	 return;}*/
+	float Soma = 0;
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
+		cout << "Nome: " << _utilizadores.at(i)->getNome() << " Cargo: "
+				<< _utilizadores.at(i)->getCargo() << " Salario: "
+				<< _utilizadores.at(i)->getSalario() << endl;
+		Soma += _utilizadores.at(i)->getSalario();
+	}
+	cout << "Soma total dos salarios: " << Soma << endl;
 }
 
-Utilizador* Empresa::existeUser(string nome, bool &existe)
-{
-	
-	for (unsigned int i = 0; i < _utilizadores.size(); i++)
-	{
-		if (_utilizadores.at(i)->getNome() == nome)
-		{
-			existe= true;
+Utilizador* Empresa::existeUser(string nome) {
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
+		if (_utilizadores.at(i)->getNome() == nome) {
 			return _utilizadores.at(i);
 
 		}
 	}
-	existe = false;
+	throw(NoSuchUser(nome));
 }
-
-Utilizador* Empresa::existeUser(string nome)
-{
-
-	for (unsigned int i = 0; i < _utilizadores.size(); i++)
-	{
-		if (_utilizadores.at(i)->getNome() == nome)
-		{
-			return _utilizadores.at(i);
+void Empresa::repeteUser(string nome) {
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
+		if (_utilizadores.at(i)->getNome() == nome) {
+			throw(UserRepetido(nome));
 
 		}
 	}
-	
+	return;
 }
 
+void Empresa::existeNIF(int nif) {
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
+		if (_utilizadores.at(i)->getNIF() == nif) {
+			throw NIFRepetido(nif);
 
-Projeto* Empresa::editProj(int id){
-	for (unsigned int i = 0; i < getProjetos().size(); i++)
-	{
-		if (getProjetos().at(i)->getId() == id)
+		}
+	}
+	return;
+}
+
+Projeto* Empresa::editProj(int id) {
+	for (unsigned int i = 0; i < getProjetos().size(); i++) {
+		if (getProjetos().at(i)->getId() == (unsigned int)id)
 			return getProjetos().at(i);
 	}
+	throw(NoSuchProject((unsigned int) id));
 }
-
 
 int Empresa::getVolume(string nome, Data d1, Data d2) const {
 	int volume = 0;
@@ -169,34 +174,28 @@ float Empresa::getFreq(string nome, Data d1, Data d2) const {
 	return freq;
 }
 
-void Empresa::imprimeUser()
-{
-	for (unsigned int i = 0; i < _utilizadores.size(); i++)
-	{
-		cout <<i+1<<"# "<< _utilizadores.at(i)->getNome()<<"     Cargo: "<<_utilizadores.at(i)->getCargo()<<endl;
+void Empresa::imprimeUser() {
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
+		cout << i + 1 << "# " << _utilizadores.at(i)->getNome()
+				<< "     Cargo: " << _utilizadores.at(i)->getCargo() << endl;
 	}
 }
 
-void Empresa::imprimeCoders()
-{
-	for (unsigned int i = 0; i < _utilizadores.size(); i++)
-	{
+void Empresa::imprimeCoders() {
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
 		if (_utilizadores.at(i)->getCargo() == "Gestor")
 			continue;
-		cout << i + 1 << "# " << _utilizadores.at(i)->getNome() << "     Cargo: " << _utilizadores.at(i)->getCargo() << endl;
-	}
-}
-	
-
-void Empresa::imprimeProjetos()
-{
-	for (unsigned int i = 0; i < _projetos.size(); i++)
-	{
-		cout << _projetos.at(i)->getNome() << " ID: " << _projetos.at(i)->getId()<<endl;
+		cout << i + 1 << "# " << _utilizadores.at(i)->getNome()
+				<< "     Cargo: " << _utilizadores.at(i)->getCargo() << endl;
 	}
 }
 
-
+void Empresa::imprimeProjetos() {
+	for (unsigned int i = 0; i < _projetos.size(); i++) {
+		cout << _projetos.at(i)->getNome() << " ID: "
+				<< _projetos.at(i)->getId() << endl;
+	}
+}
 
 void Empresa::readUsers() {
 	Gestor* _gestor;
@@ -204,12 +203,13 @@ void Empresa::readUsers() {
 	Senior* _senior;
 
 	ifstream file;
-	file.open("C:\\Users\\joaoh\\Desktop\\utilizadores.txt");
+	file.open("C:\\Users\\l_nn_\\Documents\\Liliana\\FEUP\\2º ano\\1º Semestre\\AEDA\\eclipse workspace\\Projeto 1 - Base de código\\src\\utilizadores.txt");
 	string nome, rank, email, data, n, ids, reputacao, money;
-	char ch, b;
-	int d, m, a, id, nif, rep, salario;
-	vector <int> dataV;
-	vector <int> projId;
+	char /*ch,*/b;
+	int d, m, a, /*id,*/nif, rep;
+	float salario;
+	vector<int> dataV;
+	vector<int> projId;
 
 	if (file.is_open()) {
 		while (file.good()) {
@@ -230,60 +230,56 @@ void Empresa::readUsers() {
 			projId.clear();
 			while (1) {
 				getline(file, ids);
-				if (ids == "end") break;
+				if (ids == "end")
+					break;
 				int id = stoi(ids);
 				projId.push_back(id);
 			}
-			for (int i = 0; i < projId.size(); ++i) {
+			for (unsigned int i = 0; i < projId.size(); ++i) {
 				cout << projId.at(i) << endl;
 			}
 			file >> nif;
-			cout<< "NIF "<< nif << endl;
+			cout << "NIF " << nif << endl;
 			getline(file, n);
 			cout << n;
 			if (rank != "J") {
 				getline(file, money);
-				salario = stoi(money);
+				salario = stof(money);
 			}
 			getline(file, n);
 			cout << n;
 
-
-
-			if (rank == "G")
-			{
-				_gestor = new Gestor(nome, d, m, a, email, salario, nif,"Gestor");
+			if (rank == "G") {
+				_gestor = new Gestor(nome, d, m, a, email, salario, nif,
+						"Gestor");
 				_utilizadores.push_back(_gestor);
 			}
-			if (rank == "S")
-			{
-				_senior = new Senior(nome, d, m, a, email, salario, nif,"Senior");
+			if (rank == "S") {
+				_senior = new Senior(nome, d, m, a, email, salario, nif,
+						"Senior");
 				_utilizadores.push_back(_senior);
 			}
 
-			if (rank == "J")
-			{
-				_junior = new Junior(nome, d, m, a, email, rep,nif,"Junior");
+			if (rank == "J") {
+				_junior = new Junior(nome, d, m, a, email, rep, nif, "Junior");
 				_junior->setSalario();
 				_utilizadores.push_back(_junior);
 			}
-		
+
 		}
 		file.close();
 
-	}
-	else {
+	} else {
 		cout << "File not found" << endl;
 	}
 }
 
-void Empresa::readProjetos()
-{
+void Empresa::readProjetos() {
 	ifstream file;
 	file.open("projetos.txt");
 	string tipo, nome, pass, temp;
-	vector <int> usersID;
-	vector <int> commitID;
+	vector<int> usersID;
+	vector<int> commitID;
 	if (file.is_open()) {
 		while (file.good()) {
 			getline(file, tipo);
@@ -296,11 +292,12 @@ void Empresa::readProjetos()
 			cout << temp << endl;
 			while (1) { //ciclo para ler os usersID de um projeto
 				getline(file, temp);
-				if (temp == "endU") break;
+				if (temp == "endU")
+					break;
 				int id = stoi(temp);
 				usersID.push_back(id);
 			}
-			for (int i = 0; i < usersID.size(); ++i) {
+			for (size_t i = 0; i < usersID.size(); ++i) {
 				cout << usersID.at(i) << endl;
 			}
 			getline(file, temp);
@@ -317,53 +314,51 @@ void Empresa::readProjetos()
 	}
 }
 
-void Empresa::converteJunior(Utilizador * junior)
-{
-	if (junior->getReputacao() > 9999)
-	{
+void Empresa::converteJunior(Utilizador * junior) {
+	if (junior->getReputacao() > 9999) {
 		string nome = junior->getNome();
 		int dia = junior->getDataNascimento().getDia();
 		int mes = junior->getDataNascimento().getMes();
 		int ano = junior->getDataNascimento().getAno();
 		int NIF = junior->getNIF();
 		string email = junior->getEmail();
-		Utilizador* novoSenior = new Senior(nome, dia, mes, ano, email, 1000, NIF, "Senior"); // Utilizador ou Senior?
+		Utilizador* novoSenior = new Senior(nome, dia, mes, ano, email, 1000,
+				NIF, "Senior"); // Utilizador ou Senior?
 		removeUtilizador(junior);
 		getUsers().push_back(novoSenior);
 
 	}
 }
 
+/*Avancado* Empresa::converteBasico(Projeto * proj) {
+ Avancado* novoAvancado;
+ string nome = proj->getNome();
+ vector<Commit> commits = proj->getCommits();
+ unsigned int id = proj->getId();
+ vector<Utilizador *> ranking = proj->getUsers();
+ string chaveAcesso = proj->getChaveAcesso();
+ proj->alteraID(-1);
+ novoAvancado = new Avancado(nome);
 
-Avancado* Empresa::converteBasico(Projeto * proj) {
-	Avancado* novoAvancado;
-	string nome = proj->getNome();
-	vector<Commit> commits = proj->getCommits();
-	unsigned int id = proj->getId();
-	vector<Utilizador *> ranking = proj->getUsers();
-	string chaveAcesso = proj->getChaveAcesso();
-	proj->alteraID(-1);
-	novoAvancado = new Avancado(nome);
+ for (unsigned int i = 0; i < ranking.size(); i++)
+ novoAvancado->addUtilizador(ranking.at(i));
 
-	for (unsigned int i = 0; i < ranking.size(); i++)
-		novoAvancado->addUtilizador(ranking.at(i));
+ for (unsigned int i = 0; i < commits.size(); i++)
+ novoAvancado->addCommit(commits.at(i));
 
-	for (unsigned int i = 0; i < commits.size(); i++)
-		novoAvancado->addCommit(commits.at(i));
+ novoAvancado->setID(id);
 
-	novoAvancado->setID(id);
+ novoAvancado->setChaveAcesso(chaveAcesso);
 
-	novoAvancado->setChaveAcesso(chaveAcesso);
+ for (unsigned int i = 0; i < _projetos.size(); i++)
+ {
+ if(_projetos.at(i)->getId() == proj->getId())
+ {
+ _projetos.erase(_projetos.begin() + i);
+ }
+ }
 
-	for (unsigned int i = 0; i < _projetos.size(); i++)
-	{
-		if(_projetos.at(i)->getId() == proj->getId())
-		{
-			_projetos.erase(_projetos.begin() + i);
-		}
-	}
-
-	_projetos.push_back(novoAvancado);
+ _projetos.push_back(novoAvancado);
 
 
-}
+ }*/

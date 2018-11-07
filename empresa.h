@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-#include "utilizador.h"
 #include "projeto.h"
 
 using namespace std;
@@ -13,17 +12,18 @@ class Empresa {
 	vector<Utilizador *> _utilizadores;
 public:
 	void novoUtilizador();
-	void removeUtilizador(Utilizador * UtilizadorARemover);
+	bool removeUtilizador(Utilizador * UtilizadorARemover); //VER SE E PRECISO EXCECAO //FALTA IMPLEMENTAÇAO
 	int novoProjeto();
 	void removeProjeto(Projeto * proj);
 	void imprimeSalarios();
-	Utilizador* existeUser(string nome, bool & existe);
 	Utilizador* existeUser(string nome);
+	void existeNIF(int nif);
+	void repeteUser(string nome);
 	/**
 	 *
 	 * @param id ID do projeto a ser retornado
 	 * @return apontador para Projeto com ID igual a id
-	 */
+	*/
 	Projeto * editProj(int id);
 	int getVolume(string nome, Data d1, Data d2) const;
 	float getFreq(string nome, Data d1, Data d2) const;
@@ -33,20 +33,22 @@ public:
 	void imprimeCoders();
 	void imprimeProjetos();
 	void readUsers();
+	void writeUsers();
 	void readProjetos();
 	void converteJunior(Utilizador* junior);
-	Avancado* converteBasico(Projeto * proj);
 
 };
 
 template<class T>
-void removeObjeto(vector<T> & V, T objeto){
+bool removeObjeto(vector<T> & V, T objeto){
 	for(unsigned int i = 0; i < V.size(); i++)
 			if(V.at(i)== objeto)
 			{
 				cout<< "Removido.\n";
 				V.erase(V.begin()+i);
+				return true;
 			}
+	return false;
 }
 
 

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-//#include "projeto.h"
 
 using namespace std;
 
@@ -130,7 +129,7 @@ public:
     string getEmail()const;
     void setEmail(string email);
     void addProjeto (int id);
-    bool removeProjeto (int id);
+    void removeProjeto (int id);
 	virtual string getCargo() const { return _cargo; }
     float getSalario()const {return _salario;}
     int getNIF()const;
@@ -182,6 +181,31 @@ public:
     void setReputacao(int reputacao);
 	//void instucoes();
 
+};
+
+/**
+ * classe utilizada para lançar uma exceção quando não é encontrado um utilizador com nome 'name'
+ * @param name nome do utilizador que não foi possível encontrar
+ */
+class NoSuchUser{
+	string name;
+public:
+	NoSuchUser(string n){name=n;}
+	string getName() const {return name;}
+};
+
+class UserRepetido{
+	string name;
+public:
+	UserRepetido(string n){name=n;}
+	string getName() const {return name;}
+};
+
+class NIFRepetido{
+	int nif;
+public:
+	NIFRepetido(int n){nif=n;}
+	int getNIF() const {return nif;}
 };
 
 #endif //PROJ_AEDA_UTILIZADOR_H

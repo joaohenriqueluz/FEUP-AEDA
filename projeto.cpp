@@ -1,6 +1,5 @@
 #include <iostream>
 #include "projeto.h"
-#include "utilizador.h"
 using namespace std;
 
 unsigned int Commit::_lastC=0;
@@ -69,9 +68,7 @@ void Projeto::addCommit(Commit cm){
 
 void Projeto::addUtilizador (Utilizador * user){
 	_ranking.push_back(user);
-	//ordenar
 }
-
 
 bool Projeto::existeUser(string nome){
 	for(unsigned int i=0; i< _ranking.size();i++)
@@ -81,8 +78,7 @@ bool Projeto::existeUser(string nome){
 	}
 	return false;
 }
-
-void Projeto::removeUser(string nome){
+ void Projeto::removeUser(string nome){
 	for(unsigned int i = 0; i <_ranking.size();i++)
 	{
 		if(_ranking.at(i)->getNome()== nome)
@@ -91,11 +87,11 @@ void Projeto::removeUser(string nome){
 		}
 	}
 }
-
-void Projeto::removeAUsers(){
+ void Projeto::removeAUsers(){
 	for(unsigned int i = 0; i < getUsers().size(); i++)
 		getUsers().at(i)->removeProjeto(_id);
 }
+
 void Projeto::imprimeUsers()
 {
 	cout << "Utilizadores do projeto com ID " << getId() << endl;
@@ -111,7 +107,7 @@ void Projeto::imprimeCoders()
 	{
 		if (_ranking.at(i)->getCargo() == "Gestor")
 			continue;
-		cout << i + 1 << "# " << _ranking.at(i)->getNome() << _ranking.at(i)->getCargo() << endl;
+		cout << i + 1 << "# " << _ranking.at(i)->getNome() << _ranking.at(i)->getCargo() <<  endl;
 	}
 }
 
@@ -193,29 +189,29 @@ void sortCommits(vector<Commit> &commits)//por data
 
 Avancado::Avancado(string nome): Projeto(nome,"Avancado"){}
 
-bool Avancado::addBranch(string nome)
+void Avancado::addBranch(string nome)
 {
 	Branch* newbranch= new Branch(nome);
 	for (unsigned int i = 0; i < _branches.size(); i++)
 	{
 		if (_branches.at(i)->getNome() == nome)
-			return false;
+			throw BranchRepetido(nome);
 	}
 	_branches.push_back(newbranch);
-	return true;
+	return;
 }
 
-bool Avancado::removeBranch(string nome)
+void Avancado::removeBranch(string nome)
 {
 	for(unsigned int i =0; i < _branches.size(); i++)
 	{
 		if (_branches.at(i)->getNome() == nome)
 		{
 			_branches.erase(_branches.begin() + i);
-			return true;
+			return;
 		}
 	}
-	return false;
+	throw NoSuchBranch(nome);
 }
 
 void Avancado::merge(string nome)
@@ -231,11 +227,12 @@ void Avancado::merge(string nome)
 			_branches.erase(_branches.begin() + i);
 		}
 	}
+	throw NoSuchBranch(nome);
 }
 
 void Avancado::merge(string nome1, string nome2)
 {
-	int n1=0, n2=0;
+	int n1=-1, n2=-1;
 	for (unsigned int i = 0; i < _branches.size(); i++)
 	{
 		if (_branches.at(i)->getNome() == nome1)
@@ -246,6 +243,12 @@ void Avancado::merge(string nome1, string nome2)
 		{
 			n2 = i;
 		}
+	}
+	if (n1 == -1){
+		throw NoSuchBranch(nome1);
+	}
+	else if (n2 == -1){
+		throw NoSuchBranch(nome2);
 	}
 	_branches.at(n1)->addCommitVec(_branches.at(n2)->getCommits());
 	_branches.erase(_branches.begin() + n2);

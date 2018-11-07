@@ -92,14 +92,12 @@ void Utilizador::addProjeto (int id){
 	_projetos.push_back(id);
 }
 
-bool Utilizador::removeProjeto (int id){
+void Utilizador::removeProjeto (int id){
 	for (unsigned int i = 0; i < _projetos.size(); i++){
 		if (_projetos.at(i) == id){
 			_projetos.erase(_projetos.begin()+i);
-			return true;
 		}
 	}
-	return false;
 }
 
 
