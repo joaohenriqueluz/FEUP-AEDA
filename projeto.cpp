@@ -119,11 +119,11 @@ void Projeto::imprimeHistorico()
 	for (unsigned int i = 0;i < _commits.size(); i++)
 	{
 		cout << "Commit: " << _commits.at(i).getID()
-			<< "Autor: " << _commits.at(i).getUser()->getNome()
-			<< "Data: " << _commits.at(i).getData().getDia() 
+			<< " Autor: " << _commits.at(i).getUser()->getNome()
+			<< " Data: " << _commits.at(i).getData().getDia()
 						<< "/" << _commits.at(i).getData().getMes()
 						<< "/" << _commits.at(i).getData().getAno()
-			<<"Volume: "<< _commits.at(i).getVolume()<<endl;
+			<<" Volume: "<< _commits.at(i).getVolume()<<endl;
 	}
 	   	 
 }

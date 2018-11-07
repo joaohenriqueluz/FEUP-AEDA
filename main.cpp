@@ -12,6 +12,7 @@ void rotinaGestor(Utilizador* logger, Empresa &empresa);
 void rotinaVerRanking(Empresa & emp);
 void removeAUsers(Projeto * proj);
 void rotinaJunior(Utilizador* logger, Empresa & empresa);
+void rotinaSenior(Utilizador* logger, Empresa& empresa);
 
 int main() {
 	int op=1;
@@ -41,7 +42,7 @@ int main() {
 			break;
 		case 3:
 			empresa.novoUtilizador();
-			//empresa.readUsers();
+			empresa.readUsers();
 			break;
 		case 4:
 			Login(empresa);
@@ -67,7 +68,10 @@ void Login(Empresa &emp) {
 		{
 			rotinaGestor(logger,emp);
 		}
-			//if (logger->getCargo() == "Serior")
+		if (logger->getCargo() == "Senior")
+		{
+			rotinaSenior(logger,emp);
+		}
 		if (logger->getCargo() == "Junior")
 		{
 			rotinaJunior(logger, emp);
