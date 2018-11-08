@@ -12,7 +12,7 @@ class Empresa {
 	vector<Utilizador *> _utilizadores;
 public:
 	void novoUtilizador();
-	bool removeUtilizador(Utilizador * UtilizadorARemover); //VER SE E PRECISO EXCECAO //FALTA IMPLEMENTAÇAO
+	bool removeUtilizador(Utilizador * UtilizadorARemover); //VER SE E PRECISO EXCECAO //FALTA IMPLEMENTAï¿½AO
 	int novoProjeto();
 	void removeProjeto(Projeto * proj);
 	void imprimeSalarios();
@@ -50,6 +50,5 @@ bool removeObjeto(vector<T> & V, T objeto){
 			}
 	return false;
 }
-
 
 #endif //PROJ_AEDA_EMPRESA_H

@@ -182,8 +182,8 @@ public:
 };
 
 /**
- * classe utilizada para lançar uma exceção quando não é encontrado um utilizador com nome 'name'
- * @param name nome do utilizador que não foi possível encontrar
+ * classe utilizada para lanï¿½ar uma exceï¿½ï¿½o quando nï¿½o ï¿½ encontrado um utilizador com nome 'name'
+ * @param name nome do utilizador que nï¿½o foi possï¿½vel encontrar
  */
 class NoSuchUser{
 	string name;

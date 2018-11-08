@@ -117,7 +117,7 @@ void Utilizador::imprimeProjetos(){
 	}
 	for (unsigned int i = 0; i < _projetos.size(); i++)
 	{
-		cout << i + 1 << "º" << _projetos.at(i) << endl;
+		cout << i + 1 << "ï¿½" << _projetos.at(i) << endl;
 	}
 }
 

@@ -15,6 +15,7 @@ class Commit {
     Data _dataC;
 public:
     Commit(Utilizador* user, int volume, int d, int m, int a);
+	Commit(Utilizador* user, int volume, int d, int m, int a, int ID);
     Utilizador* getUser ()const;
     int getVolume () const;
     Data getData() const;
@@ -56,8 +57,8 @@ protected:
     string _chaveAcesso;
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
-	vector<Branch*> _branches;
-	string _tipo; //Basico ou avançado
+	vector<Branch *> _branches;
+	string _tipo; //Basico ou avanï¿½ado
 public:
     Projeto(string nome,string tipo);
     virtual ~Projeto(){};
@@ -68,6 +69,7 @@ public:
 	vector<Commit> getCommits() const { return _commits; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
+    void addBranch (Branch * branch);
     /**
         * @brief Verifica se o Utilizador de nome "nome" ja existe no projeto;
         * @param nome
@@ -87,11 +89,14 @@ public:
 	void imprimeCoders();
     string getChaveAcesso();
     void setChaveAcesso(string chave);
+    void setID(int id);
 	int getVolume(string nome_user, Data d1, Data d2) const;
 	void imprimeHistorico();
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
+	vector <Commit> filterCommits(vector <int> id);
+	void readCommits(vector <Utilizador *> users, vector <int> id);
 };
 
 
@@ -140,5 +145,8 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 		if (!troca) break;
 	}
 }
+
+vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> users);
+
 
 #endif //PROJ_AEDA_PROJETO_H
