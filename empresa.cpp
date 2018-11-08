@@ -152,7 +152,7 @@ void Empresa::existeNIF(int nif) {
 
 Projeto* Empresa::editProj(int id) {
 	for (unsigned int i = 0; i < getProjetos().size(); i++) {
-		if (getProjetos().at(i)->getId() == (unsigned int)id)
+		if (getProjetos().at(i)->getId() == (unsigned int) id)
 			return getProjetos().at(i);
 	}
 	throw(NoSuchProject((unsigned int) id));
@@ -198,12 +198,12 @@ void Empresa::imprimeProjetos() {
 }
 
 void Empresa::readUsers() {
-	Gestor* _gestor;
-	Junior* _junior;
-	Senior* _senior;
+	Utilizador* _gestor;
+	Utilizador* j;
+	Utilizador* _senior;
 
 	ifstream file;
-	file.open("C:\\Users\\l_nn_\\Documents\\Liliana\\FEUP\\2º ano\\1º Semestre\\AEDA\\eclipse workspace\\Projeto 1 - Base de código\\src\\utilizadores.txt");
+	file.open("utilizadores.txt");
 	string nome, rank, email, data, n, ids, reputacao, money;
 	char /*ch,*/b;
 	int d, m, a, /*id,*/nif, rep;
@@ -252,17 +252,27 @@ void Empresa::readUsers() {
 			if (rank == "G") {
 				_gestor = new Gestor(nome, d, m, a, email, salario, nif,
 						"Gestor");
+				for (unsigned int i = 0; i < projId.size(); ++i) {
+					_gestor->addProjeto(projId.at(i));
+				}
 				_utilizadores.push_back(_gestor);
 			}
 			if (rank == "S") {
 				_senior = new Senior(nome, d, m, a, email, salario, nif,
 						"Senior");
+				for (unsigned int i = 0; i < projId.size(); ++i) {
+					_senior->addProjeto(projId.at(i));
+				}
 				_utilizadores.push_back(_senior);
 			}
 
 			if (rank == "J") {
-				_junior = new Junior(nome, d, m, a, email, rep, nif, "Junior");
+				j = new Junior(nome, d, m, a, email, rep, nif, "Junior");
+				Junior* _junior = dynamic_cast <Junior*>(j);
 				_junior->setSalario();
+				for (unsigned int i = 0; i < projId.size(); ++i) {
+					_junior->addProjeto(projId.at(i));
+				}
 				_utilizadores.push_back(_junior);
 			}
 
@@ -312,6 +322,36 @@ void Empresa::readProjetos() {
 			}
 		}
 	}
+}
+
+void Empresa::writeUsers() {
+	ofstream file;
+	file.open("utilizadores01.txt");
+	string cargo;
+	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
+		file << _utilizadores.at(i)->getNome() << endl;
+		file << _utilizadores.at(i)->getCargo().at(0) << endl;
+		if (_utilizadores.at(i)->getCargo() == "Junior") {
+			file << _utilizadores.at(i)->getReputacao() << endl;
+		}
+		file << _utilizadores.at(i)->getDataNascimento().getDia() << "/"
+				<< _utilizadores.at(i)->getDataNascimento().getMes() << "/"
+				<< _utilizadores.at(i)->getDataNascimento().getAno() << endl;
+		file << _utilizadores.at(i)->getEmail() << endl;
+		vector<int> ids = _utilizadores.at(i)->getProjetos();
+		if (ids.size() != 0) {
+			for (unsigned int j = 0; j < ids.size(); j++) {
+				file << ids.at(j) << endl;
+			}
+		}
+		file << "end" << endl;
+		file << _utilizadores.at(i)->getNIF() << endl;
+		if (_utilizadores.at(i)->getCargo() != "Junior") {
+			file << _utilizadores.at(i)->getSalario() << endl << endl;
+		}
+	}
+	file.close();
+
 }
 
 void Empresa::converteJunior(Utilizador * junior) {
