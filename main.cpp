@@ -33,6 +33,7 @@ int main() {
 		rotinaEmpresa(empresa);
 	}
 
+
 	return 0;
 }
 void rotinaEmpresa(Empresa & empresa) {
@@ -65,7 +66,11 @@ void rotinaEmpresa(Empresa & empresa) {
 			break;
 		case 4:
 			Login(empresa);
-
+			break;
+		case 5:
+			empresa.writeUsers();
+			exit(0);
+			break;
 		}
 
 	}
@@ -207,7 +212,7 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 	cout << endl << "1-Ver projetos\n" << "2- Fazer commit\n"
 			<< "3- Ver historico de commits\n";
 
-	if (logger->getReputacao() >= 5000)
+	if (dynamic_cast <Junior*>(logger)->getReputacao() >= 5000)
 		cout << "4- Editar Branches\n";
 
 	cout << "0- Voltar atrás\n";
@@ -326,7 +331,7 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 		cout << "Digite o nome do branch: ";
 		cin >> nomeBranch;
 		try{
-		proj->addBranch(nomeBranch);
+			dynamic_cast <Avancado*>(proj)->addBranch(nomeBranch);
 		}catch (BranchRepetido & r){
 			cout << "Ja existe um branch com o nome " << r.getName() << endl;
 			goto CRIA_BRANCH;
@@ -343,11 +348,11 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 			break;
 
 		proj = empresa.editProj(opcao);
-		proj->imprimeBranches();
+		dynamic_cast <Avancado*>(proj)->imprimeBranches();
 		cout << "Digite o nome do branch: ";
 		cin >> nomeBranch;
 		try{
-			proj->removeBranch(nomeBranch);
+			dynamic_cast <Avancado*>(proj)->removeBranch(nomeBranch);
 		}catch(NoSuchBranch &b){
 			cout << "Nao existe um branch com o nome " << b.getName() << endl;
 		}
@@ -364,7 +369,7 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 			break;
 
 		proj = empresa.editProj(opcao);
-		proj->imprimeBranches();
+		dynamic_cast <Avancado*>(proj)->imprimeBranches();
 		cout
 				<< "Digite o nome do primeiro branch (MASTER para fazer merge com o branch principal) : ";
 		cin >> nome1;
@@ -373,11 +378,11 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 		cin >> nome2;
 		try{
 		if (nome1 == "MASTER" && nome2 != "MASTER")
-			proj->merge(nome2);
+			dynamic_cast <Avancado*>(proj)->merge(nome2);
 		if (nome1 != "MASTER" && nome2 == "MASTER")
-			proj->merge(nome1);
+			dynamic_cast <Avancado*>(proj)->merge(nome1);
 		if (nome1 != "MASTER" && nome2 != "MASTER")
-			proj->merge(nome1, nome2);
+			dynamic_cast <Avancado*>(proj)->merge(nome1, nome2);
 		}catch(NoSuchBranch &b){
 			cout << "Nao existe um branch com o nome " << b.getName() << ". Tente outra vez.\n\n";
 		}

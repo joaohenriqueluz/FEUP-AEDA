@@ -92,11 +92,6 @@ public:
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
-	virtual void addBranch(string nome) {}
-	virtual void removeBranch(string nome) {}
-	virtual void merge(string nome) {}
-	virtual void merge(string nome1, string nome2){}
-	virtual void imprimeBranches(){}
 };
 
 

@@ -61,7 +61,7 @@ void Projeto::addCommit(Commit cm){
 	sortCommits(_commits);
 	if(cm.getUser()->getCargo()== "Junior")
 	{
-		cm.getUser()->setReputacao(cm.getUser()->getReputacao() + cm.getVolume() / 10);
+		dynamic_cast <Junior*>(cm.getUser())->setReputacao(dynamic_cast <Junior*>(cm.getUser())->getReputacao() + cm.getVolume() / 10);
 	}
 	
 }

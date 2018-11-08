@@ -139,8 +139,6 @@ public:
 	//bool operator <(const Utilizador & other)const;
 	//virtual void instucoes(){};
 	void getInfo();
-	virtual void setReputacao(int reputacao){};
-	virtual int getReputacao() const { return 0; }
 
 };
 

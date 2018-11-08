@@ -199,7 +199,7 @@ void Empresa::imprimeProjetos() {
 
 void Empresa::readUsers() {
 	Utilizador* _gestor;
-	Utilizador* j;
+	Utilizador* _junior;
 	Utilizador* _senior;
 
 	ifstream file;
@@ -267,9 +267,8 @@ void Empresa::readUsers() {
 			}
 
 			if (rank == "J") {
-				j = new Junior(nome, d, m, a, email, rep, nif, "Junior");
-				Junior* _junior = dynamic_cast <Junior*>(j);
-				_junior->setSalario();
+				_junior = new Junior(nome, d, m, a, email, rep, nif, "Junior");
+				dynamic_cast <Junior*>(_junior)->setSalario();
 				for (unsigned int i = 0; i < projId.size(); ++i) {
 					_junior->addProjeto(projId.at(i));
 				}
@@ -332,7 +331,7 @@ void Empresa::writeUsers() {
 		file << _utilizadores.at(i)->getNome() << endl;
 		file << _utilizadores.at(i)->getCargo().at(0) << endl;
 		if (_utilizadores.at(i)->getCargo() == "Junior") {
-			file << _utilizadores.at(i)->getReputacao() << endl;
+			file << dynamic_cast <Junior*>(_utilizadores.at(i))->getReputacao() << endl;
 		}
 		file << _utilizadores.at(i)->getDataNascimento().getDia() << "/"
 				<< _utilizadores.at(i)->getDataNascimento().getMes() << "/"
@@ -355,7 +354,8 @@ void Empresa::writeUsers() {
 }
 
 void Empresa::converteJunior(Utilizador * junior) {
-	if (junior->getReputacao() > 9999) {
+
+	if (dynamic_cast <Junior*> (junior)->getReputacao() > 9999) {
 		string nome = junior->getNome();
 		int dia = junior->getDataNascimento().getDia();
 		int mes = junior->getDataNascimento().getMes();
