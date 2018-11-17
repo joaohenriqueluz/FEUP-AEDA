@@ -115,12 +115,22 @@ public:
      * @return _nome
      */
     string getNome() const;
-
     /**
-     * Retorna data de nascimento do utilizador
+     * Atribui o valor nome a _nome;
+     * @param nome
+     */
+    void setNome(string nome);
+    /**
+     * Retorna uma copia da data de nascimento do utilizador
      * @return dataNascimento
      */
     Data getDataNascimento()const;
+    /**
+     * Retorna por referencia a data de nascimento do utilizador
+     * @return dataNascimento
+     */
+    Data* getDataNascimentoRef();
+
 
     /**
      * Retorna email do utilizador
@@ -128,6 +138,13 @@ public:
      */
     string getEmail()const;
     void setEmail(string email);
+    /**
+     * Altera data de nascimento para d/m/a;
+     * @param d -novo dia de nascimento;
+     * @param m -novo mes de nascimento;
+     * @param a -novo ano de nascimento;
+     */
+    void setData(int d, int m, int a);
     void addProjeto (int id);
     void removeProjeto (int id);
 	virtual string getCargo() const { return _cargo; }
@@ -138,7 +155,9 @@ public:
 	vector<int> getProjetos() { return _projetos; }
 	//bool operator <(const Utilizador & other)const;
 	//virtual void instucoes(){};
-	void getInfo();
+	virtual void getInfo();
+	virtual void setReputacao(int reputacao){};
+	virtual int getReputacao() const { return 0; }
 
 };
 
@@ -177,13 +196,13 @@ public:
     void setSalario();
     int getReputacao() const;
     void setReputacao(int reputacao);
-	//void instucoes();
+	void getInfo();
 
 };
 
 /**
- * classe utilizada para lanï¿½ar uma exceï¿½ï¿½o quando nï¿½o ï¿½ encontrado um utilizador com nome 'name'
- * @param name nome do utilizador que nï¿½o foi possï¿½vel encontrar
+ * classe utilizada para lançar uma exceção quando não é encontrado um utilizador com nome 'name'
+ * @param name nome do utilizador que não foi possível encontrar
  */
 class NoSuchUser{
 	string name;
@@ -204,6 +223,15 @@ class NIFRepetido{
 public:
 	NIFRepetido(int n){nif=n;}
 	int getNIF() const {return nif;}
+};
+
+
+
+class EmailRepetido{
+	string _email;
+public:
+	EmailRepetido(string email){_email= email;}
+	string getEmail() const {return _email;}
 };
 
 #endif //PROJ_AEDA_UTILIZADOR_H

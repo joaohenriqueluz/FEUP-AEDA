@@ -12,12 +12,17 @@ class Empresa {
 	vector<Utilizador *> _utilizadores;
 public:
 	void novoUtilizador();
-	bool removeUtilizador(Utilizador * UtilizadorARemover); //VER SE E PRECISO EXCECAO //FALTA IMPLEMENTAï¿½AO
+	bool removeUtilizador(string nome); //VER SE E PRECISO EXCECAO //FALTA IMPLEMENTAÇAO
 	int novoProjeto();
 	void removeProjeto(Projeto * proj);
 	void imprimeSalarios();
 	Utilizador* existeUser(string nome);
 	void existeNIF(int nif);
+	/**
+	 * Lança exceção se ja existe um utilizador com _email igual a email.
+	 * @param email
+	 */
+	void existeEmail(string email);
 	void repeteUser(string nome);
 	/**
 	 *
@@ -50,5 +55,6 @@ bool removeObjeto(vector<T> & V, T objeto){
 			}
 	return false;
 }
+
 
 #endif //PROJ_AEDA_EMPRESA_H

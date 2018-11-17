@@ -15,7 +15,6 @@ class Commit {
     Data _dataC;
 public:
     Commit(Utilizador* user, int volume, int d, int m, int a);
-	Commit(Utilizador* user, int volume, int d, int m, int a, int ID);
     Utilizador* getUser ()const;
     int getVolume () const;
     Data getData() const;
@@ -57,22 +56,25 @@ protected:
     string _chaveAcesso;
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
-	vector<Branch *> _branches;
-	string _tipo; //Basico ou avanï¿½ado
+	string _tipo; //Basico ou avançado
 public:
     Projeto(string nome,string tipo);
     virtual ~Projeto(){};
     string getNome ();
+    /**
+     * Atribui o valor (nome) ao atributo _nome;
+     * @param nome
+     */
+    void setNome(string nome){_nome= nome;}
 	void setTipo(string tipo) { _tipo = tipo; }
 	string getTipo() const { return _tipo; }
     unsigned int getId();
 	vector<Commit> getCommits() const { return _commits; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
-    void addBranch (Branch * branch);
     /**
         * @brief Verifica se o Utilizador de nome "nome" ja existe no projeto;
-        * @param nome
+        * @param nome - nome do utilizador;
         * @return verdadeiro de o utilizador de nome "nome" pertence ao vetor de utilizadores do projeto, senao devolve falso;
         */
        bool existeUser(string nome);
@@ -89,20 +91,18 @@ public:
 	void imprimeCoders();
     string getChaveAcesso();
     void setChaveAcesso(string chave);
-    void setID(int id);
 	int getVolume(string nome_user, Data d1, Data d2) const;
 	void imprimeHistorico();
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
-	vector <Commit> filterCommits(vector <int> id);
-	void readCommits(vector <Utilizador *> users, vector <int> id);
 };
 
 
 
 class Avancado : public Projeto {
-	
+	vector<Branch*> _branches;
+
     //branches (cria/elimina/merge-senior)
 public:
     Avancado(string nome);
@@ -111,7 +111,7 @@ public:
 	void merge(string nome);
 	void merge(string nome1, string nome2);
 	void imprimeBranches();
-	//Branch* existeBranch(string nome); /// VER EXCECAO
+	Branch* existeBranch(string nome);
 };
 
 
@@ -145,8 +145,5 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 		if (!troca) break;
 	}
 }
-
-vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> users);
-
 
 #endif //PROJ_AEDA_PROJETO_H

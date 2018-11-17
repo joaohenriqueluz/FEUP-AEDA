@@ -76,6 +76,7 @@ string Utilizador::getNome()const {
 	return _nome;
 }
 
+void Utilizador::setNome(string nome){_nome = nome;}
 Data Utilizador::getDataNascimento()const {
 	return dataNascimento;
 }
@@ -93,13 +94,19 @@ void Utilizador::addProjeto (int id){
 }
 
 void Utilizador::removeProjeto (int id){
-	for (unsigned int i = 0; i < _projetos.size(); i++){
-		if (_projetos.at(i) == id){
+	for (unsigned int i = 0; i < _projetos.size(); i++)
+	{
+		if (_projetos.at(i) == id)
+		{
 			_projetos.erase(_projetos.begin()+i);
 		}
 	}
 }
 
+Data* Utilizador::getDataNascimentoRef(){
+	Data* dataPtr = & dataNascimento;
+	return dataPtr;
+}
 
 int Utilizador::getNIF()const {
 	return _NIF;
@@ -109,6 +116,9 @@ void Utilizador::setNIF(int NIF) {
 	_NIF = NIF;
 }
 
+void Utilizador::setData(int d, int m, int a){
+	getDataNascimentoRef()->setData(d,m,a);
+}
 void Utilizador::imprimeProjetos(){
 	if(_projetos.size()==0)
 	{
@@ -117,13 +127,21 @@ void Utilizador::imprimeProjetos(){
 	}
 	for (unsigned int i = 0; i < _projetos.size(); i++)
 	{
-		cout << i + 1 << "ï¿½" << _projetos.at(i) << endl;
+		cout << i + 1 << "º" << _projetos.at(i) << endl;
 	}
 }
 
 
 void Utilizador::getInfo() {
-	cout << "Cargo: " << getCargo() << " Salario: " << getSalario();
+	cout <<" Nome: "<<getNome() <<endl
+		 <<" Cargo: " << getCargo() <<endl
+		 <<" Salario: " << getSalario() <<endl
+		 <<" NIF: "<< getNIF() <<endl
+		 << " Email: "<< getEmail() <<endl
+		 << " Data de nascimento "
+		 << getDataNascimento().getDia() << "/"
+		 << getDataNascimento().getMes() << "/"
+		 << getDataNascimento().getAno()<< endl;
 }
 //---------------------------------------------------------------------
 
@@ -196,4 +214,10 @@ int Junior::getReputacao() const{
 
 void Junior::setReputacao(int reputacao){
 	_reputacao = reputacao;
+}
+
+
+void Junior::getInfo(){
+	Utilizador::getInfo();
+	cout<< " Reputacao: " << getReputacao()<< endl;
 }
