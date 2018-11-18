@@ -10,7 +10,7 @@ int Empresa::novoProjeto() {
 	cout << "Nome do Projeto? \n";
 	cin.ignore('\n');
 	getline(cin,nome);
-	TIPO: cout << "Projeto Basico ou Avançado?(B/A)\n";
+	TIPO: cout << "Projeto Basico ou Avancado?(B/A)\n";
 	cin >> tipo; // Como e que implemento uma exception se ele der uma string vazia?
 	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
@@ -368,7 +368,7 @@ void Empresa::readProjetos()
 				commitsID.push_back(_idC);
 			}
 
-			if (tipo == "Avançado"){
+			if (tipo == "Avancado"){
 				while(1){ // ciclo que le as informa��es de um branch de um projeto avan�ado
 					getline(file,branch);
 					if (branch == "endB") break; // !!!!!!!!!IMPORTANTE todos os brojetos avan�ados tem de ter uma tag enB no fim quando guardados num text file mesmo que n�o tenham branches
@@ -376,7 +376,7 @@ void Empresa::readProjetos()
 					_avancado = new Avancado(nome);
 					vector <Utilizador *> utilizadores = findUtilizadores(usersID,_utilizadores);
 					_avancado->readCommits(_utilizadores,commitsID);
-					for (int i = 0; i < utilizadores.size(); ++i) {
+					for (unsigned int i = 0; i < utilizadores.size(); ++i) {
 						_avancado->addUtilizador(utilizadores.at(i));
 					}
 
@@ -406,7 +406,7 @@ void Empresa::readProjetos()
 				_basico = new Projeto(nome,tipo);
 				vector <Utilizador *> utilizadores = findUtilizadores(usersID,_utilizadores);
 				_basico->readCommits(_utilizadores,commitsID);
-				for (int i = 0; i < utilizadores.size(); ++i) {
+				for (unsigned int i = 0; i < utilizadores.size(); ++i) {
 					_basico->addUtilizador(utilizadores.at(i));
 				}
 
@@ -450,10 +450,56 @@ void Empresa::writeUsers() {
 
 }
 
+void Empresa::writeProjetos() {
+	ofstream file;
+	file.open("projetos01.txt");
+	string cargo;
+	for (unsigned int i = 0; i < _projetos.size(); i++) {
+		file << _projetos.at(i)->getTipo() << endl;
+		file << _projetos.at(i)->getNome() << endl;
+		file << _projetos.at(i)->getChaveAcesso()<< endl;
+		file << _projetos.at(i)->getId() << endl;
+		file << "Users" << endl;
+
+		vector<Utilizador*> users = _projetos.at(i)->getUsers();
+		for (unsigned int j = 0; j < users.size(); j++){
+			file << users.at(j)->getNIF() << endl;
+		}
+		file << "endU" << endl;
+
+		file << "Commits" << endl;
+		vector<Commit> com = _projetos.at(i)->getCommits();
+		for (unsigned int j = 0; j < com.size(); j++){
+			file << com.at(j).getID() << endl;
+		}
+		file << "endC" << endl;
+
+		if (_projetos.at(i)->getTipo() == "Avancado"){
+			vector<Branch*> branches = dynamic_cast <Avancado*> (_projetos.at(i))->getBranches();
+			if (branches.size() != 0){
+				for (unsigned int j = 0; j < branches.size(); j++){
+					file << branches.at(j)->getNome() << endl;
+
+					com = branches.at(j)->getCommits();
+					for (unsigned int k = 0; k < com.size(); k++){
+						file << com.at(j).getID() << endl;
+					}
+					file << "endC" << endl;
+				}
+			}
+			file << "endB" << endl;
+
+		}
+			file << endl;
+	}
+	file.close();
+
+}
+
 void removeRepetidos(vector <Commit> & commits){
-	for(int i = 0; i < commits.size(); i++){
+	for(unsigned int i = 0; i < commits.size(); i++){
 		unsigned int id = commits.at(i).getID();
-		for (int j = i+1; j < commits.size(); ++j) {
+		for (unsigned int j = i+1; j < commits.size(); ++j) {
 			if (id == commits.at(j).getID()){
 				commits.erase(commits.begin()+j);
 			}
@@ -469,20 +515,20 @@ void Empresa::writeCommits(){
 	vector <Commit> aux_commits;
 
 	if(proj.size() == 0){
-		cout << "Não existem projetos" << endl; //trocar por exceção;
+		cout << "Nao existem projetos" << endl; //trocar por excecao;
 		return;
 	}
 
-	for(int i = 0; i < proj.size(); i++){
+	for(unsigned int i = 0; i < proj.size(); i++){
 		aux_commits = proj[i]->getCommits();
-		for(int j = 0; j < aux_commits.size(); j++){
+		for(unsigned int j = 0; j < aux_commits.size(); j++){
 			commits.push_back(aux_commits.at(j));
 		}
 	}
 
 	removeRepetidos(commits);
 
-	for (int k = 0; k < commits.size(); ++k) {
+	for (unsigned int k = 0; k < commits.size(); ++k) {
 		file << commits.at(k).getID() << endl;
 		file << "Users" << endl;
 		file << commits.at(k).getUser()->getNIF() << endl;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "projeto.h"
+#include <utility>
 using namespace std;
 
 unsigned int Commit::_lastC=0;
@@ -201,9 +202,9 @@ void sortCommits(vector<Commit> &commits)//por data
 
 vector <Commit> Projeto::filterCommits(vector<int> id) {
 	vector <Commit> commits;
-	for (int i = 0; i < _commits.size(); ++i) {
-		for (int j = 0; j < id.size(); ++j) {
-			if (_commits.at(i).getID() == id.at(i)){
+	for (unsigned int i = 0; i < _commits.size(); ++i) {
+		for (unsigned int j = 0; j < id.size(); ++j) {
+			if (_commits.at(i).getID() == (unsigned int) id.at(i)){
 				commits.push_back(_commits.at(i));
 			}
 		}
@@ -309,7 +310,7 @@ vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> us
 	vector <Utilizador *> utilizadores;
 	for (unsigned int i = 0; i < id.size(); i++)
 	{
-		for (int j = 0; j < users.size(); ++j) {
+		for (unsigned int j = 0; j < users.size(); ++j) {
 			if (users.at(i)->getNIF() == id.at(i))
 			{
 				utilizadores.push_back(users.at(i));
@@ -352,7 +353,7 @@ void Projeto::readCommits(vector <Utilizador *> users, vector <int> id) {
 			getline(file, temp);
 			getline(file, temp);
 
-			for (int i = 0; i < id.size(); ++i) {
+			for (unsigned int i = 0; i < id.size(); ++i) {
 				if (id.at(i) == _id){
 					Utilizador* user = findUtilizador(_userID, users);
 					Commit c = Commit(user,_volume,d,m,a,_id);

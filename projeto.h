@@ -117,6 +117,7 @@ public:
 	void merge(string nome1, string nome2);
 	void imprimeBranches();
 	Branch* existeBranch(string nome);
+	vector<Branch *> getBranches() { return _branches; };
 
 };
 

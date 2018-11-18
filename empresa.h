@@ -40,6 +40,7 @@ public:
 	void readUsers();
 	void writeUsers();
 	void readProjetos();
+	void writeProjetos();
 	void writeCommits();
 	void converteJunior(Utilizador* junior);
 

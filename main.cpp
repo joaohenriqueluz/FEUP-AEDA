@@ -45,7 +45,7 @@ INICIO:
 		{
 			cin.clear();
 			cin.ignore(100,'\n');
-			cout << "Opçao inválida\n";
+			cout << "Opcao invalida\n";
 			goto INICIO;
 		}
 
@@ -113,7 +113,7 @@ void Login(Empresa &emp) {
 	try {
 		logger = emp.existeUser(nome);
 	} catch (NoSuchUser &e) {
-		cout << "Não existe um utilizador com nome " << e.getName() << endl
+		cout << "Nao existe um utilizador com nome " << e.getName() << endl
 				<< endl;
 		return;
 	}
@@ -182,7 +182,7 @@ AD_UTI: case 2:
 					user = empresa.existeUser(nome);
 					if(user->getCargo()== "Gestor")
 					{
-						cout << "Não pode adicionar outro gestor.\n";
+						cout << "Nao pode adicionar outro gestor.\n";
 						goto AD_UTI;
 					}
 				}catch(NoSuchUser &u){
@@ -211,7 +211,7 @@ REM_UTI: case 3:
 			}
 			if(nome== logger->getNome())
 			{
-				cout<< "Não pode eliminar o gestor do Projeto\n";
+				cout<< "Nao pode eliminar o gestor do Projeto\n";
 				goto REM_UTI;
 			}
 			try{
@@ -583,7 +583,7 @@ VER_RANK:
 	case 2:
 		if(emp.getProjetos().size()==0)
 		{
-			cout << "Não existem projetos.\n";
+			cout << "Nao existem projetos.\n";
 			break;
 		}
 		cout << "Projetos disponiveis:\n";
@@ -651,7 +651,7 @@ SEL_BRANCH:
 			}
 			catch(NoSuchBranch &e)
 			{
-			cout << "Branch com nome "<< nome<< "não existe neste projeto.\n";
+			cout << "Branch com nome "<< nome<< "nao existe neste projeto.\n";
 			goto SEL_BRANCH;
 			}
 		}
