@@ -15,6 +15,7 @@ class Commit {
     Data _dataC;
 public:
     Commit(Utilizador* user, int volume, int d, int m, int a);
+	Commit(Utilizador* user, int volume, int d, int m, int a, int ID);
     Utilizador* getUser ()const;
     int getVolume () const;
     Data getData() const;
@@ -56,7 +57,7 @@ protected:
     string _chaveAcesso;
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
-	string _tipo; //Basico ou avançado
+	string _tipo; //Basico ou avanï¿½ado
 public:
     Projeto(string nome,string tipo);
     virtual ~Projeto(){};
@@ -69,6 +70,7 @@ public:
 	void setTipo(string tipo) { _tipo = tipo; }
 	string getTipo() const { return _tipo; }
     unsigned int getId();
+	void setID(int id);
 	vector<Commit> getCommits() const { return _commits; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
@@ -96,7 +98,9 @@ public:
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
-};
+	vector <Commit> filterCommits(vector<int> id);
+	void readCommits(vector <Utilizador *> users, vector <int> id);
+	};
 
 
 
@@ -107,11 +111,13 @@ class Avancado : public Projeto {
 public:
     Avancado(string nome);
 	void addBranch(string nome);
+	void addBranch_ref(Branch *branch);
 	void removeBranch(string nome);
 	void merge(string nome);
 	void merge(string nome1, string nome2);
 	void imprimeBranches();
 	Branch* existeBranch(string nome);
+
 };
 
 
@@ -145,5 +151,7 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 		if (!troca) break;
 	}
 }
+
+vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> users);
 
 #endif //PROJ_AEDA_PROJETO_H

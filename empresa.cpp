@@ -118,7 +118,7 @@ TIPO_UNI:
 	}
 	else
 	{
-		cout<<"Tipo de utilizador inv�lido. Volte a tentar.\n";
+		cout<<"Tipo de utilizador inv�lido. Volte a tentar.\n";
 		goto TIPO_UNI;
 	}
 
@@ -330,8 +330,94 @@ void Empresa::readUsers() {
 	}
 }
 
-void Empresa::readProjetos() {
+void Empresa::readProjetos()
+{
+	Avancado* _avancado;
+	Projeto* _basico;
+	Branch* _branch;
+	ifstream file;
+	file.open("projetos.txt");
+	string tipo, nome, pass, ID, IDU, IDC, branch, IDCbranch, temp;
+	int _id, _idU, _idC, _idCbranch;
+	vector <int> usersID;
+	vector <int> commitsID;
+	vector <Branch *> branches;
 
+	if (file.is_open()){
+		while (file.good()){
+			usersID.clear();
+			commitsID.clear();
+			getline(file,tipo); // le o tipo de projeto
+			getline(file,nome);
+			getline(file,pass);
+			getline(file,ID); // le o ID do projeto
+			_id = stoi(ID);
+			getline(file,temp); // le a tag users
+			while (1){ // ciclo que le todos os userID do projeto
+				getline(file,IDU);
+				if (IDU == "endU") break;
+				_idU = stoi(IDU);
+				usersID.push_back(_idU);
+			}
+
+			getline(file,temp); // le a tag commits
+			while (1){ //ciclo que le todos od commitID de um projeto
+				getline(file,IDC);
+				if (IDC == "endC") break;
+				_idC = stoi(IDC);
+				commitsID.push_back(_idC);
+			}
+
+			if (tipo == "Avançado"){
+				while(1){ // ciclo que le as informa��es de um branch de um projeto avan�ado
+					getline(file,branch);
+					if (branch == "endB") break; // !!!!!!!!!IMPORTANTE todos os brojetos avan�ados tem de ter uma tag enB no fim quando guardados num text file mesmo que n�o tenham branches
+
+					_avancado = new Avancado(nome);
+					vector <Utilizador *> utilizadores = findUtilizadores(usersID,_utilizadores);
+					_avancado->readCommits(_utilizadores,commitsID);
+					for (int i = 0; i < utilizadores.size(); ++i) {
+						_avancado->addUtilizador(utilizadores.at(i));
+					}
+
+					_avancado->setID(_id);
+					_avancado->setChaveAcesso(pass);
+
+					vector <Commit> commitsB;
+
+					while (1){ // ciclo que le os commitID de um branch
+						getline(file,IDCbranch);
+						if (IDCbranch == "endC") break;
+						_idCbranch = stoi(IDCbranch);
+						commitsID.push_back(_idCbranch);
+					}
+
+					commitsB = _basico->filterCommits(commitsID);
+					_branch = new Branch(branch);
+					_branch->addCommitVec(commitsB);
+					_avancado->addBranch_ref(_branch);
+
+					_projetos.push_back(_avancado);
+
+					getline(file,temp);
+					if (temp == "endB") break;
+				}
+			} else{
+				_basico = new Projeto(nome,tipo);
+				vector <Utilizador *> utilizadores = findUtilizadores(usersID,_utilizadores);
+				_basico->readCommits(_utilizadores,commitsID);
+				for (int i = 0; i < utilizadores.size(); ++i) {
+					_basico->addUtilizador(utilizadores.at(i));
+				}
+
+				_basico->setID(_id);
+				_basico->setChaveAcesso(pass);
+
+				_projetos.push_back(_basico);
+			}
+			getline(file,temp);
+		}
+	}
 }
 
 void Empresa::writeUsers() {
@@ -362,6 +448,50 @@ void Empresa::writeUsers() {
 	}
 	file.close();
 
+}
+
+void removeRepetidos(vector <Commit> & commits){
+	for(int i = 0; i < commits.size(); i++){
+		unsigned int id = commits.at(i).getID();
+		for (int j = i+1; j < commits.size(); ++j) {
+			if (id == commits.at(j).getID()){
+				commits.erase(commits.begin()+j);
+			}
+		}
+	}
+}
+
+void Empresa::writeCommits(){
+	ofstream file;
+	file.open("commits01.txt");
+	vector <Projeto *> proj = getProjetos();
+	vector <Commit> commits;
+	vector <Commit> aux_commits;
+
+	if(proj.size() == 0){
+		cout << "Não existem projetos" << endl; //trocar por exceção;
+		return;
+	}
+
+	for(int i = 0; i < proj.size(); i++){
+		aux_commits = proj[i]->getCommits();
+		for(int j = 0; j < aux_commits.size(); j++){
+			commits.push_back(aux_commits.at(j));
+		}
+	}
+
+	removeRepetidos(commits);
+
+	for (int k = 0; k < commits.size(); ++k) {
+		file << commits.at(k).getID() << endl;
+		file << "Users" << endl;
+		file << commits.at(k).getUser()->getNIF() << endl;
+		file << "end" << endl;
+		file << commits.at(k).getVolume() << endl;
+		file << commits.at(k).getData().getDia() << "/"
+			 << commits.at(k).getData().getMes() << "/"
+			 << commits.at(k).getData().getAno() << endl << endl;
+	}
 }
 
 void Empresa::converteJunior(Utilizador * junior) {
