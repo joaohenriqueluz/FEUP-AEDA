@@ -228,11 +228,13 @@ void Empresa::imprimeUser() {
 }
 
 void Empresa::imprimeCoders() {
+	int counter=1;
 	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
 		if (_utilizadores.at(i)->getCargo() == "Gestor")
 			continue;
-		cout << i + 1 << "# " << _utilizadores.at(i)->getNome()
+		cout << counter << "# " << _utilizadores.at(i)->getNome()
 				<< "     Cargo: " << _utilizadores.at(i)->getCargo() << endl;
+		counter++;
 	}
 }
 
