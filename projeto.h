@@ -15,6 +15,7 @@ class Commit {
     Data _dataC;
 public:
     Commit(Utilizador* user, int volume, int d, int m, int a);
+    Commit(Utilizador *user, int volume, int d, int m, int a, int ID);
     Utilizador* getUser ()const;
     int getVolume () const;
     Data getData() const;
@@ -56,7 +57,7 @@ protected:
     string _chaveAcesso;
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
-	string _tipo; //Basico ou avançado
+	string _tipo; //Basico ou avancado
 public:
     Projeto(string nome,string tipo);
     virtual ~Projeto(){};
@@ -69,6 +70,11 @@ public:
 	void setTipo(string tipo) { _tipo = tipo; }
 	string getTipo() const { return _tipo; }
     unsigned int getId();
+    /**
+     * Altera valor de _id para id;
+     * @param id novo valor para _id
+     */
+    void setID(int id);
 	vector<Commit> getCommits() const { return _commits; }
     void addCommit(Commit cm);
     void addUtilizador (Utilizador * user);
@@ -92,10 +98,23 @@ public:
     string getChaveAcesso();
     void setChaveAcesso(string chave);
 	int getVolume(string nome_user, Data d1, Data d2) const;
-	void imprimeHistorico();
+	virtual void imprimeHistorico();
 	float getFreq(string user, Data d1, Data d2) const;
 	vector<Utilizador *> getUsers() { return _ranking; };
 	vector<Utilizador*>& getUserRef() { return _ranking;}
+	/**
+	 * Procura o commit com id igual a id
+	 * @param id ID do commit procurado
+	 * @return vector de commits
+	 */
+	vector <Commit> filterCommits(vector<int> id);
+	/**
+	 * Lê os commits a partir de um ficheiro
+	 * @param users Autores dos commits
+	 * @param id ID dos PROJETOS OU COMMITS
+	 */
+	void readCommits(vector <Utilizador *> users, vector <int> id);
+
 };
 
 
@@ -111,7 +130,19 @@ public:
 	void merge(string nome);
 	void merge(string nome1, string nome2);
 	void imprimeBranches();
+	void imprimeHistorico();
 	Branch* existeBranch(string nome);
+	/**
+	 * Adiciona um branch ao projeto fornecido por argumento
+	 * @param branch
+	 */
+	void addBranch_ref(Branch *branch);
+	/**
+	 * Devolve vetor de branches do projeto avancado
+	 * @return vetor de branches
+	 */
+	vector<Branch *> getBranches() { return _branches; };
+
 };
 
 
@@ -145,5 +176,12 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 		if (!troca) break;
 	}
 }
+/**
+ * Devolve vetor de Utilizadores com NIFs do vetor de NIFs fornecido
+ * @param id  - vetor de NIF dos utilizadores
+ * @param users  - vetor de utilizadores a pesquisar
+ * @return Utilizadores cujo o NIF pertence ao vetor fornecido
+ */
+vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> users);
 
 #endif //PROJ_AEDA_PROJETO_H

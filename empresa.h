@@ -38,7 +38,18 @@ public:
 	void imprimeCoders();
 	void imprimeProjetos();
 	void readUsers();
+	/**
+	 * Regista utilizadores num ficheiro de texto
+	 */
 	void writeUsers();
+	/**
+	 * Regista projetos num ficheiro de texto
+	 */
+	void writeProjetos();
+	/**
+	 * Regista commits num ficheiro de texto
+	 */
+	void writeCommits();
 	void readProjetos();
 	void converteJunior(Utilizador* junior);
 

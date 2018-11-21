@@ -1,5 +1,7 @@
 #include <iostream>
 #include "projeto.h"
+#include <fstream>
+#include <utility>
 using namespace std;
 
 unsigned int Commit::_lastC=0;
@@ -10,6 +12,12 @@ Commit::Commit(Utilizador* user, int volume, int d, int m, int a): _userC(user){
 	_idC=++_lastC;
     _volume = volume;
     _dataC.setData(d,m,a);
+}
+
+Commit::Commit(Utilizador *user, int volume, int d, int m, int a, int ID):_userC (user) {
+	_idC=ID;
+	_volume = volume;
+	_dataC.setData(d,m,a);
 }
 
 Utilizador* Commit::getUser () const{
@@ -58,6 +66,10 @@ string Projeto::getNome (){
 
 unsigned int Projeto::getId(){
 	return _id;
+}
+
+void Projeto::setID(int id){
+	_id = id;
 }
 
 void Projeto::addCommit(Commit cm){
@@ -144,6 +156,7 @@ void Projeto::imprimeHistorico()
 	{
 		cout << "Commit: " << _commits.at(i).getID()
 			<< " Autor: " << _commits.at(i).getUser()->getNome()
+			<<" Branch: MASTER"
 			<< " Data: " << _commits.at(i).getData().getDia()
 						<< "/" << _commits.at(i).getData().getMes()
 						<< "/" << _commits.at(i).getData().getAno()
@@ -188,6 +201,17 @@ void sortCommits(vector<Commit> &commits)//por data
 
 }
 
+vector <Commit> Projeto::filterCommits(vector<int> id) {
+	vector <Commit> commits;
+	for (unsigned int i = 0; i < _commits.size(); ++i) {
+		for (unsigned int j = 0; j < id.size(); ++j) {
+			if (_commits.at(i).getID() == (unsigned int) id.at(i)){
+				commits.push_back(_commits.at(i));
+			}
+		}
+	}
+	return commits;
+}
 
 //---------------------------------------------------------------------
 
@@ -203,6 +227,10 @@ void Avancado::addBranch(string nome)
 	}
 	_branches.push_back(newbranch);
 	return;
+}
+
+void Avancado::addBranch_ref(Branch *branch) {
+	_branches.push_back(branch);
 }
 
 void Avancado::removeBranch(string nome)
@@ -277,3 +305,91 @@ Branch* Avancado::existeBranch(string nome){
 	}
 throw NoSuchBranch(nome);
 }
+
+void Avancado::imprimeHistorico()
+{
+	Projeto::imprimeHistorico();
+	vector<Commit> com;
+
+	for (unsigned int i = 0;i < _branches.size(); i++)
+		{com= _branches.at(i)->getCommits();
+		for(unsigned int j = 0; j < com.size();j++)
+		{
+			cout << "Commit: " << com.at(j).getID()
+				<< " Autor: " << com.at(j).getUser()->getNome()
+				<< " Branch: " << _branches.at(i)->getNome()
+				<< " Data: " << com.at(j).getData().getDia()
+							<< "/" << com.at(j).getData().getMes()
+							<< "/" << com.at(j).getData().getAno()
+				<<" Volume: "<< com.at(j).getVolume()<<endl;
+		}
+		}
+
+
+}
+
+
+
+//-----------------------------------------------------------------------------
+
+vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> users) {
+	vector <Utilizador *> utilizadores;
+	for (unsigned int i = 0; i < id.size(); i++)
+	{
+		for (unsigned int j = 0; j < users.size(); ++j) {
+			if (users.at(i)->getNIF() == id.at(i))
+			{
+				utilizadores.push_back(users.at(i));
+			}
+		}
+	}
+	return utilizadores;
+}
+
+
+
+ Utilizador* findUtilizador(int id, vector <Utilizador *> users) {
+	for (unsigned int i = 0; i < users.size(); i++)
+	{
+		if (users.at(i)->getNIF() == id)
+		{
+			return users.at(i);
+		}
+	}
+}
+ void Projeto::readCommits(vector <Utilizador *> users, vector <int> id) {
+	ifstream file;
+	file.open("commits01.txt");
+	string ID, volume, userID, temp,test;
+	int d, m, a, _id, _userID, _volume;
+	char b;
+ 	if (file.is_open()) {
+		while (file.good()) {
+			getline(file, ID); // le o id do commit
+			if(ID.empty())
+			{
+				continue;
+			}
+			_id = stoi(ID);
+			getline(file, temp); // le a tag Users
+			while (1) { // ciclo que le todos os userID de um commit
+				getline(file, userID);
+				if (userID == "endU") break;
+				_userID = stoi(userID);
+			}
+			getline(file, volume); // le o volume do commit
+			_volume = stoi(volume);
+			file >> d >> b >> m >> b >> a; // le a data em que foi feito o commit
+			getline(file, temp);
+			getline(file, temp);
+ 			for (unsigned int i = 0; i < id.size(); ++i) {
+				if (id.at(i) == _id){
+					Utilizador* user = findUtilizador(_userID, users);
+					Commit c = Commit(user,_volume,d,m,a,_id);
+					_commits.push_back(c);
+				}
+			}
+		}
+	}
+}
+

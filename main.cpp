@@ -94,11 +94,12 @@ void rotinaEmpresa(Empresa & empresa) {
 			break;
 		case 6:
 			empresa.writeUsers();
+			empresa.writeCommits();
+			empresa.writeProjetos();
 			exit(0);
 			break;
 
-		case 0:
-			main();
+		default:
 			break;
 		}
 	}
@@ -624,10 +625,10 @@ VER_RANK:
 
 void addCommit(Utilizador* logger, Empresa & empresa){
 
-	Branch * branch;
+	Branch * branch = new Branch("eras");
 	Commit* newCommit;
 	int opcao, volume, dia, mes, ano;
-	string nome;
+	string nome = "MASTER" ;
 	Projeto* proj;
 
 
@@ -666,8 +667,12 @@ SEL_BRANCH:
 	newCommit = new Commit(logger, volume, dia, mes, ano);
 	if(nome == "MASTER")
 		proj->addCommit(*newCommit);
+
 	else
 		branch->adicionaCommit(*newCommit);
+
+	cout<<"Adicionado o commit com ID "<< newCommit->getID() << " ao branch " << nome << endl;
+
 
 }
 
