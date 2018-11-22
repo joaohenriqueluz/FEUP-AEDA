@@ -4,21 +4,25 @@
 using namespace std;
 
 int Empresa::novoProjeto() {
-	string nome, tipo;
+	string nome, tipo,chave;
 	Avancado* projA;
 	Projeto* projB;
 	cout << "Nome do Projeto? \n";
 	cin >> nome;
+	cout << "Chave de acesso do Projeto? \n";
+	cin>>chave;
 	TIPO: cout << "Projeto Basico ou Avancado?(B/A)\n";
 	cin >> tipo; // Como e que implemento uma exception se ele der uma string vazia?
 	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
+		projB->setChaveAcesso(chave);
 		_projetos.push_back(projB);
 		cout << "Projeto " << nome << " criado com ID " << projB->getId()
 				<< endl;
 		return projB->getId();
 	} else if (tipo == "A") {
 		projA = new Avancado(nome);
+		projA->setChaveAcesso(chave);
 		_projetos.push_back(projA);
 		cout << "Projeto " << nome << " criado com ID " << projA->getId()
 				<< endl;

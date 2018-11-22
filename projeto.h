@@ -57,7 +57,7 @@ protected:
     string _chaveAcesso;
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
-	string _tipo; //Basico ou avancado
+	string _tipo; //Basico ou Avancado
 public:
     Projeto(string nome,string tipo);
     virtual ~Projeto(){};
@@ -95,25 +95,60 @@ public:
        void removeAUsers();
 	void imprimeUsers();
 	void imprimeCoders();
+	/**
+	 * Retorna a chave de acesso do projeto
+	 * @return _chaveAcesso
+	 */
     string getChaveAcesso();
+    /**
+     * Atribui o valor chave a _chaveAcesso
+     * @param chave - novo valor para a _chaveAcesso
+     */
     void setChaveAcesso(string chave);
-	int getVolume(string nome_user, Data d1, Data d2) const;
+    /**
+     * Devolve o volume total dos commits do utilizador nome_user
+     * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
+     * @param nome_user
+     * @param d1 - data mais antiga
+     * @param d2 - data mais recente
+     * @return volume - volume calculado
+     */
+	virtual int getVolume(string nome_user, Data d1, Data d2) const;
+
+	/**
+	 * Devolve o volume total dos commits do projeto.
+     * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
+	 * @param d1 - data mais antiga
+	 * @param d2 - data mais recente
+	 * @return volume - volume calculado
+	 */
+	virtual int getVolumeTotal(Data d1, Data d2) const;
 	virtual void imprimeHistorico();
+
 	float getFreq(string user, Data d1, Data d2) const;
+
 	vector<Utilizador *> getUsers() { return _ranking; };
+
 	vector<Utilizador*>& getUserRef() { return _ranking;}
+
 	/**
 	 * Procura o commit com id igual a id
 	 * @param id ID do commit procurado
 	 * @return vector de commits
 	 */
 	vector <Commit> filterCommits(vector<int> id);
+
 	/**
 	 * Lê os commits a partir de um ficheiro
 	 * @param users Autores dos commits
 	 * @param id ID dos PROJETOS OU COMMITS
 	 */
 	void readCommits(vector <Utilizador *> users, vector <int> id);
+
+	/**
+	 * Mostra os valores de nome,ID,tipo,chave de Acesso e volume do projeto
+	 */
+	virtual void getInfo();
 
 };
 
@@ -131,17 +166,44 @@ public:
 	void merge(string nome1, string nome2);
 	void imprimeBranches();
 	void imprimeHistorico();
+	/**
+	 * Devolve o volume total dos commits (incluindo nos branches) do utilizador nome_user
+	 * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
+	 * @param nome_user
+	 * @param d1 - data mais antiga
+	 * @param d2 - data mais recente
+	 * @return volume - volume calculado
+	 */
+	int getVolume(string nome_user, Data d1, Data d2) const;
+
+	/**
+	 * Devolve o volume total dos commits (incluindo nos branches)
+	 * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
+	 * @param nome_user
+	 * @param d1 - data mais antiga
+	 * @param d2 - data mais recente
+	 * @return volume - volume calculado
+	 */
+	int getVolumeTotal(Data d1, Data d2) const;
+
 	Branch* existeBranch(string nome);
+
 	/**
 	 * Adiciona um branch ao projeto fornecido por argumento
 	 * @param branch
 	 */
 	void addBranch_ref(Branch *branch);
+
 	/**
 	 * Devolve vetor de branches do projeto avancado
 	 * @return vetor de branches
 	 */
 	vector<Branch *> getBranches() { return _branches; };
+
+	/**
+	 * Mostra os valores de nome, ID, tipo, chave de Acesso, volume e Branches do projeto
+	 */
+	void getInfo();
 
 };
 

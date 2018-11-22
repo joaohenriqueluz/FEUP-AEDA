@@ -137,15 +137,31 @@ void Projeto::setChaveAcesso(string chave){
 
 int Projeto::getVolume(string nome_user, Data d1, Data d2) const {
 	int volume = 0;
-	for (unsigned int i = 0; i < _commits.size(); i++) {
-		if (_commits.at(i).getUser()->getNome() == nome_user) {
-			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) { //não quer de um periodo especifico
+	for (unsigned int i = 0; i < _commits.size(); i++)
+	{
+		if (_commits.at(i).getUser()->getNome() == nome_user)
+		{
+			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //não quer de um periodo especifico
+			{
 				volume += _commits.at(i).getVolume();
 			}
-			else if (_commits.at(i).getData() >= d1 && _commits.at(i).getData() <= d2) {
+			else if (_commits.at(i).getData() >= d1 && _commits.at(i).getData() <= d2)
+			{
 				volume += _commits.at(i).getVolume();
 			}
 		}
+	}
+	return volume;
+}
+
+
+
+int Projeto::getVolumeTotal(Data d1, Data d2) const
+{
+	int volume=0;
+	for(unsigned int i = 0; i < _ranking.size();i++)
+	{
+		volume+= getVolume(_ranking.at(i)->getNome(),d1,d2);
 	}
 	return volume;
 }
@@ -213,6 +229,15 @@ vector <Commit> Projeto::filterCommits(vector<int> id) {
 	return commits;
 }
 
+void Projeto::getInfo(){
+	Data d1(0,0,0);
+	cout <<"#Nome:            "<< _nome << endl
+		 <<"#ID:              "<< _id   << endl
+		 <<"#Tipo de projeto: "<<_tipo  << endl
+		 <<"#Chave de acesso: "<<_chaveAcesso << endl
+		 <<"#Volume:          "<< getVolumeTotal(d1, d1) << endl;
+
+}
 //---------------------------------------------------------------------
 
 Avancado::Avancado(string nome): Projeto(nome,"Avancado"){}
@@ -257,6 +282,7 @@ void Avancado::merge(string nome)
 			_commits.insert(_commits.begin(),v.begin(), v.end());
 			sortCommits(_commits);
 			_branches.erase(_branches.begin() + i);
+			return;
 		}
 	}
 	throw NoSuchBranch(nome);
@@ -329,6 +355,70 @@ void Avancado::imprimeHistorico()
 }
 
 
+int Avancado::getVolume(string nome_user,Data d1,Data d2) const
+{
+ int volume = Projeto::getVolume(nome_user,d1,d2);
+ vector<Commit> commits;
+ for(unsigned int j=0; j < _branches.size(); j++)
+ {
+commits= _branches.at(j)->getCommits();
+	 for (unsigned int i = 0; i < commits.size(); i++)
+		{
+			if (commits.at(i).getUser()->getNome() == nome_user)
+			{
+				if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //não quer de um periodo especifico
+				{
+					volume += commits.at(i).getVolume();
+				}
+				else if (commits.at(i).getData() >= d1 && commits.at(i).getData() <= d2)
+				{
+					volume += commits.at(i).getVolume();
+				}
+			}
+		}
+ }
+
+
+
+
+return volume;
+}
+
+int Avancado::getVolumeTotal(Data d1, Data d2) const
+{
+	int volume=0;
+		for(unsigned int i = 0; i < _ranking.size();i++)
+		{
+			volume+= getVolume(_ranking.at(i)->getNome(),d1,d2);
+		}
+
+	return volume;
+}
+
+void Avancado::getInfo(){ //Nao e chamada a funcao do projeto porque o volume e calculado de maneira diferente
+	Data d1(0,0,0);
+		cout <<"#Nome:            "<< _nome << endl
+			 <<"#ID:              "<< _id   << endl
+			 <<"#Tipo de projeto: "<<_tipo  << endl
+			 <<"#Chave de acesso: "<<_chaveAcesso << endl
+			 <<"#Volume:          "<< getVolumeTotal(d1, d1) << endl
+			 <<"#Branches:        ";
+
+		if(_branches.size()==0)
+		{
+			cout<<"/----/"<<endl;
+			return;
+		}
+		for(unsigned int i =0; i < _branches.size(); i++)
+		{
+			cout << _branches.at(i)->getNome();
+			if(i!=_branches.size()-1)
+				cout<<"/ ";
+			else
+				cout<<endl;
+		}
+
+}
 
 //-----------------------------------------------------------------------------
 
