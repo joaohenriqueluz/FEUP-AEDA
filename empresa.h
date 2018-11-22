@@ -11,9 +11,6 @@ class Empresa {
 	vector<Projeto *> _projetos;
 	vector<Utilizador *> _utilizadores;
 public:
-	/**
-	 *
-	 */
 	void novoUtilizador();
 	bool removeUtilizador(string nome); //VER SE E PRECISO EXCECAO //FALTA IMPLEMENTAÇAO
 	int novoProjeto();
@@ -22,15 +19,15 @@ public:
 	Utilizador* existeUser(string nome);
 	void existeNIF(int nif);
 	/**
-	 * @brief Verifica se já existe esse email, lançando uma exceção se for verdade
-	 * @param email - email para verificar se é repetido ou não
+	 * Lança exceção se ja existe um utilizador com _email igual a email.
+	 * @param email
 	 */
 	void existeEmail(string email);
 	void repeteUser(string nome);
 	/**
-	 * @brief Devolve endereço do projeto com id dado, lançando uma exceção no caso de não existir ou de o utilizador não pertencer a esse projeto
-	 * @param id - id do projeto a ser retornado
-	 * @return apontador para projeto com id pedido
+	 *
+	 * @param id ID do projeto a ser retornado
+	 * @return apontador para Projeto com ID igual a id
 	*/
 	Projeto * editProj(int id);
 	int getVolume(string nome, Data d1, Data d2) const;
@@ -42,15 +39,15 @@ public:
 	void imprimeProjetos();
 	void readUsers();
 	/**
-	 * @brief Regista utilizadores num ficheiro de texto
+	 * Regista utilizadores num ficheiro de texto
 	 */
 	void writeUsers();
 	/**
-	 * @brief Regista projetos num ficheiro de texto
+	 * Regista projetos num ficheiro de texto
 	 */
 	void writeProjetos();
 	/**
-	 * @brief Regista commits num ficheiro de texto
+	 * Regista commits num ficheiro de texto
 	 */
 	void writeCommits();
 	void readProjetos();
@@ -58,12 +55,6 @@ public:
 
 };
 
-/*
- * @brief Template para remover um objeto de um vetor
- * @param V - vetor do qual o objeto vai ser removido
- * @param objeto - objeto a remover
- * @return verdadeiro se encontrou objeto no vetor e eliminou-o, se não falso
- */
 template<class T>
 bool removeObjeto(vector<T> & V, T objeto){
 	for(unsigned int i = 0; i < V.size(); i++)

@@ -4,21 +4,25 @@
 using namespace std;
 
 int Empresa::novoProjeto() {
-	string nome, tipo;
+	string nome, tipo,chave;
 	Avancado* projA;
 	Projeto* projB;
 	cout << "Nome do Projeto? \n";
 	cin >> nome;
+	cout << "Chave de acesso do Projeto? \n";
+	cin>>chave;
 	TIPO: cout << "Projeto Basico ou Avancado?(B/A)\n";
 	cin >> tipo; // Como e que implemento uma exception se ele der uma string vazia?
 	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
+		projB->setChaveAcesso(chave);
 		_projetos.push_back(projB);
 		cout << "Projeto " << nome << " criado com ID " << projB->getId()
 				<< endl;
 		return projB->getId();
 	} else if (tipo == "A") {
 		projA = new Avancado(nome);
+		projA->setChaveAcesso(chave);
 		_projetos.push_back(projA);
 		cout << "Projeto " << nome << " criado com ID " << projA->getId()
 				<< endl;
@@ -33,19 +37,7 @@ int Empresa::novoProjeto() {
 void Empresa::removeProjeto(Projeto* proj) {
 	removeObjeto<Projeto*>(_projetos, proj);
 }
-/*
- void Empresa::removeProjeto(Projeto * projetoARemover){
- for(unsigned int i = 0; i < _projetos.size(); i++)
- {
- if(_projetos.at(i) == projetoARemover)
- {
- cout << "Projeto " << projetoARemover->getNome() <<" removido. \n";
- _projetos.erase(_projetos.begin() + i);
- return;
- }
- }
- }
- */
+
 
 void Empresa::novoUtilizador() {
 
@@ -79,11 +71,7 @@ NOME_UTI:
 
 	cout << "Email: ";
 	cin >> email;
-	size_t at_index = email.find_first_of('@', 0);
-	if (!(at_index != std::string::npos && email.find_first_of('.', at_index) != std::string::npos)){
-		cout << "Invalid input, please try again!\n\n";
-		goto NOME_UTI;
-	}
+	//VERIFICACAO???
 
 NIF_UTI:
 	cout << "Digite NIF: ";
@@ -567,7 +555,8 @@ vector<int> projetoSenior;
 		int NIF = junior->getNIF();
 		projetoSenior = junior->getProjetos();
 		string email = junior->getEmail();
-		Utilizador* novoSenior = new Senior(nome, dia, mes, ano, email, 1000, NIF, "Senior");
+		Utilizador* novoSenior = new Senior(nome, dia, mes, ano, email, 1000,
+				NIF, "Senior"); // Utilizador ou Senior?
 		for(unsigned int i = 0; i < projetoSenior.size();i++)
 			novoSenior->addProjeto(projetoSenior.at(i));
 		removeUtilizador(junior->getNome());
@@ -575,5 +564,3 @@ vector<int> projetoSenior;
 
 	}
 }
-
-
