@@ -262,6 +262,7 @@ REM_PROJ:
 			cout << "Projeto " << proj->getNome() << " de ID " << proj->getId()
 					<< "removido\n";
 			proj->removeAUsers();
+			logger->removeProjeto(proj->getId());
 			empresa.removeProjeto(proj);
 			break;
 		case 5:

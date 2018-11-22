@@ -104,8 +104,8 @@ bool Projeto::existeUser(string nome){
 	}
 }
  void Projeto::removeAUsers(){
-	for(unsigned int i = 0; i < getUsers().size(); i++)
-		getUsers().at(i)->removeProjeto(_id);
+	for(unsigned int i = 0; i < _ranking.size(); i++)
+		_ranking.at(i)->removeProjeto(_id);
 }
 
 void Projeto::imprimeUsers()
