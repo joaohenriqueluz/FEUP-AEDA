@@ -119,7 +119,17 @@ void Utilizador::setNIF(int NIF) {
 void Utilizador::setData(int d, int m, int a){
 	getDataNascimentoRef()->setData(d,m,a);
 }
-
+void Utilizador::imprimeProjetos(){
+	if(_projetos.size()==0)
+	{
+		cout << getNome() << " nao tem projetos.\n";
+		return;
+	}
+	for (unsigned int i = 0; i < _projetos.size(); i++)
+	{
+		cout << i + 1 << "º" << _projetos.at(i) << endl;
+	}
+}
 
 
 void Utilizador::getInfo() {
@@ -133,6 +143,11 @@ void Utilizador::getInfo() {
 		 << getDataNascimento().getMes() << "/"
 		 << getDataNascimento().getAno()<< endl;
 }
+//---------------------------------------------------------------------
+
+Coder::Coder(string nome, int d, int m, int a,string email,int NIF, string cargo): Utilizador(nome,d,m,a,email,0,NIF,cargo){}
+
+
 
 
 //---------------------------------------------------------------------
@@ -144,8 +159,8 @@ Gestor::Gestor(string nome, int d, int m, int a,string email,float salario,int N
 //---------------------------------------------------------------------
 
 Senior::Senior(string nome, int d, int m, int a,string email,float salario, int NIF, string cargo):
-		Utilizador(nome, d, m, a, email, salario, NIF, cargo) {
-
+	Coder(nome, d, m, a, email, NIF, cargo) {
+	_salario = salario;
 }
 
 
@@ -153,7 +168,7 @@ Senior::Senior(string nome, int d, int m, int a,string email,float salario, int 
 //---------------------------------------------------------------------
 
 Junior::Junior(string nome, int d, int m, int a,string email, int reputacao, int NIF, string cargo):
-		Utilizador(nome,d,m,a,email, 0,NIF,cargo){
+        Coder(nome,d,m,a,email, NIF,cargo){
 	_reputacao = reputacao;
 	setSalario();
 }

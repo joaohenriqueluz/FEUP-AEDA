@@ -104,8 +104,8 @@ bool Projeto::existeUser(string nome){
 	}
 }
  void Projeto::removeAUsers(){
-	for(unsigned int i = 0; i < _ranking.size(); i++)
-		_ranking.at(i)->removeProjeto(_id);
+	for(unsigned int i = 0; i < getUsers().size(); i++)
+		getUsers().at(i)->removeProjeto(_id);
 }
 
 void Projeto::imprimeUsers()
@@ -141,7 +141,7 @@ int Projeto::getVolume(string nome_user, Data d1, Data d2) const {
 	{
 		if (_commits.at(i).getUser()->getNome() == nome_user)
 		{
-			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //não quer de um periodo especifico
+			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //nï¿½o quer de um periodo especifico
 			{
 				volume += _commits.at(i).getVolume();
 			}
@@ -366,7 +366,7 @@ commits= _branches.at(j)->getCommits();
 		{
 			if (commits.at(i).getUser()->getNome() == nome_user)
 			{
-				if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //não quer de um periodo especifico
+				if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //nï¿½o quer de um periodo especifico
 				{
 					volume += commits.at(i).getVolume();
 				}
@@ -447,14 +447,16 @@ vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> us
 		}
 	}
 }
- void Projeto::readCommits(vector <Utilizador *> users, vector <int> id) {
+ vector<Commit> readCommits(vector <Utilizador *> users) {
 	ifstream file;
 	file.open("commits01.txt");
 	string ID, volume, userID, temp,test;
 	int d, m, a, _id, _userID, _volume;
 	char b;
+	vector <Commit> commits;
  	if (file.is_open()) {
 		while (file.good()) {
+			//cout << "Entra no ciclo na readCommits" << endl;
 			getline(file, ID); // le o id do commit
 			if(ID.empty())
 			{
@@ -472,14 +474,15 @@ vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> us
 			file >> d >> b >> m >> b >> a; // le a data em que foi feito o commit
 			getline(file, temp);
 			getline(file, temp);
- 			for (unsigned int i = 0; i < id.size(); ++i) {
-				if (id.at(i) == _id){
-					Utilizador* user = findUtilizador(_userID, users);
-					Commit c = Commit(user,_volume,d,m,a,_id);
-					_commits.push_back(c);
-				}
-			}
+
+			Utilizador* user = findUtilizador(_userID, users);
+
+			Commit c = Commit(user,_volume,d,m,a,_id);
+
+			commits.push_back(c);
+
 		}
 	}
+ 	return commits;
 }
 

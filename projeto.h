@@ -139,7 +139,7 @@ public:
 	vector <Commit> filterCommits(vector<int> id);
 
 	/**
-	 * Lê os commits a partir de um ficheiro
+	 * Lï¿½ os commits a partir de um ficheiro
 	 * @param users Autores dos commits
 	 * @param id ID dos PROJETOS OU COMMITS
 	 */
@@ -152,6 +152,7 @@ public:
 
 };
 
+vector<Commit> readCommits(vector <Utilizador *> users);
 
 
 class Avancado : public Projeto {

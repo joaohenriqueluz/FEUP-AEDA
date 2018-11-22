@@ -151,7 +151,7 @@ public:
     float getSalario()const {return _salario;}
     int getNIF()const;
     void setNIF(int NIF);
-
+	void imprimeProjetos();
 	vector<int> getProjetos() { return _projetos; }
 	//bool operator <(const Utilizador & other)const;
 	//virtual void instucoes(){};
@@ -161,7 +161,12 @@ public:
 
 };
 
+class Coder: public Utilizador
+{
+public:
+    Coder(string nome, int d, int m, int a,string email,int NIF, string cargo);
 
+};
 
 
 
@@ -174,7 +179,7 @@ public:
 
 };
 
-class Senior:public Utilizador
+class Senior:public Coder
 {
 
 public:
@@ -184,7 +189,7 @@ public:
 
 };
 
-class Junior :public Utilizador {
+class Junior :public Coder {
 	int _reputacao;
 public:
     Junior(string nome, int d, int m, int a,string email, int reputacao, int NIF, string cargo);
