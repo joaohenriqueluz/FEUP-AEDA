@@ -154,7 +154,6 @@ public:
 
 	vector<int> getProjetos() { return _projetos; }
 	//bool operator <(const Utilizador & other)const;
-	//virtual void instucoes(){};
 	virtual void getInfo();
 	virtual void setReputacao(int reputacao){};
 	virtual int getReputacao() const { return 0; }
