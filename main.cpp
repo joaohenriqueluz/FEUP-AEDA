@@ -14,6 +14,8 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa);
 void addCommit(Utilizador* logger, Empresa & empresa);
 void editarProjetos(Empresa & empresa, int ID, int opcao);
 void editarUtilizador(Empresa & emp,Utilizador* logger, int opcao);
+void mostraMenu(Utilizador * logger);
+bool imprimeProj(Empresa & emp, Utilizador* logger);
 
 
 int main() {
@@ -26,11 +28,10 @@ int main() {
 	cout << "#                   #\n";
 	cout << "#####################\n\n";
 INICIO:
-	cout << "Selecione a opcao: \n";
-	cout << "1 - Nova Empresa(empresa sem projetos nem utilizadores)\n"
+	cout<< "1 - Nova Empresa(empresa sem projetos nem utilizadores)\n"
 		<< "2 - Retomar uma empresa\n"
-		<< "0 - Sair\n";
-
+		<< "0 - Sair\n"
+		<< "\nSelecione uma opcao: ";
 	cin >> opcao;
 	if (opcao == 1){
 		rotinaEmpresa(empresa);
@@ -48,16 +49,20 @@ INICIO:
 			cout << "Opçao inválida\n";
 			goto INICIO;
 		}
-	exit(0);
+	
 
 	return 0;
 }
 
 void rotinaEmpresa(Empresa & empresa) {
-	int op = 1;
+	int op = 1; 
 	while (op != 0) {
+		cout<<"\n\n|-------------------------------|\n";
+		cout<<"|         Menu Principal        |\n";
+		cout<<"|-------------------------------|\n";
 
-		cout << "Selecione o que pretende fazer: \n"
+		cout 	<<endl
+				<<endl
 				<< "1 - Ver rankings\n"
 				// rankings de atividade mensal de cada elemento do projeto .....
 				<< "2 - Ver salarios de todos o pessoal\n"
@@ -66,7 +71,8 @@ void rotinaEmpresa(Empresa & empresa) {
 				<< "4 - Remover utilizador\n"
 				<< "5 - Entrar com utilizador\n"
 				<< "6 - Guardar progresso e sair\n"
-				<< "0 - Voltar atras\n"; //----|
+				<< "0 - Sair\n"
+				<< "\nSelecione uma opcao: ";//----|
 		//ver informcoes (ranking, tipo de utilizador (e caracteristicas da classe utilizador), projetos, salario, reputacao.
 		//entrar num projeto (pedindo codigo de acesso) para : ver informacoes (caracteristicas da classe projeto), fazer novos commits;
 		//	criar, eliminar ou juntar (merge) branches (conforme tipo de utilizadors e projetos).
@@ -85,8 +91,9 @@ void rotinaEmpresa(Empresa & empresa) {
 			empresa.novoUtilizador();
 			break;
 		case 4:
-			cout << "Nome do utilizador a remover: ";
+			cout << "\nNome do utilizador a remover: ";
 			cin >> opcao;
+
 			empresa.removeUtilizador(opcao);
 			break;
 		case 5:
@@ -96,10 +103,12 @@ void rotinaEmpresa(Empresa & empresa) {
 			empresa.writeUsers();
 			empresa.writeCommits();
 			empresa.writeProjetos();
-			exit(0);
 			break;
-
+		case 0:
+			
+			break;
 		default:
+			cout << "Opcao invalida\n";
 			break;
 		}
 	}
@@ -141,6 +150,7 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 	Projeto * proj;
 	Utilizador * user;
 	do {
+		mostraMenu(logger);
 		cout 	<< endl
 				<< "1 - Criar novo projeto\n"
 				<< "2 - Adicionar utilizadores a Projeto\n"
@@ -167,12 +177,12 @@ AD_UTI: case 2:
 				cout << endl << "Este gestor nao possui projetos.\n";
 				break;
 			} else {
-				cout << "\nProjetos: \n";
-				logger->imprimeProjetos();
+
+				imprimeProj(empresa, logger);
 				cout << "Selecione um projeto(ID): \n";
 				cin >> opcao;
 				proj = empresa.editProj(opcao);
-				cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+				cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 				cin>>chave;
 				if(chave != proj->getChaveAcesso())
 				{
@@ -206,12 +216,12 @@ AD_UTI: case 2:
 			}
 			break;
 REM_UTI: case 3:
-			cout << "\nProjetos: \n";
-			logger->imprimeProjetos();
+
+			imprimeProj(empresa, logger);
 			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 			proj = empresa.editProj(opcao);
-			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 			cin>>chave;
 			if(chave != proj->getChaveAcesso())
 			{
@@ -244,8 +254,8 @@ REM_UTI: case 3:
 			break;
 REM_PROJ:
 		case 4:
-			cout << "\nProjetos: \n";
-			logger->imprimeProjetos();
+
+			imprimeProj(empresa, logger);
 			cout << "Selecione um projeto (ID): ";
 			cin >> opcao;
 
@@ -253,7 +263,7 @@ REM_PROJ:
 				break;
 
 			proj = empresa.editProj(opcao);
-			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 			cin>>chave;
 			if(chave != proj->getChaveAcesso())
 			{
@@ -267,19 +277,19 @@ REM_PROJ:
 			empresa.removeProjeto(proj);
 			break;
 		case 5:
-			logger->imprimeProjetos();
+			imprimeProj(empresa, logger);
 			break;
 
 INFO_PROJ:
 		case 6:
-			cout << "\nProjetos: \n";
-			logger->imprimeProjetos();
+
+			imprimeProj(empresa, logger);
 			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 			if (opcao == 0)
 				break;
 			proj = empresa.editProj(opcao);
-			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 			cin>>chave;
 			if(chave != proj->getChaveAcesso())
 			{
@@ -291,8 +301,8 @@ INFO_PROJ:
 
 EDITA_PROJ:
 		case 7:
-			cout << "\nProjetos: \n";
-			logger->imprimeProjetos();
+
+			imprimeProj(empresa, logger);
 			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 
@@ -300,7 +310,7 @@ EDITA_PROJ:
 				break;
 
 			proj = empresa.editProj(opcao);
-			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 			cin>>chave;
 			if(chave != proj->getChaveAcesso())
 			{
@@ -343,6 +353,9 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 	Projeto* proj;
 	string nome,chave;
 
+	do{
+
+	mostraMenu(logger);
 	cout << endl << "1 - Ver projetos\n"
 				 << "2 - Ver informacoes de um projeto\n"
 				 << "3 - Fazer commit\n"
@@ -355,21 +368,20 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 
 	switch (opcao) {
 	case 0:
-		Login(empresa);
 		break;
 	case 1:
-		logger->imprimeProjetos();
+		imprimeProj(empresa, logger);
 		break;
 EDITA_PROJJ:
 	case 2:
-		cout << "\nProjetos: \n";
-		logger->imprimeProjetos();
+
+		imprimeProj(empresa, logger);
 		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 		if (opcao == 0)
 			break;
 		proj = empresa.editProj(opcao);
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -380,13 +392,14 @@ EDITA_PROJJ:
 		break;
 
 	case 3:
+
 		addCommit(logger, empresa);
 		empresa.converteJunior(logger);
 		break;
 
 HIST_PROJ:
 	case 4:
-		logger->imprimeProjetos();
+		imprimeProj(empresa, logger);
 		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
@@ -394,7 +407,7 @@ HIST_PROJ:
 			break;
 
 		proj = empresa.editProj(opcao);
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -419,8 +432,11 @@ HIST_PROJ:
 		break;
 
 	default:
+		cout << "Opcao invalida\n";
 		break;
+
 	}
+	}while(opcao!=0);
 }
 
 void rotinaSenior(Utilizador* logger, Empresa& empresa) {
@@ -429,7 +445,8 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 	string nomeBranch;
 	string nome1, nome2,chave;
 
-
+	do{
+	mostraMenu(logger);
 	cout<<endl
 		<< "1 - Ver Projetos;\n"
 		<< "2 - Ver informacoes de um projeto\n"
@@ -445,22 +462,30 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 	cin >> opcao;
 	switch (opcao) {
 	case 0:
-		Login(empresa);
+
 		break;
 	case 1:
-		logger->imprimeProjetos();
+		imprimeProj(empresa, logger);
 		break;
 
 EDITA_PROJS:
 	case 2:
-			cout << "\nProjetos: \n";
-			logger->imprimeProjetos();
+
+			if(!imprimeProj(empresa, logger))
+			{
+				break;
+			}
 			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 			if (opcao == 0)
 				break;
 			proj = empresa.editProj(opcao);
-			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+			if(!proj->existeUser(logger->getNome()))
+			{
+				cout << endl << logger->getNome() << " nao pertence a este projeto\n";
+				break;
+			}
+			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 			cin>>chave;
 			if(chave != proj->getChaveAcesso())
 			{
@@ -475,7 +500,8 @@ EDITA_PROJS:
 
 HIST:
 	case 4:
-		logger->imprimeProjetos();
+		if(!imprimeProj(empresa, logger))
+			break;
 		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
@@ -483,7 +509,15 @@ HIST:
 			break;
 
 		proj = empresa.editProj(opcao);
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+		if (!proj->existeUser(logger->getNome()))
+		{
+			cout << endl << logger->getNome()<< " nao pertence a este projeto\n";
+			break;
+		}
+
+
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
+
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -496,7 +530,10 @@ HIST:
 CRIA_BRANCH:
 	case 5:
 		//cria branch
-		logger->imprimeProjetos();
+		if(!imprimeProj(empresa, logger))
+		{
+			break;
+		}
 		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
@@ -504,7 +541,14 @@ CRIA_BRANCH:
 			break;
 
 		proj = empresa.editProj(opcao);
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+
+		if (!proj->existeUser(logger->getNome()))
+		{
+			cout << endl << logger->getNome()<< " nao pertence a este projeto\n";
+			break;
+		}
+
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -529,7 +573,10 @@ CRIA_BRANCH:
 APAGA_BRANCH:
 	case 6:
 		//apaga branch
-		logger->imprimeProjetos();
+		if(!imprimeProj(empresa, logger))
+		{
+			break;
+		}
 		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
@@ -537,7 +584,14 @@ APAGA_BRANCH:
 			break;
 
 		proj = empresa.editProj(opcao);
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+
+		if (!proj->existeUser(logger->getNome()))
+		{
+			cout << endl << logger->getNome()<< " nao pertence a este projeto\n";
+			break;
+		}
+
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -573,7 +627,10 @@ APAGA_BRANCH:
 	case 7:
 		// Merge
 SEL_PROJ:
-		logger->imprimeProjetos();
+		if(!imprimeProj(empresa, logger))
+		{
+			break;
+		}
 		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
@@ -583,13 +640,20 @@ SEL_PROJ:
 		try
 		{
 		proj = empresa.editProj(opcao);
+
 		}
 		catch(NoSuchProject & e)
 		{
 			cout << "Projeto com ID "<< e.getId() << "nao existe.\n";
 			goto SEL_PROJ;
 		}
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+
+		if (!proj->existeUser(logger->getNome()))
+		{
+			cout << endl << logger->getNome()<< " nao pertence a este projeto\n";
+			break;
+		}
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -626,6 +690,7 @@ SEL_MERGE_BRANCH:
 
 
 	}
+	}while(opcao!=0);
 }
 
 void verRanking(Empresa & emp) {
@@ -652,7 +717,7 @@ void verRanking(Empresa & emp, Data d1, Data d2) {
 void verRanking(Projeto & proj) {
 	if(proj.getUsers().size()==0)
 	{
-		cout<<"Ainda nao existem utilizadores nesta empresa.\n";
+		cout<<"Ainda nao existem utilizadores neste projeto.\n";
 		return;
 	}
 	sortRanking(proj.getUserRef(), &proj);
@@ -663,7 +728,7 @@ void verRanking(Projeto & proj) {
 void verRanking(Projeto & proj, Data d1, Data d2) {
 	if(proj.getUsers().size()==0)
 	{
-		cout<<"Ainda nao existem utilizadores nesta empresa.\n";
+		cout<<"Ainda nao existem utilizadores neste projeto.\n";
 		return;
 	}
 	sortRanking(proj.getUserRef(), &proj, d1, d2);
@@ -724,7 +789,7 @@ RANK_PROJ:
 		if (opcao == 0)
 			goto VER_RANK;
 		proj = emp.editProj(opcao);
-		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 		cin>>chave;
 		if(chave != proj->getChaveAcesso())
 		{
@@ -768,14 +833,21 @@ void addCommit(Utilizador* logger, Empresa & empresa){
 
 
 COMMIT_PROJ:
-	logger->imprimeProjetos();
+	if(!imprimeProj(empresa, logger))
+		return;
+
 	cout << "Selecione um projeto(ID): ";
 	cin >> opcao;
 	if (opcao == 0)
 		return;
 
 	proj = empresa.editProj(opcao);
-	cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+	if(!proj->existeUser(logger->getNome()))
+	{
+		cout << logger->getNome() << " nao pertence a este projeto\n";
+		return;
+	}
+	cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
 	cin>>chave;
 	if(chave != proj->getChaveAcesso())
 	{
@@ -818,7 +890,6 @@ SEL_BRANCH:
 
 
 }
-
 
 
 
@@ -870,9 +941,58 @@ void editarUtilizador(Empresa & emp,Utilizador* logger, int opcao){
 		break;
 
 	case 2:
-		cout<< "Digite a data de Nascimento (dd/mm/aaaa)\n";
-		cin >> d>>m>>a;
-		logger->setData(d,m,a);
+		cout << "Digite a data de Nascimento (dd/mm/aaaa)\n";
+		cin >> d >> m >> a;
+		logger->setData(d, m, a);
 		break;
 	}
 }
+
+
+
+void mostraMenu(Utilizador * logger){
+	cout<<"\n\n|-------------------------------|\n";
+//	cout<<"|                               |\n";
+
+	if(logger->getCargo()== "Gestor")
+		cout<< "|          Menu Gestor          |\n";
+	else if(logger->getCargo()== "Senior")
+		cout<< "|          Menu Senior          |\n";
+	else if(logger->getCargo()== "Junior")
+		cout<< "|          Menu Junior          |\n";
+//	cout<<"|                               |\n";
+	cout<<"|-------------------------------|\n";
+
+
+
+}
+
+
+bool imprimeProj(Empresa & emp, Utilizador* logger)
+{
+Projeto * proj;
+
+
+	cout<<endl;
+
+
+	if (logger->getProjetos().size() == 0) {
+		cout << logger->getNome() << " nao tem projetos.\n";
+		return false;
+	}
+	cout<< "\nProjetos:\n";
+	for(unsigned int i = 0; i < logger->getProjetos().size();i++)
+	{
+		proj= emp.editProj(logger->getProjetos().at(i));
+		if(proj->getTipo()== "Avancado")
+			cout<< "A   ";
+		else if(proj->getTipo()== "Basico")
+			cout<<"B   ";
+		cout << proj->getNome()<< "  ID: "<< proj->getId()<< endl;
+
+	}
+
+return true;
+}
+
+

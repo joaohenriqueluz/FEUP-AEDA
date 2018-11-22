@@ -37,19 +37,7 @@ int Empresa::novoProjeto() {
 void Empresa::removeProjeto(Projeto* proj) {
 	removeObjeto<Projeto*>(_projetos, proj);
 }
-/*
- void Empresa::removeProjeto(Projeto * projetoARemover){
- for(unsigned int i = 0; i < _projetos.size(); i++)
- {
- if(_projetos.at(i) == projetoARemover)
- {
- cout << "Projeto " << projetoARemover->getNome() <<" removido. \n";
- _projetos.erase(_projetos.begin() + i);
- return;
- }
- }
- }
- */
+
 
 void Empresa::novoUtilizador() {
 
@@ -576,36 +564,3 @@ vector<int> projetoSenior;
 
 	}
 }
-
-/*Avancado* Empresa::converteBasico(Projeto * proj) {
- Avancado* novoAvancado;
- string nome = proj->getNome();
- vector<Commit> commits = proj->getCommits();
- unsigned int id = proj->getId();
- vector<Utilizador *> ranking = proj->getUsers();
- string chaveAcesso = proj->getChaveAcesso();
- proj->alteraID(-1);
- novoAvancado = new Avancado(nome);
-
- for (unsigned int i = 0; i < ranking.size(); i++)
- novoAvancado->addUtilizador(ranking.at(i));
-
- for (unsigned int i = 0; i < commits.size(); i++)
- novoAvancado->addCommit(commits.at(i));
-
- novoAvancado->setID(id);
-
- novoAvancado->setChaveAcesso(chaveAcesso);
-
- for (unsigned int i = 0; i < _projetos.size(); i++)
- {
- if(_projetos.at(i)->getId() == proj->getId())
- {
- _projetos.erase(_projetos.begin() + i);
- }
- }
-
- _projetos.push_back(novoAvancado);
-
-
- }*/
