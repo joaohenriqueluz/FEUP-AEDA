@@ -141,7 +141,8 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 	Projeto * proj;
 	Utilizador * user;
 	do {
-		cout << endl << "1 - Criar novo projeto\n"
+		cout 	<< endl
+				<< "1 - Criar novo projeto\n"
 				<< "2 - Adicionar utilizadores a Projeto\n"
 				<< "3 - Remover utilizadores a projeto\n"
 				<< "4 - Remover projeto\n"
@@ -166,9 +167,9 @@ AD_UTI: case 2:
 				cout << endl << "Este gestor nao possui projetos.\n";
 				break;
 			} else {
-				cout << "Projetos: \n";
+				cout << "\nProjetos: \n";
 				logger->imprimeProjetos();
-				cout << "Selecione um projeto: \n";
+				cout << "Selecione um projeto(ID): \n";
 				cin >> opcao;
 				proj = empresa.editProj(opcao);
 				cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
@@ -184,7 +185,7 @@ AD_UTI: case 2:
 				cout << "Selecione o Utilizador: \n";
 				cin >> nome;
 
-				if (proj->existeUser(nome)) {
+				if (proj->existeUser(nome) || (nome== logger->getNome())) { //PRECISO TESTAR
 					cout << nome << " ja pertence a este projeto.\n";
 					goto AD_UTI;
 				}
@@ -205,9 +206,9 @@ AD_UTI: case 2:
 			}
 			break;
 REM_UTI: case 3:
-			cout << "Projetos: \n";
+			cout << "\nProjetos: \n";
 			logger->imprimeProjetos();
-			cout << "Selecione um projeto: ";
+			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 			proj = empresa.editProj(opcao);
 			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
@@ -243,7 +244,7 @@ REM_UTI: case 3:
 			break;
 REM_PROJ:
 		case 4:
-			cout << "Projetos: \n";
+			cout << "\nProjetos: \n";
 			logger->imprimeProjetos();
 			cout << "Selecione um projeto (ID): ";
 			cin >> opcao;
@@ -271,9 +272,9 @@ REM_PROJ:
 
 INFO_PROJ:
 		case 6:
-			cout << "Projetos: \n";
+			cout << "\nProjetos: \n";
 			logger->imprimeProjetos();
-			cout << "Selecione um projeto: ";
+			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 			if (opcao == 0)
 				break;
@@ -290,9 +291,9 @@ INFO_PROJ:
 
 EDITA_PROJ:
 		case 7:
-			cout << "Projetos: \n";
+			cout << "\nProjetos: \n";
 			logger->imprimeProjetos();
-			cout << "Selecione um projeto: ";
+			cout << "Selecione um projeto(ID): ";
 			cin >> opcao;
 
 			if (opcao == 0)
@@ -342,13 +343,12 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 	Projeto* proj;
 	string nome,chave;
 
-//	vector<Utilizador*>* v;
-
 	cout << endl << "1 - Ver projetos\n"
-				 << "2 - Fazer commit\n"
-				 << "3 - Ver historico de commits\n"
-				 << "4 - Ver informacoes do utilizador\n"
-				 << "5 - Editar informacoes do utilizador\n"
+				 << "2 - Ver informacoes de um projeto\n"
+				 << "3 - Fazer commit\n"
+				 << "4 - Ver historico de commits\n"
+				 << "5 - Ver informacoes do utilizador\n"
+				 << "6 - Editar informacoes do utilizador\n"
 				 << "0 - Voltar atrás\n";
 
 	cin >> opcao;
@@ -360,16 +360,34 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 	case 1:
 		logger->imprimeProjetos();
 		break;
-
+EDITA_PROJJ:
 	case 2:
+		cout << "\nProjetos: \n";
+		logger->imprimeProjetos();
+		cout << "Selecione um projeto(ID): ";
+		cin >> opcao;
+		if (opcao == 0)
+			break;
+		proj = empresa.editProj(opcao);
+		cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+		cin>>chave;
+		if(chave != proj->getChaveAcesso())
+		{
+			cout<<"#Chave de acesso errada, volte tentar.\n";
+			goto EDITA_PROJJ;
+		}
+		proj->getInfo();
+		break;
+
+	case 3:
 		addCommit(logger, empresa);
 		empresa.converteJunior(logger);
 		break;
 
 HIST_PROJ:
-	case 3:
+	case 4:
 		logger->imprimeProjetos();
-		cout << "Selecione um projeto: ";
+		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
 		if (opcao == 0)
@@ -386,11 +404,11 @@ HIST_PROJ:
 		proj->imprimeHistorico();
 		break;
 
-	case 4:
+	case 5:
 		logger->getInfo();
 		break;
 
-	case 5:
+	case 6:
 		cout<< "Selecione  o que deseja mudar: \n"
 				<< "1 - Email\n"
 				<< "2 - Data de nascimento\n";
@@ -412,14 +430,16 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 	string nome1, nome2,chave;
 
 
-	cout <<"1 - Ver Projetos;\n"
-		<< "2 - Fazer commit num projeto;\n"
-		<< "3 - Ver historico de commits;\n"
-		<< "4 - Criar um branch num projeto;\n"
-		<< "5 - Apagar branch de um projeto;\n"
-		<< "6 - Fazer merge de dois branches;\n"
-		<< "7 - Ver informacoes do utilizador\n"
-		<< "8 - Editar informacoes do utilizador\n"
+	cout<<endl
+		<< "1 - Ver Projetos;\n"
+		<< "2 - Ver informacoes de um projeto\n"
+		<< "3 - Fazer commit num projeto;\n"
+		<< "4 - Ver historico de commits;\n"
+		<< "5 - Criar um branch num projeto;\n"
+		<< "6 - Apagar branch de um projeto;\n"
+		<< "7 - Fazer merge de dois branches;\n"
+		<< "8 - Ver informacoes do utilizador\n"
+		<< "9 - Editar informacoes do utilizador\n"
 		<< "0 - Voltar atras;\n";
 
 	cin >> opcao;
@@ -430,14 +450,33 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 	case 1:
 		logger->imprimeProjetos();
 		break;
+
+EDITA_PROJS:
 	case 2:
+			cout << "\nProjetos: \n";
+			logger->imprimeProjetos();
+			cout << "Selecione um projeto(ID): ";
+			cin >> opcao;
+			if (opcao == 0)
+				break;
+			proj = empresa.editProj(opcao);
+			cout<< "Digite a chave de acesso do projeto "<< proj->getNome()<<": \n";
+			cin>>chave;
+			if(chave != proj->getChaveAcesso())
+			{
+				cout<<"#Chave de acesso errada, volte tentar.\n";
+				goto EDITA_PROJS;
+			}
+			proj->getInfo();
+			break;
+	case 3:
 		addCommit(logger, empresa);
 		break;
 
 HIST:
-	case 3:
+	case 4:
 		logger->imprimeProjetos();
-		cout << "Selecione um projeto: ";
+		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
 		if (opcao == 0)
@@ -455,10 +494,10 @@ HIST:
 		break;
 
 CRIA_BRANCH:
-	case 4:
+	case 5:
 		//cria branch
 		logger->imprimeProjetos();
-		cout << "Selecione um projeto: ";
+		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
 		if (opcao == 0)
@@ -488,10 +527,10 @@ CRIA_BRANCH:
 
 		break;
 APAGA_BRANCH:
-	case 5:
+	case 6:
 		//apaga branch
 		logger->imprimeProjetos();
-		cout << "Selecione um projeto: ";
+		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
 		if (opcao == 0)
@@ -517,11 +556,11 @@ APAGA_BRANCH:
 		}
 		break;
 
-	case 7:
+	case 8:
 		logger->getInfo();
 		break;
 
-	case 8:
+	case 9:
 	cout<< "Selecione  o que deseja mudar: \n"
 		<< "1 - Email\n"
 		<< "2 - Data de nascimento\n";
@@ -531,11 +570,11 @@ APAGA_BRANCH:
 		break;
 
 
-	case 6:
+	case 7:
 		// Merge
 SEL_PROJ:
 		logger->imprimeProjetos();
-		cout << "Selecione um projeto: ";
+		cout << "Selecione um projeto(ID): ";
 		cin >> opcao;
 
 		if (opcao == 0)
