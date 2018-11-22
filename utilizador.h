@@ -7,226 +7,422 @@
 
 using namespace std;
 
+/**
+ * @brief Classe utilizada para guardar data
+ * @param dia - dia da data
+ * @param mes - mes da data
+ * @param ano - ano da data
+ */
 class Data {
-    int dia, mes, ano;
+	int dia, mes, ano;
 public:
-    /**
-     * Construtor da class Data, coloca dia, mes e ano iguais a zero;
-     */
-    Data();
-
-    /**
-     * Construtor da class Data, coloca dia, mes e ano iguais a d,m e a(respetivamente);
-     * @param d - novo valor de dia;
-     * @param m - novo valor de mes;
-     * @param a - novo valor de ano;
-     */
-    Data(int d, int m, int a);
-
-    /**
-     * Coloca dia, mes e ano iguais a d,m e a(respetivamente);
-     * @param d - novo valor de dia;
-     * @param m - novo valor de mes;
-     * @param a - novo valor de ano;
-     */
-    void setData(int d, int m, int a);
-
-    /**
-     * Retorna mes da data;
-     * @return mes
-     */
-    int getMes()const {return mes;}
-
-    /**
-     * Retorna ano da data;
-     * @return ano
-     */
-    int getAno()const {return ano;}
-    /**
-     * Retorna dia da data;
-     * @return dia
-     */
-    int getDia()const{return dia;}
-
-    /**
-     * Comprara Data a outra data(other)
-     * @param other - outra data;
-     * @return verdadeiro se Data for mais antiga do que other
-     */
-    bool operator <(const Data & other)const;
-
-    /**
-     * Comprara Data a outra data(other)
-     * @param other - outra data;
-     * @return verdadeiro se Data for tao ou mais antiga do que other
-     */
-	bool operator <=(const Data & other)const;
+	/**
+	 * @brief Construtor da class Data, coloca dia, mes e ano iguais a zero
+	 */
+	Data();
 
 	/**
-	 * Comprara Data a outra data(other)
-	 * @param other - outra data;
-	 * @return verdadeiro se Data for tao ou menos antiga do que other
+	 * @brief Construtor da class Data, coloca dia, mes e ano iguais a d,m e a(respetivamente)
+	 * @param d - novo valor de dia
+	 * @param m - novo valor de mes
+	 * @param a - novo valor de ano
 	 */
-	bool operator >=(const Data & other)const;
+	Data(int d, int m, int a);
 
 	/**
-	 *	Comprara Data a outra data(other)
-	 * @param other - outra data;
-	 * @return verdadeiro se Data for tao antiga como other
+	 * @brief Coloca dia, mes e ano iguais a d,m e a
+	 * @param d - novo valor de dia
+	 * @param m - novo valor de mes
+	 * @param a - novo valor de ano
 	 */
-	bool operator ==(const Data & other)const;
+	void setData(int d, int m, int a);
+
+	/**
+	 * @brief Retorna mes da data
+	 * @return mes
+	 */
+	int getMes() const {
+		return mes;
+	}
+
+	/**
+	 * @brief Retorna ano da data
+	 * @return ano
+	 */
+	int getAno() const {
+		return ano;
+	}
+	/**
+	 * @brief Retorna dia da data
+	 * @return dia
+	 */
+	int getDia() const {
+		return dia;
+	}
+
+	/**
+	 * @brief Compara duas datas
+	 * @param other - data a comparar
+	 * @return verdadeiro se a data do objeto for mais antiga do que other
+	 */
+	bool operator <(const Data & other) const;
+
+	/**
+	 * @brief Compara duas datas
+	 * @param other - data a comparar
+	 * @return verdadeiro se a data do objeto for tao ou mais antiga do que other
+	 */
+	bool operator <=(const Data & other) const;
+
+	/**
+	 * @brief Compara duas datas
+	 * @param other - data a comparar
+	 * @return verdadeiro se a data do objeto for tao ou menos antiga do que other
+	 */
+	bool operator >=(const Data & other) const;
+
+	/**
+	 * @brief Compara duas datas
+	 * @param other - data a comparar
+	 * @return verdadeiro se a data do objeto for tao antiga que other
+	 */
+	bool operator ==(const Data & other) const;
 
 };
 
-
-
-class Utilizador
-{
+/**
+ * @brief Classe do utilizador
+ * @param _nome - nome do utilizador
+ * @param _cargo - cargo do utilizador
+ * @param dataNascimento - data de nascimento do utilizador
+ * @param _email - email do utilizador
+ * @param _projetos - vetor de projetos do utilizador
+ * @param _salario - salario do utilizador
+ * @param _NIF - NIF do utilizador
+ */
+class Utilizador {
 protected:
-    string _nome;
+	string _nome;
 	string _cargo;
-    Data dataNascimento;
-    string _email;
-    vector<int> _projetos;
-    float _salario;
-    int _NIF;
+	Data dataNascimento;
+	string _email;
+	vector<int> _projetos;
+	float _salario;
+	int _NIF;
 
 public:
-    /**
-     * Construtor da class Utilizador
-     * @param nome -nome do utilizador
-     * @param d - dia da data de nascimento do utilizador;
-     * @param m - mes da data de nascimento do utilizador;
-     * @param a - ano da data de nascimento do utilizador;
-     * @param email - email do utilizador;
-     * @param salario - salario do utilizador
-     * @param NIF - NIF do utilizador;
-     * @param cargo -Cargo do Utilizador (Gestor/Senior/Junior)
-     */
-    Utilizador(string nome, int d, int m, int a,string email, float salario, int NIF,string cargo);
-	Utilizador() {_NIF = 0; _salario = 0;};
 	/**
-	 * Destrutor da class Utilizador
+	 * @brief Construtor da classe Utilizador
+	 * @param nome - nome do utilizador
+	 * @param d - dia da data de nascimento do utilizador
+	 * @param m - mes da data de nascimento do utilizador
+	 * @param a - ano da data de nascimento do utilizador
+	 * @param email - email do utilizador
+	 * @param salario - salario do utilizador
+	 * @param NIF - NIF do utilizador
+	 * @param cargo - cargo do utilizador (Gestor/Senior/Junior)
 	 */
-    virtual ~Utilizador(){};
+	Utilizador(string nome, int d, int m, int a, string email, float salario,
+			int NIF, string cargo);
+	/**
+	 * @brief Construtor da classe sem parametros, colocando a zero o NIF e o salario do utilizador
+	 */
+	Utilizador() {
+		_NIF = 0;
+		_salario = 0;
+	}
 
-    /**
-     * Retorna nome do utilizador
-     * @return _nome
-     */
-    string getNome() const;
-    /**
-     * Atribui o valor nome a _nome;
-     * @param nome
-     */
-    void setNome(string nome);
-    /**
-     * Retorna uma copia da data de nascimento do utilizador
-     * @return dataNascimento
-     */
-    Data getDataNascimento()const;
-    /**
-     * Retorna por referencia a data de nascimento do utilizador
-     * @return dataNascimento
-     */
-    Data* getDataNascimentoRef();
+	/**
+	 * @brief Destrutor da class Utilizador
+	 */
+	virtual ~Utilizador() {
+	}
 
+	/**
+	 * @brief Retorna o nome do utilizador
+	 * @return nome do utilizador
+	 */
+	string getNome() const;
+	/**
+	 * @brief Altera o nome do utilizador
+	 * @param nome - novo nome
+	 */
+	void setNome(string nome);
+	/**
+	 * @brief Retorna uma copia da data de nascimento do utilizador
+	 * @return data de nascimento do utilizador
+	 */
+	Data getDataNascimento() const;
+	/**
+	 * @brief Retorna por referencia a data de nascimento do utilizador
+	 * @return data de nascimento do utilizador
+	 */
+	Data* getDataNascimentoRef();
 
-    /**
-     * Retorna email do utilizador
-     * @return _email
-     */
-    string getEmail()const;
-    void setEmail(string email);
-    /**
-     * Altera data de nascimento para d/m/a;
-     * @param d -novo dia de nascimento;
-     * @param m -novo mes de nascimento;
-     * @param a -novo ano de nascimento;
-     */
-    void setData(int d, int m, int a);
-    void addProjeto (int id);
-    void removeProjeto (int id);
-	virtual string getCargo() const { return _cargo; }
-    float getSalario()const {return _salario;}
-    int getNIF()const;
-    void setNIF(int NIF);
+	/**
+	 * @brief Retorna email do utilizador
+	 * @return email
+	 */
+	string getEmail() const;
 
-	vector<int> getProjetos() { return _projetos; }
-	//bool operator <(const Utilizador & other)const;
-	//virtual void instucoes(){};
+	/**
+	 * @brief Altera o email do utilizador
+	 * @param email - novo email
+	 */
+	void setEmail(string email);
+
+	/**
+	 * @brief Altera data de nascimento do utilizador
+	 * @param d - novo dia de nascimento
+	 * @param m - novo mes de nascimento
+	 * @param a - novo ano de nascimento
+	 */
+	void setData(int d, int m, int a);
+
+	/**
+	 * @brief Adiciona o id de um novo projeto aos projetos que utilizador faz parte
+	 * @param id - id do projeto a adicionar
+	 */
+	void addProjeto(int id);
+
+	/**
+	 * @brief Remove o id do projeto fornecido dos projetos que utilizador faz parte
+	 * @param id - id do projeto a remover
+	 */
+	void removeProjeto(int id);
+
+	/**
+	 * @brief Retorna o cargo do utilizador dentro da empresa
+	 * @return cargo do utilizador na empresa
+	 */
+	virtual string getCargo() const {
+		return _cargo;
+	}
+
+	/**
+	 * @brief Retorna o salario do utilizador
+	 * @return salario
+	 */
+	float getSalario() const {
+		return _salario;
+	}
+
+	/**
+	 * @brief Retorna o NIF do utilizador
+	 * @return NIF
+	 */
+	int getNIF() const;
+
+	/**
+	 * @brief Altera o NIF do utilizador
+	 * @return novo NIF
+	 */
+	void setNIF(int NIF);
+
+	/**
+	 * @brief Imprime no ecra os indices dos projetos do utilizador
+	 */
+	void imprimeProjetos();
+
+	/**
+	 * @brief Retorna o vetor de projetos dos quais o utilizador pertence
+	 * @return projetos a que o utilizador pertence
+	 */
+	vector<int> getProjetos() {
+		return _projetos;
+	}
+
+	/**
+	 * @brief Mostra no ecra as informacoes do utilizador
+	 */
 	virtual void getInfo();
-	virtual void setReputacao(int reputacao){};
-	virtual int getReputacao() const { return 0; }
 
 };
 
-
-
-
-
-class Gestor: public Utilizador
-{
+/**
+ * @brief Classe do gestor
+ */
+class Gestor: public Utilizador {
 public:
-    Gestor(string nome, int d, int m, int a,string email, float salario,int NIF, string cargo);
-	//void instrucoes();
-	
+	/**
+	 * @brief Construtor da classe Gestor
+	 * @param nome - nome do gestor
+	 * @param d - dia da data de nascimento do gestor
+	 * @param m - mes da data de nascimento do gestor
+	 * @param a - ano da data de nascimento do gestor
+	 * @param email - email do gestor
+	 * @param salario - salario do gestor
+	 * @param NIF - NIF do gestor
+	 * @param cargo - gestor
+	 */
+	Gestor(string nome, int d, int m, int a, string email, float salario,
+			int NIF, string cargo);
 
 };
 
-class Senior:public Utilizador
-{
+/**
+ * @brief Classe do senior
+ */
+class Senior: public Utilizador {
 
 public:
-    Senior(string nome, int d, int m, int a,string email,float salario,int NIF, string cargo);
-    void setSalario(float salario);
-	//void instucoes();
+	/**
+	 * @brief Construtor da classe Senior
+	 * @param nome - nome do senior
+	 * @param d - dia da data de nascimento do senior
+	 * @param m - mes da data de nascimento do senior
+	 * @param a - ano da data de nascimento do senior
+	 * @param email - email do senior
+	 * @param salario - salario do senior
+	 * @param NIF - NIF do senior
+	 * @param cargo - senior
+	 */
+	Senior(string nome, int d, int m, int a, string email, float salario,
+			int NIF, string cargo);
+
+	/**
+	 * @brief Altera o salario do senior
+	 * @param salario - novo salario
+	 */
+	void setSalario(float salario);
 
 };
 
-class Junior :public Utilizador {
+/**
+ * @brief Classe do junio
+ * @param _reputacao - reputacao do junior
+ */
+class Junior: public Utilizador {
 	int _reputacao;
 public:
-    Junior(string nome, int d, int m, int a,string email, int reputacao, int NIF, string cargo);
-    void setSalario();
-    int getReputacao() const;
-    void setReputacao(int reputacao);
+	/**
+	 * @brief Construtor da classe Junior
+	 * @param nome - nome do junior
+	 * @param d - dia da data de nascimento do junior
+	 * @param m - mes da data de nascimento do junior
+	 * @param a - ano da data de nascimento do junior
+	 * @param email - email do junior
+	 * @param reputacao - reputacao do junior
+	 * @param salario - salario do junior
+	 * @param NIF - NIF do junior
+	 * @param cargo - junior
+	 */
+	Junior(string nome, int d, int m, int a, string email, int reputacao,
+			int NIF, string cargo);
+
+	/**
+	 * @brief Altera o salario do junior tendo em conta a sua reputacao
+	 */
+	void setSalario();
+
+	/**
+	 * @brief Retorna a reputacao do utilizador
+	 * @return reputacao
+	 */
+	int getReputacao() const;
+
+	/**
+	 * @brief Altera a reputacao do junior
+	 * @param reputacao - nova reputacao
+	 */
+	void setReputacao(int reputacao);
+
+	/**
+	 * @brief Mostra no ecra as informacoes do junior
+	 */
 	void getInfo();
 
 };
 
 /**
- * classe utilizada para lançar uma exceção quando não é encontrado um utilizador com nome 'name'
- * @param name nome do utilizador que não foi possível encontrar
+ * @brief Classe utilizada para lançar uma exceção quando não é encontrado um utilizador com o nome fornecido
+ * @param name - nome do utilizador que não foi possível encontrar
  */
-class NoSuchUser{
+class NoSuchUser {
 	string name;
 public:
-	NoSuchUser(string n){name=n;}
-	string getName() const {return name;}
+	/**
+	 * @brief Construtor da classe NoSuchUser
+	 * @param n - utilizador cujo nome nao existe
+	 */
+	NoSuchUser(string n) {
+		name = n;
+	}
+	string getName() const {
+		return name;
+	}
 };
 
-class UserRepetido{
+/**
+ * @brief Classe utilizada para lançar uma exceção quando é encontrado um utilizador que já possui o nome fornecido
+ * @param name - nome do utilizador que já existe
+ */
+class UserRepetido {
 	string name;
 public:
-	UserRepetido(string n){name=n;}
-	string getName() const {return name;}
+	/**
+	 * @brief Construtor da classe UserRepetido
+	 * @param n - utilizador repetido
+	 */
+	UserRepetido(string n) {
+		name = n;
+	}
+
+	/**
+	 * @brief Retorna o nome do utilizador repetido
+	 * @return nome
+	 */
+	string getName() const {
+		return name;
+	}
 };
 
-class NIFRepetido{
+/**
+ * @brief Classe utilizada para lançar uma exceção quando é encontrado um utilizador que já possui o NIF fornecido
+ * @param nif - NIF do utilizador que já existe
+ */
+class NIFRepetido {
 	int nif;
 public:
-	NIFRepetido(int n){nif=n;}
-	int getNIF() const {return nif;}
+	/**
+	 * @brief Construtor da classe NIFRepetido
+	 * @param n - NIF repetido
+	 */
+	NIFRepetido(int n) {
+		nif = n;
+	}
+
+	/**
+	 * @brief Retorna o NIF repetido
+	 * @return NIF
+	 */
+	int getNIF() const {
+		return nif;
+	}
 };
 
-
-
-class EmailRepetido{
-	string _email;
+/**
+ * @brief Classe utilizada para lançar uma exceção quando é encontrado um utilizador que já possui o email fornecido
+ * @param email - email do utilizador que já existe
+ */
+class EmailRepetido {
+	string email;
 public:
-	EmailRepetido(string email){_email= email;}
-	string getEmail() const {return _email;}
+	/**
+	 * @brief Construtor da classe EmailRepetido
+	 * @param email - email repetido
+	 */
+	EmailRepetido(string email) {
+		this->email = email;
+	}
+
+	/**
+	 * @brief Retorna o email repetido
+	 * @return email
+	 */
+	string getEmail() const {
+		return email;
+	}
 };
 
 #endif //PROJ_AEDA_UTILIZADOR_H
