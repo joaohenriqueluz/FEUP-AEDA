@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <utility>
 #include "utilizador.h"
 
 using namespace std;
@@ -61,97 +62,159 @@ protected:
 public:
     Projeto(string nome,string tipo);
     virtual ~Projeto(){};
-    string getNome ();
+
     /**
-     * Atribui o valor (nome) ao atributo _nome;
-     * @param nome
+     * @brief Retorna nome do projeto
+     * @return nome
+     */
+    string getNome ();
+
+    /**
+     * @brief Altera o nome do projeto
+     * @param nome - novo nome
      */
     void setNome(string nome){_nome= nome;}
-	void setTipo(string tipo) { _tipo = tipo; }
-	string getTipo() const { return _tipo; }
-    unsigned int getId();
+
     /**
-     * Altera valor de _id para id;
-     * @param id novo valor para _id
+     * @brief Altera o tipo do projeto
+     * @param tipo - novo tipo
+     */
+	void setTipo(string tipo) { _tipo = tipo; }
+
+	/**
+	 * @brief Retorna tipo de projeto
+	 * @return tipo
+	 */
+	string getTipo() const { return _tipo; }
+
+	/**
+	 * @brief Retorna id do projeto
+	 * @return id
+	 */
+    unsigned int getId();
+
+    /**
+     * @brief Altera o id do projeto;
+     * @param id - novo id
      */
     void setID(int id);
-	vector<Commit> getCommits() const { return _commits; }
-    void addCommit(Commit cm);
-    void addUtilizador (Utilizador * user);
+
     /**
-        * @brief Verifica se o Utilizador de nome "nome" ja existe no projeto;
+     * @brief Retorna vetor de commits realizados nesse projeto
+     * @return commits do projeto
+     */
+	vector<Commit> getCommits() const { return _commits; }
+
+	/**
+	 *
+	 * @param cm
+	 */
+    void addCommit(Commit cm);
+
+    /**
+     *
+     * @param user
+     */
+    void addUtilizador (Utilizador * user);
+
+    /**
+        * @brief Verifica se o Utilizador com o nome dado ja existe no projeto
         * @param nome - nome do utilizador;
-        * @return verdadeiro de o utilizador de nome "nome" pertence ao vetor de utilizadores do projeto, senao devolve falso;
+        * @return verdadeiro de o utilizador de nome "nome" pertence ao vetor de utilizadores do projeto, senao devolve falso
         */
        bool existeUser(string nome);
+
        /**
         * @brief Elimina do vetor de utilizadores do projeto o utilizador de nome "nome"
-        * @param nome
+        * @param nome - nome do utilizador a remover
         */
        void removeUser(string nome);
+
        /**
         * @brief Desassocia todos os utilizadores a este projeto;
         */
        void removeAUsers();
+
 	void imprimeUsers();
+
+
 	void imprimeCoders();
+
+
 	/**
-	 * Retorna a chave de acesso do projeto
-	 * @return _chaveAcesso
+	 * @brief Retorna a chave de acesso do projeto
+	 * @return chave de acesso
 	 */
     string getChaveAcesso();
+
     /**
-     * Atribui o valor chave a _chaveAcesso
-     * @param chave - novo valor para a _chaveAcesso
+     * @brief Altera a chave de acesso do projeto
+     * @param chave - nova chave de acesso
      */
     void setChaveAcesso(string chave);
+
     /**
-     * Devolve o volume total dos commits do utilizador nome_user
-     * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
-     * @param nome_user
-     * @param d1 - data mais antiga
-     * @param d2 - data mais recente
-     * @return volume - volume calculado
+     * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em específico ou em todo o projeto conforme as datas que são recebidas
+     * @param nome_user - nome do utilizador
+     * @param d1 - primeiro limite do intervalo de datas a pesquisar
+     * @param d2 - segundo limite do intervalo de datas a pesquisar
+     * @return volume
      */
 	virtual int getVolume(string nome_user, Data d1, Data d2) const;
 
 	/**
-	 * Devolve o volume total dos commits do projeto.
-     * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
-	 * @param d1 - data mais antiga
-	 * @param d2 - data mais recente
+	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que são recebidas
+     * @param d1 - primeiro limite do intervalo de datas a pesquisar
+	 * @param d2 - segundo limite do intervalo de datas a pesquisar
 	 * @return volume - volume calculado
 	 */
 	virtual int getVolumeTotal(Data d1, Data d2) const;
+
+
 	virtual void imprimeHistorico();
 
+	/**
+	 * @brief Retorna a frequencia de commits realizados por um utilizador dado entre duas datas em específico ou em todo o projeto conforme as datas que são recebidas
+	 * @param user - nome do utilizador
+	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
+	 * @param d2 - segundo limite do intervalo de datas a pesquisar
+	 * @return frequencia de commits
+	 */
 	float getFreq(string user, Data d1, Data d2) const;
 
+	/**
+	 * @brief Retorna copia do vetor de utilizadores que pertencem ao projeto
+	 * @return utilizadores do projeto
+	 */
 	vector<Utilizador *> getUsers() { return _ranking; };
 
+	/**
+	 * @brief Retorna referencia para o vetor de utilizadores que pertencem ao projeto
+	 * @return utilizadores do projeto
+	 */
 	vector<Utilizador*>& getUserRef() { return _ranking;}
 
 	/**
-	 * Procura o commit com id igual a id
-	 * @param id ID do commit procurado
+	 * @brief Procura o commit com id igual a id
+	 * @param id - ID do commit procurado
 	 * @return vector de commits
 	 */
 	vector <Commit> filterCommits(vector<int> id);
 
 	/**
-	 * Lï¿½ os commits a partir de um ficheiro
-	 * @param users Autores dos commits
+	 * @brief Lê os commits a partir de um ficheiro
+	 * @param users - autores dos commits
 	 * @param id ID dos PROJETOS OU COMMITS
 	 */
 	void readCommits(vector <Utilizador *> users, vector <int> id);
 
 	/**
-	 * Mostra os valores de nome,ID,tipo,chave de Acesso e volume do projeto
+	 * @brief Mostra os valores de nome,ID,tipo,chave de Acesso e volume do projeto
 	 */
 	virtual void getInfo();
+
 };
 
-vector<Commit> readCommits(vector <Utilizador *> users);
 
 
 class Avancado : public Projeto {
@@ -167,21 +230,18 @@ public:
 	void imprimeBranches();
 	void imprimeHistorico();
 	/**
-	 * Devolve o volume total dos commits (incluindo nos branches) do utilizador nome_user
-	 * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
-	 * @param nome_user
-	 * @param d1 - data mais antiga
-	 * @param d2 - data mais recente
-	 * @return volume - volume calculado
+	 * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em específico ou em todo o projeto conforme as datas que são recebidas (inclui o volume dos branches)
+	 * @param nome_user - nome do utilizador
+	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
+	 * @param d2 - segundo limite do intervalo de datas a pesquisar
+	 * @return volume
 	 */
 	int getVolume(string nome_user, Data d1, Data d2) const;
 
 	/**
-	 * Devolve o volume total dos commits (incluindo nos branches)
-	 * Se d1 e d2 forem iguas a (0,0,0) devolve o volume total,caso contrario devolve o volume total dos commits feitos entre d1 e d2
-	 * @param nome_user
-	 * @param d1 - data mais antiga
-	 * @param d2 - data mais recente
+	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que são recebidas (inclui o volume dos branches)
+	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
+	 * @param d2 - segundo limite do intervalo de datas a pesquisar
 	 * @return volume - volume calculado
 	 */
 	int getVolumeTotal(Data d1, Data d2) const;
@@ -189,25 +249,28 @@ public:
 	Branch* existeBranch(string nome);
 
 	/**
-	 * Adiciona um branch ao projeto fornecido por argumento
-	 * @param branch
+	 * @brief Adiciona um branch ao projeto fornecido por argumento
+	 * @param branch - branch a adicionar ao projeto
 	 */
 	void addBranch_ref(Branch *branch);
 
 	/**
-	 * Devolve vetor de branches do projeto avancado
-	 * @return vetor de branches
+	 * @brief Retorna vetor de branches do projeto avancado
+	 * @return branches do projeto
 	 */
 	vector<Branch *> getBranches() { return _branches; };
 
 	/**
-	 * Mostra os valores de nome, ID, tipo, chave de Acesso, volume e Branches do projeto
+	 * @brief Mostra os valores de nome, ID, tipo, chave de Acesso, volume e Branches do projeto
 	 */
 	void getInfo();
 
 };
 
-
+/**
+ * @brief Classe utilizada para lancar uma excecao quando nao e encontrado um projeto com o id fornecido
+ * @param id - id do projeto que nao foi possível encontrar
+ */
 class NoSuchProject{
 	unsigned int id;
 public:
@@ -239,7 +302,7 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 	}
 }
 /**
- * Devolve vetor de Utilizadores com NIFs do vetor de NIFs fornecido
+ * @brief Devolve vetor de Utilizadores com NIFs do vetor de NIFs fornecido
  * @param id  - vetor de NIF dos utilizadores
  * @param users  - vetor de utilizadores a pesquisar
  * @return Utilizadores cujo o NIF pertence ao vetor fornecido
