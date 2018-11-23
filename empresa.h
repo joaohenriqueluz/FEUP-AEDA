@@ -19,16 +19,16 @@ public:
 	Utilizador* existeUser(string nome);
 	void existeNIF(int nif);
 	/**
-	 * Lança exceção se ja existe um utilizador com _email igual a email.
-	 * @param email
+	 * @brief Verifica se ja existe esse email, lançando uma excecao se for verdade
+	 * @param email - email para verificar se e repetido ou nao
 	 */
 	void existeEmail(string email);
 	void repeteUser(string nome);
 	/**
-	 *
-	 * @param id ID do projeto a ser retornado
-	 * @return apontador para Projeto com ID igual a id
-	*/
+	 * @brief Devolve endereço do projeto com id dado, lançando uma excecao no caso de nao existir ou de o utilizador nao pertencer a esse projeto
+	 * @param id - ID do projeto a ser retornado
+	 * @return apontador para Projeto com ID pedido
+	 */
 	Projeto * editProj(int id);
 	int getVolume(string nome, Data d1, Data d2) const;
 	float getFreq(string nome, Data d1, Data d2) const;
@@ -39,15 +39,15 @@ public:
 	void imprimeProjetos();
 	void readUsers();
 	/**
-	 * Regista utilizadores num ficheiro de texto
+	 * @brief Regista utilizadores num ficheiro de texto
 	 */
 	void writeUsers();
 	/**
-	 * Regista projetos num ficheiro de texto
+	 * @brief Regista projetos num ficheiro de texto
 	 */
 	void writeProjetos();
 	/**
-	 * Regista commits num ficheiro de texto
+	 * @brief Regista commits num ficheiro de texto
 	 */
 	void writeCommits();
 	void readProjetos();
@@ -55,6 +55,12 @@ public:
 
 };
 
+/*
+ * @brief Template para remover um objeto de um vetor
+ * @param V - vetor do qual o objeto vai ser removido
+ * @param objeto - objeto a remover
+ * @return verdadeiro se encontrou objeto no vetor e o eliminou, senao retorna falso
+ */
 template<class T>
 bool removeObjeto(vector<T> & V, T objeto){
 	for(unsigned int i = 0; i < V.size(); i++)
