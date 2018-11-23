@@ -149,7 +149,6 @@ public:
 	 * Mostra os valores de nome,ID,tipo,chave de Acesso e volume do projeto
 	 */
 	virtual void getInfo();
-
 };
 
 vector<Commit> readCommits(vector <Utilizador *> users);

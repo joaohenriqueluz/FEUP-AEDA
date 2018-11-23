@@ -37,10 +37,14 @@ INICIO:
 	}
 	else if (opcao == 2) {
 		empresa.readUsers();
+		for(int i = 0; i < empresa.getUsers().size(); i++){
+			cout << empresa.getUsers().at(i)->getCargo() << endl;
+		}
 		empresa.readProjetos();
 		cout << "Fim read" << endl;
-		cout << "Users proj 1 = " << empresa._projetos.at(0)->getUsers().size() << endl;
-		cout << "Users proj 1 = " << empresa._projetos.at(1)->getUsers().size() << endl;
+		//vector<Projeto *> proj = empresa.getProjetos();
+		//cout << "Users proj 1 = " << proj->getProjetos().size() << endl;
+		//cout << "Users proj 1 = " << empresa.getProjetos().at(1)->getUsers().size() << endl;
 		//empresa.printProjetos();
 		rotinaEmpresa(empresa);
 	}
