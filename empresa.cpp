@@ -276,19 +276,18 @@ void Empresa::readUsers() {
 	if (file.is_open()) {
 		while (file.good()) {
 			getline(file, nome);
-			cout << nome << endl;
+			if(nome.empty()){
+				continue;
+			}
 			getline(file, rank);
-			cout << rank << endl;
 			if (rank == "J") {
 				getline(file, reputacao);
 				rep = stoi(reputacao);
 			}
 			file >> d >> b >> m >> b >> a;
-			cout << d << b << m << b << a << endl;
 			getline(file, n);
 			cout << n;
 			getline(file, email);
-			cout << email << endl;
 			projId.clear();
 			while (1) {
 				getline(file, ids);
@@ -297,19 +296,13 @@ void Empresa::readUsers() {
 				int id = stoi(ids);
 				projId.push_back(id);
 			}
-			for (unsigned int i = 0; i < projId.size(); ++i) {
-				cout << projId.at(i) << endl;
-			}
 			file >> nif;
-			cout << "NIF " << nif << endl;
 			getline(file, n);
-			cout << n;
 			if (rank != "J") {
 				getline(file, money);
 				salario = stof(money);
 			}
 			getline(file, n);
-			cout << n;
 
 			if (rank == "G") {
 				_gestor = new Gestor(nome, d, m, a, email, salario, nif,
@@ -345,250 +338,6 @@ void Empresa::readUsers() {
 	}
 }
 
-//void Empresa::readProjetos()
-//{
-//	Avancado* _avancado;
-//	Projeto* _basico;
-//	Branch* _branch;
-//	ifstream file;
-//	file.open("projetos01.txt");
-//	string tipo, nome, pass, ID, IDU, IDC, branch, IDCbranch, temp;
-//	int _id, _idU, _idC, _idCbranch;
-//	vector <int> usersID;
-//	vector <int> commitsID;
-//	vector <Branch *> branches;
-// 	if (file.is_open()){
-//		while (file.good()){
-//			usersID.clear();
-//			commitsID.clear();
-//			getline(file,tipo); // le o tipo de projeto
-//			cout << "le tipo" << endl;
-//			getline(file,nome);
-//			cout << "le nome" << endl;
-//			getline(file,pass);
-//			cout << "le pass" << endl;
-//			getline(file,ID); // le o ID do projeto
-//			_id = stoi(ID);
-//			cout << "le ID" << endl;
-//			getline(file,temp); // le a tag users
-//			cout << "TAG users = " << temp << endl;
-//			while (1){ // ciclo que le todos os userID do projeto
-//				getline(file,IDU);
-//				if (IDU == "endU"){
-//					cout << "Break ciclo users" << endl;
-//					break;
-//				}
-//				_idU = stoi(IDU);
-//				cout << "le ID Users" << endl;
-//				usersID.push_back(_idU);
-//			}
-// 			getline(file,temp); // le a tag commits
-//			while (1){ //ciclo que le todos od commitID de um projeto
-//				getline(file,IDC);
-//				if (IDC == "endC") break;
-//				_idC = stoi(IDC);
-//				cout << "le Commits" << endl;
-//				commitsID.push_back(_idC);
-//			}
-// 			if (tipo == "Avancado"){
-//				while(1){ // ciclo que le as informa��es de um branch de um projeto avan�ado
-//					getline(file,branch);
-//					cout << "le branch" << endl;
-//					if (branch == "endB") break; // !!!!!!!!!IMPORTANTE todos os brojetos avan�ados tem de ter uma tag enB no fim quando guardados num text file mesmo que n�o tenham branches
-// 					_avancado = new Avancado(nome);
-//					vector <Utilizador *> utilizadores = findUtilizadores(usersID,_utilizadores);
-//					_avancado->readCommits(_utilizadores,commitsID);
-//					for (unsigned int i = 0; i < utilizadores.size(); ++i) {
-//						_avancado->addUtilizador(utilizadores.at(i));
-//					}
-// 					_avancado->setID(_id);
-//					_avancado->setChaveAcesso(pass);
-// 					vector <Commit> commitsB;
-// 					while (1){ // ciclo que le os commitID de um branch
-//						getline(file,IDCbranch);
-//						if (IDCbranch == "endC") break;
-//						cout << "le ID Branch ant" << endl;
-//						_idCbranch = stoi(IDCbranch);
-//						cout << "le ID branch after" << endl;
-//						commitsID.push_back(_idCbranch);
-//					}
-// 					commitsB = _avancado->filterCommits(commitsID);
-//					_branch = new Branch(branch);
-//					_branch->addCommitVec(commitsB);
-//					_avancado->addBranch_ref(_branch);
-// 					_projetos.push_back(_avancado);
-// 					getline(file,temp);
-//					if (temp == "endB") break;
-//				}
-//			} else{
-//				_basico = new Projeto(nome,tipo);
-//				vector <Utilizador *> utilizadores = findUtilizadores(usersID,_utilizadores);
-//				_basico->readCommits(_utilizadores,commitsID);
-//				for (unsigned int i = 0; i < utilizadores.size(); ++i) {
-//					_basico->addUtilizador(utilizadores.at(i));
-//				}
-// 				_basico->setID(_id);
-//				_basico->setChaveAcesso(pass);
-// 				_projetos.push_back(_basico);
-//			}
-//			getline(file,temp);
-//		}
-//	}
-//}
-
-//void Empresa::readProjetos(){
-//	ifstream file;
-//	file.open("projetos01.txt");
-//	string temp, tipo, nome, pass, stringIDP, stringIDU, stringIDC, nomeBranch, stringIDCB;
-//	int IDP, IDU, IDC, IDCB;
-//	vector<Utilizador *> users;
-//	vector <Commit> commits = readCommits(_utilizadores);
-//	cout << "Tam vetor users = " << _utilizadores.size() << endl;
-//	cout << "Tam vet commits = " << commits.size() << endl;
-//	vector <Commit> master;
-//	_projetos.clear();
-//
-//
-//	if(file.is_open()){
-//		while(file.good()){
-//			getline(file,tipo);
-//			if(tipo.empty()){
-//				continue;
-//			}
-//			users.clear();
-//			master.clear();
-//			cout << "tipo = " << tipo << endl;
-//			getline(file,nome);
-//			cout << "Nome = " << nome << endl;
-//			getline(file,pass);
-//			cout << "Pass = " << pass << endl;
-//			getline(file,stringIDP);
-//			IDP = stoi(stringIDP);
-//			cout << "ID Projeto = " << IDP << endl;
-//			getline(file,temp);
-//
-//
-//
-//			cout << "le TAG users = " << temp << endl;
-//			while(1){
-//				getline(file,stringIDU);
-//				cout << "string IDU = " << stringIDU << endl;
-//				if(stringIDU == "endU"){
-//					cout << "break do ciclo de ler users" << endl;
-//					break;
-//				}
-//				IDU = stoi(stringIDU);
-//				Utilizador* u = existeUserID(IDU);
-//				users.push_back(u);
-//			}
-//			for(int i = 0; i < users.size(); i++){
-//				cout << "User ID = " << users.at(i)->getNIF() << endl;
-//			}
-//
-//
-//			getline(file,temp);
-//			cout << "TAG commits = " << temp << endl;
-//			while(1){
-//				getline(file,stringIDC);
-//				cout << "string ID Commit = " << stringIDC << endl;
-//				if(stringIDC == "endC"){
-//					cout << "break do ciclo de ler commits" << endl;
-//					break;
-//				}
-//				IDC = stoi(stringIDC);
-//				for(int j = 0; j < commits.size(); j++){
-//					if(IDC == commits.at(j).getID()){
-//						master.push_back(commits.at(j));
-//					}
-//				}
-//			}
-//
-//
-//				if(tipo == "Avancado"){
-//					vector <Branch *> branches;
-//					while(1){
-//						vector <Commit> commitsBranch;
-//						getline(file,nomeBranch);
-//						cout << "Nome Branch = " << nomeBranch << endl;
-//						if(nomeBranch == "endB"){
-//							cout << "Break da keitura de branches" << endl;
-//							break;
-//						}
-//
-//						while(1){
-//							getline(file,stringIDCB);
-//							//cout << "ID commit branch " << nomeBranch << "= " << stringIDCB << endl;
-//							if(stringIDCB == "endC"){
-//								cout << "sai da leitura dos commits do branch" << nomeBranch << endl;
-//								break;
-//							}
-//							IDCB = stoi(stringIDCB);
-//							cout << "ID commit branch " << nomeBranch << " = " << IDCB << endl;
-//							cout << "Tam vet commits = " << commits.size() << endl;
-//							for(int j = 0; j < commits.size(); j++){
-//								cout << "Entra no ciclo" << endl;
-//								if(IDCB == commits.at(j).getID()){
-//									cout << "Entra no is" << endl;
-//									commitsBranch.push_back(commits.at(j));
-//								}
-//							}
-//
-//							Branch *b = new Branch(nomeBranch);
-//
-//							b->addCommitVec(commitsBranch);
-//
-//							branches.push_back(b);
-//						}
-//					}
-//					Avancado av = Avancado(nome);
-//					cout << "Set nome avancado" << endl;
-//					av.setTipo(tipo);
-//					cout << "Set tipo avancado = " << av.getTipo() << endl;
-//					av.setChaveAcesso(pass);
-//					cout << "Set pass avancado = " << av.getChaveAcesso() << endl;
-//					av.setID(IDP);
-//					cout << "Set ID proj avancado = " << av.getId() << endl;
-//					for(int i = 0; i < master.size(); i++){
-//						av.addCommit(master.at(i));
-//					}
-//					cout << "1 vetor" << endl;
-//					for(int j = 0; j < users.size(); j++){
-//						av.addUtilizador(users.at(j));
-//					}
-//					cout << "2 vetor" << endl;
-//					for(int k = 0; k < branches.size(); k++){
-//						av.addBranch_ref(branches.at(k));
-//					}
-//					cout << "3 vetor" << endl;
-//					_projetos.push_back(&av);
-//
-//					vector<Utilizador *> users2 = av.getUsers();
-//					cout << "Users size = " << users2.size() << endl;
-//				}
-//				else{
-//					Projeto proj = Projeto(nome,tipo);
-//					proj.setChaveAcesso(pass);
-//					proj.setID(IDP);
-//					for(int i = 0; i < master.size(); i++){
-//						proj.addCommit(master.at(i));
-//					}
-//					for(int j = 0; j < users.size(); j++){
-//						proj.addUtilizador(users.at(j));
-//					}
-//					_projetos.push_back(&proj);
-//
-//					vector<Utilizador *> users2 = proj.getUsers();
-//					cout << "Users size = " << users2.size() << endl;
-//					//cout << "Rankings size = " << users2.size() << endl;
-//				}
-//				getline(file,temp);
-//				cout << "(deve estar vazio) Temnp = " << temp << endl;
-//		}
-//		cout << "Nº de proj = " << _projetos.size() << endl;
-//	}
-//	file.close();
-//}
-
 void Empresa::readProjetos(){
 	ifstream file;
 	file.open("projetos02.txt");
@@ -615,14 +364,10 @@ void Empresa::readProjetos(){
 			vecCommits.clear();
 			vecCommitsBranch.clear();
 			branches.clear();
-			cout << "tipo = " << tipo << endl;
 			getline(file,nome);
-			cout << "Nome = " << nome << endl;
 			getline(file,pass);
-			cout << "Pass = " << pass << endl;
 			getline(file,stringIDP);
 			IDP = stoi(stringIDP);
-			cout << "ID Projeto = " << IDP << endl;
 
 			getline(file,temp);
 
@@ -702,7 +447,6 @@ void Empresa::readProjetos(){
 				for(int i = 0; i < branches.size(); i++){
 					av->addBranch_ref(branches.at(i));
 				}
-				cout << "size branches = " << av->getBranches().size() << endl;
 				_projetos.push_back(av);
 			}
 			else{
@@ -713,59 +457,15 @@ void Empresa::readProjetos(){
 				for(int i = 0; i < users.size(); i++){
 					proj->addUtilizador(users.at(i));
 				}
-				cout << "antes commits" << endl;
 				for(int i = 0; i < vecCommits.size(); i++){
 					proj->addCommit(vecCommits.at(i));
 				}
 
 				_projetos.push_back(proj);
 			}
-
-//			Projeto *proj = new Projeto(nome,tipo);
-//			proj->setID(IDP);
-//			proj->setChaveAcesso(pass);
-//
-//			for(int i = 0; i < users.size(); i++){
-//				proj->addUtilizador(users.at(i));
-//			}
-//			cout << "antes commits" << endl;
-//			for(int i = 0; i < vecCommits.size(); i++){
-//				proj->addCommit(vecCommits.at(i));
-//			}
-//			cout << "depois commits" << endl;
-//
-//			if(tipo == "Avancado"){
-//				cout << "Entrou" << endl;
-//				cout << "size branches = " << branches.size() << endl;
-//				Avancado *av = dynamic_cast<Avancado *>(proj);
-//				for(int i = 0; i < branches.size(); i++){
-//					av->addBranch_ref(branches.at(i));
-//					cout << "adiciona branch" << endl;
-//					cout << "size branches" << av->getBranches().size() << endl;
-//				}
-//			}
-//
-//			cout << "antes push_back" << endl;
-//
-//			_projetos.push_back(proj);
-//			cout << "depois push_back" << endl;
 		}
 		file.close();
 	}
-
-//	for(int i = 0; i < _projetos.size(); i++){
-//		if(_projetos.at(i)->getTipo() == "Avancado"){
-//			cout << "entra no if" << endl;
-//			for(int k = 0; k < _projetos.at(i)->getBranches().size(); k++){
-//				cout << "entra no for 1" << endl;
-//				for(int z = 0; z < _projetos.at(i)->getBranches().at(k)->getCommits().size(); z++){
-//					cout << "entra no for 2" << endl;
-//					cout << "Branch ==== " << _projetos.at(i)->getBranches().at(k)->getCommits().at(z).getID() << endl;
-//				}
-//			}
-//		}
-//	}
-	cout << "depois for" << endl;
 }
 
 void Empresa::writeUsers() {
