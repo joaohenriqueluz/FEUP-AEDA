@@ -17,6 +17,12 @@ public:
 	void removeProjeto(Projeto * proj);
 	void imprimeSalarios();
 	Utilizador* existeUser(string nome);
+	/**
+	 * @brief Retorna utilizador com o NIF passado por argumento
+	 * @param nif - NIF do utilizador procurado
+	 * @return utilizador
+	 */
+	Utilizador* existeUserID(int nif);
 	void existeNIF(int nif);
 	/**
 	 * @brief Verifica se ja existe esse email, lançando uma excecao se for verdade
@@ -52,7 +58,7 @@ public:
 	void writeCommits();
 	void readProjetos();
 	void converteJunior(Utilizador* junior);
-
+	void setProjLastID();
 };
 
 /*
@@ -66,7 +72,6 @@ bool removeObjeto(vector<T> & V, T objeto){
 	for(unsigned int i = 0; i < V.size(); i++)
 			if(V.at(i)== objeto)
 			{
-				cout<< "Removido.\n";
 				V.erase(V.begin()+i);
 				return true;
 			}

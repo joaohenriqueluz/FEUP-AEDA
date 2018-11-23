@@ -226,18 +226,6 @@ public:
 	 */
 	virtual void getInfo();
 
-	/**
-	 *
-	 * @param reputacao
-	 */
-	virtual void setReputacao(int reputacao){};
-
-	/**
-	 *
-	 * @return
-	 */
-	virtual int getReputacao() const { return 0; }
-
 };
 
 

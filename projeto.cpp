@@ -18,6 +18,9 @@ Commit::Commit(Utilizador *user, int volume, int d, int m, int a, int ID):_userC
 	_idC=ID;
 	_volume = volume;
 	_dataC.setData(d,m,a);
+	if(_lastC < _idC){
+		_lastC = _idC;
+	}
 }
 
 Utilizador* Commit::getUser () const{
@@ -35,6 +38,10 @@ Data Commit::getData() const{
 
 unsigned int Commit::getID() const{
 	return _idC;
+}
+
+void Commit::setLastID(int id){
+	_lastC = id;
 }
 //---------------------------------------------------------------------
 
@@ -133,6 +140,10 @@ string Projeto::getChaveAcesso(){
 
 void Projeto::setChaveAcesso(string chave){
 	_chaveAcesso = chave;
+}
+
+void Projeto::setLastID(int id){
+	lastId = id;
 }
 
 int Projeto::getVolume(string nome_user, Data d1, Data d2) const {
@@ -438,7 +449,8 @@ vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> us
 
 
 
- Utilizador* findUtilizador(int id, vector <Utilizador *> users) {
+Utilizador* findUtilizador(int id, vector <Utilizador *> users) {
+	string nome= "UtilizadorInvalido";
 	for (unsigned int i = 0; i < users.size(); i++)
 	{
 		if (users.at(i)->getNIF() == id)
@@ -446,15 +458,19 @@ vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> us
 			return users.at(i);
 		}
 	}
+	throw NoSuchUser(nome);
 }
- void Projeto::readCommits(vector <Utilizador *> users, vector <int> id) {
+vector<Commit> readCommits(vector <Utilizador *> users) {
 	ifstream file;
 	file.open("commits01.txt");
+	Utilizador* user = new Utilizador();
 	string ID, volume, userID, temp,test;
 	int d, m, a, _id, _userID, _volume;
 	char b;
- 	if (file.is_open()) {
+	vector <Commit> commits;
+	if (file.is_open()) {
 		while (file.good()) {
+			//cout << "Entra no ciclo na readCommits" << endl;
 			getline(file, ID); // le o id do commit
 			if(ID.empty())
 			{
@@ -472,14 +488,20 @@ vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> us
 			file >> d >> b >> m >> b >> a; // le a data em que foi feito o commit
 			getline(file, temp);
 			getline(file, temp);
- 			for (unsigned int i = 0; i < id.size(); ++i) {
-				if (id.at(i) == _id){
-					Utilizador* user = findUtilizador(_userID, users);
-					Commit c = Commit(user,_volume,d,m,a,_id);
-					_commits.push_back(c);
-				}
+			try {
+				 user = findUtilizador(_userID, users);
+			} catch (NoSuchUser & e) {
+				cout << "Erro na leitura do ficheiro dos commits.\n";
+				exit(0);
 			}
+
+			Commit c = Commit(user,_volume,d,m,a,_id);
+
+			commits.push_back(c);
+
 		}
 	}
+	return commits;
 }
+
 

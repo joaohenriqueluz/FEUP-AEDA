@@ -21,6 +21,7 @@ public:
     int getVolume () const;
     Data getData() const;
 	unsigned int getID() const;
+	void setLastID(int id);
 };
 
 class Branch {
@@ -137,6 +138,8 @@ public:
 
 	void imprimeUsers();
 
+	void setLastID(int id);
+
 
 	void imprimeCoders();
 
@@ -201,12 +204,6 @@ public:
 	 */
 	vector <Commit> filterCommits(vector<int> id);
 
-	/**
-	 * @brief Lê os commits a partir de um ficheiro
-	 * @param users - autores dos commits
-	 * @param id ID dos PROJETOS OU COMMITS
-	 */
-	void readCommits(vector <Utilizador *> users, vector <int> id);
 
 	/**
 	 * @brief Mostra os valores de nome,ID,tipo,chave de Acesso e volume do projeto
@@ -301,12 +298,15 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 		if (!troca) break;
 	}
 }
+
+
 /**
- * @brief Devolve vetor de Utilizadores com NIFs do vetor de NIFs fornecido
- * @param id  - vetor de NIF dos utilizadores
- * @param users  - vetor de utilizadores a pesquisar
- * @return Utilizadores cujo o NIF pertence ao vetor fornecido
+ * @brief Lê os commits de todos os utilizadores a partir de um ficheiro
+ * @param users - autores dos commits
+ * @return vetor de commits
  */
-vector <Utilizador *> findUtilizadores(vector <int> id, vector <Utilizador *> users);
+vector<Commit> readCommits(vector <Utilizador *> users);
+
+
 
 #endif //PROJ_AEDA_PROJETO_H

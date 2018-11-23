@@ -73,7 +73,7 @@ void rotinaEmpresa(Empresa & empresa) {
 				<< "|3 - Adicionar utilizador\n"
 				<< "|4 - Remover utilizador\n"
 				<< "|5 - Entrar com utilizador\n"
-				<< "|6 - Guardar progresso e sair\n"
+				<< "|6 - Guardar progresso\n"
 				<< "|0 - Sair\n"
 				<< "\n|Selecione uma opcao: ";//----|
 		//ver informcoes (ranking, tipo de utilizador (e caracteristicas da classe utilizador), projetos, salario, reputacao.
@@ -478,7 +478,6 @@ EDITA_PROJJ:
 	case 3:
 
 		addCommit(logger, empresa);
-		empresa.converteJunior(logger);
 		break;
 
 HIST_PROJ:
@@ -543,6 +542,13 @@ HIST_PROJ:
 		cout << "\n*Opcao invalida*\n";
 		break;
 
+	}
+
+	if(dynamic_cast<Junior*>(logger)->getReputacao() > 5000)
+	{
+		cout << "\n*Utilizador promovido! (novas tarefas)*\n"
+			 << "*Faca novo login*\n";
+		opcao=0;
 	}
 	}while(opcao!=0);
 }
@@ -1094,6 +1100,11 @@ SEL_BRANCH:
 
 	cout<<"Adicionado o commit com ID "<< newCommit->getID() << " ao branch " << nome << endl;
 
+	if(logger->getCargo()== "Junior")
+	{
+		empresa.converteJunior(logger);
+
+	}
 
 }
 
