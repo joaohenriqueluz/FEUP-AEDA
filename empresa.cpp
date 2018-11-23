@@ -597,7 +597,7 @@ void Empresa::writeProjetos(string ficheiro) {
 	vector <Commit> commits;
 	vector <Commit> aux_commits;
  	if(proj.size() == 0){
-		cout << "Nao existem projetos" << endl; //trocar por excecao;
+		cout << "Nao existem projetos" << endl;
 		return;
 	}
  	for(unsigned int i = 0; i < proj.size(); i++){
@@ -683,8 +683,8 @@ bool inputValidation(){
 		}
 
 		string buffer;
-		getline(cin, buffer); //reads what is left in the buffer
-		if (!buffer.empty() && buffer.find_first_not_of(" ") != (size_t) -1) { //while buffer is not empty and doens't have only space characters
+		getline(cin, buffer);
+		if (!buffer.empty() && buffer.find_first_not_of(" ") != (size_t) -1) {
 			return true;
 		}
 

@@ -470,22 +470,21 @@ vector<Commit> readCommits(vector <Utilizador *> users, string ficheiroC) {
 	vector <Commit> commits;
 	if (file.is_open()) {
 		while (file.good()) {
-			//cout << "Entra no ciclo na readCommits" << endl;
-			getline(file, ID); // le o id do commit
+			getline(file, ID);
 			if(ID.empty())
 			{
 				continue;
 			}
 			_id = stoi(ID);
-			getline(file, temp); // le a tag Users
-			while (1) { // ciclo que le todos os userID de um commit
+			getline(file, temp);
+			while (1) {
 				getline(file, userID);
 				if (userID == "endU") break;
 				_userID = stoi(userID);
 			}
-			getline(file, volume); // le o volume do commit
+			getline(file, volume);
 			_volume = stoi(volume);
-			file >> d >> b >> m >> b >> a; // le a data em que foi feito o commit
+			file >> d >> b >> m >> b >> a;
 			getline(file, temp);
 			getline(file, temp);
 			try {

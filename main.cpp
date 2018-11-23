@@ -106,27 +106,21 @@ void rotinaEmpresa(Empresa & empresa) {
 		cout 	<<endl
 				<<endl
 				<< "|1 - Ver rankings\n"
-				// rankings de atividade mensal de cada elemento do projeto .....
 				<< "|2 - Ver salarios de todos o pessoal\n"
-				// lista com salarios e valor total
 				<< "|3 - Adicionar utilizador\n"
 				<< "|4 - Remover utilizador\n"
 				<< "|5 - Entrar com utilizador\n"
 				<< "|6 - Guardar progresso\n"
 				<< "|0 - Sair\n"
-				<< "\n|Selecione uma opcao: ";//----|
-		//ver informcoes (ranking, tipo de utilizador (e caracteristicas da classe utilizador), projetos, salario, reputacao.
-		//entrar num projeto (pedindo codigo de acesso) para : ver informacoes (caracteristicas da classe projeto), fazer novos commits;
-		//	criar, eliminar ou juntar (merge) branches (conforme tipo de utilizadors e projetos).
+				<< "\n|Selecione uma opcao: ";
 
 		cin >> op;
 
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				op = 120;
-				continue;
-			}
+		if (inputValidation()) {
+			cout << "\n*Opcao invalida*\n\n";
+			op = 120;
+			continue;
+		}
 
 		switch (op) {
 		case 1:
@@ -141,19 +135,16 @@ void rotinaEmpresa(Empresa & empresa) {
 		case 4:
 			cout << "\n|Nome do utilizador a remover: ";
 			cin >> opcao;
-			if(inputValidation())
-				{
-					cout << "\n*Input invalido*\n\n";
-					continue;
-				}
-
-			try
-			{
-			empresa.removeUtilizador(opcao);
+			if (inputValidation()) {
+				cout << "\n*Input invalido*\n\n";
+				continue;
 			}
-			catch(NoSuchUser &f)
-			{
-				cout<< "\n*Nao existe nenhum utilizador com nome "<< f.getName()<<"*\n"<<endl;
+
+			try {
+				empresa.removeUtilizador(opcao);
+			} catch (NoSuchUser &f) {
+				cout << "\n*Nao existe nenhum utilizador com nome "
+						<< f.getName() << "*\n" << endl;
 			}
 			break;
 		case 5:
@@ -164,6 +155,8 @@ void rotinaEmpresa(Empresa & empresa) {
 			{
 				indice= verificaFile(fileu,filep,filec);
 			}
+
+			cout << "\n Progresso guardado em ficheiros com o sufixo "<< indice<<endl;
 			empresa.writeUsers(fileu);
 			empresa.writeCommits(filec);
 			empresa.writeProjetos(filep);
@@ -1051,7 +1044,7 @@ SET_INFO:
 
 
 	case 7:
-		// Merge
+		// Merge de branches
 SEL_PROJ:
 		if(!imprimeProj(empresa, logger))
 		{
@@ -1479,7 +1472,7 @@ void editarProjetos(Empresa & empresa, int ID, int opcao){
 
 	switch(opcao)
 	{
-	case 1: //MUDAR O NOME
+	case 1: //mudar o nome
 		cout<<"|Digite o novo nome: ";
 		cin>>nome;
 		if (inputValidation()) {
@@ -1511,7 +1504,7 @@ void editarUtilizador(Empresa & emp,Utilizador* logger, int opcao){
 	switch(opcao)
 	{
 
-	case 1://MUDAR EMAIL
+	case 1://mudar email
 		cout<<"|Digite o novo email: ";
 		cin>>email;
 		at_index = email.find_first_of('@', 0);
@@ -1553,7 +1546,6 @@ void editarUtilizador(Empresa & emp,Utilizador* logger, int opcao){
 void mostraMenu(Utilizador * logger)
 {
 	cout<<"\n\n|-------------------------------|\n";
-//	cout<<"|                               |\n";
 
 	if(logger->getCargo()== "Gestor")
 		cout<< "|          Menu Gestor          |\n";
@@ -1561,7 +1553,6 @@ void mostraMenu(Utilizador * logger)
 		cout<< "|          Menu Senior          |\n";
 	else if(logger->getCargo()== "Junior")
 		cout<< "|          Menu Junior          |\n";
-//	cout<<"|                               |\n";
 	cout<<"|-------------------------------|\n";
 
 
@@ -1597,7 +1588,7 @@ return true;
 
 int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 {
-	ifstream file; //file to test if there is already a file with the same name;
+	ifstream file;
 
 	unsigned int i;
 	for (i = 1; i <= 99; i++) {
@@ -1606,7 +1597,7 @@ int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 		newFileC = "commits" + to_string(i + 100).substr(1) + ".txt";
 		file.open(newFileU);
 
-		if (file.is_open()) //returns true if file does not exist
+		if (file.is_open())
 		{
 			file.close();
 			continue;
@@ -1614,7 +1605,7 @@ int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 
 		file.open(newFileP);
 
-		if (file.is_open()) //returns true if file does not exist
+		if (file.is_open())
 		{
 			file.close();
 			continue;
@@ -1622,7 +1613,7 @@ int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 
 		file.open(newFileC);
 
-		if (file.is_open()) //returns true if file does not exist
+		if (file.is_open())
 		{
 			file.close();
 			continue;
