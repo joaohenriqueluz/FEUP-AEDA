@@ -25,7 +25,7 @@ PROJ_NAME:
 	}
 TIPO:
 	cout << "Projeto Basico ou Avancado?(B/A)\n";
-	cin >> tipo; // Como e que implemento uma exception se ele der uma string vazia?
+	cin >> tipo;
 
 	if (inputValidation()) {
 		cout << "\n*Opcao invalida*\n\n";
@@ -56,19 +56,7 @@ void Empresa::removeProjeto(Projeto* proj) {
 	cout<< "\n"<< proj->getNome()<<" removido\n";
 	removeObjeto<Projeto*>(_projetos, proj);
 }
-/*
- void Empresa::removeProjeto(Projeto * projetoARemover){
- for(unsigned int i = 0; i < _projetos.size(); i++)
- {
- if(_projetos.at(i) == projetoARemover)
- {
- cout << "Projeto " << projetoARemover->getNome() <<" removido. \n";
- _projetos.erase(_projetos.begin() + i);
- return;
- }
- }
- }
- */
+
 
 void Empresa::novoUtilizador() {
 
@@ -112,7 +100,7 @@ NOME_UTI:
 NIF_UTI:
 	cout << "Digite NIF: ";
 	cin >> NIF;
-	if (inputValidation() || NIF > 9999999999 || NIF < 0) {
+	if (inputValidation() || NIF > 9999999999 || NIF < 99999999) {
 		cout << "\n*Opcao invalida*\n\n";
 		goto NIF_UTI;
 	}

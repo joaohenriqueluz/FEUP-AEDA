@@ -281,7 +281,7 @@ public:
 
 
 /**
- * @brief Classe do junio
+ * @brief Classe do junior
  * @param _reputacao - reputacao do junior
  */
 class Junior :public Utilizador {
