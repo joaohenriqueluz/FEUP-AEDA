@@ -305,7 +305,7 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
  * @param users - autores dos commits
  * @return vetor de commits
  */
-vector<Commit> readCommits(vector <Utilizador *> users);
+vector<Commit> readCommits(vector <Utilizador *> users,string ficheiroC);
 
 
 

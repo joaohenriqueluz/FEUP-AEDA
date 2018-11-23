@@ -460,9 +460,9 @@ Utilizador* findUtilizador(int id, vector <Utilizador *> users) {
 	}
 	throw NoSuchUser(nome);
 }
-vector<Commit> readCommits(vector <Utilizador *> users) {
+vector<Commit> readCommits(vector <Utilizador *> users, string ficheiroC) {
 	ifstream file;
-	file.open("commits01.txt");
+	file.open(ficheiroC);
 	Utilizador* user = new Utilizador();
 	string ID, volume, userID, temp,test;
 	int d, m, a, _id, _userID, _volume;
@@ -500,6 +500,10 @@ vector<Commit> readCommits(vector <Utilizador *> users) {
 			commits.push_back(c);
 
 		}
+	}
+	else {
+		cout << "\n*Ficheiro de commits nao encontrado*\n" << endl;
+		exit(0);
 	}
 	return commits;
 }

@@ -43,20 +43,20 @@ public:
 	void imprimeUser();
 	void imprimeCoders();
 	void imprimeProjetos();
-	void readUsers();
+	void readUsers(string ficheiro);
 	/**
 	 * @brief Regista utilizadores num ficheiro de texto
 	 */
-	void writeUsers();
+	void writeUsers(string ficheiro);
 	/**
 	 * @brief Regista projetos num ficheiro de texto
 	 */
-	void writeProjetos();
+	void writeProjetos(string ficheiro);
 	/**
 	 * @brief Regista commits num ficheiro de texto
 	 */
-	void writeCommits();
-	void readProjetos();
+	void writeCommits(string ficheiro);
+	void readProjetos(string ficheiroP, string ficheiroC);
 	void converteJunior(Utilizador* junior);
 	void setProjLastID();
 };

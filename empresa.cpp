@@ -3,16 +3,34 @@
 
 using namespace std;
 
+
+bool inputValidation();
+
 int Empresa::novoProjeto() {
 	string nome, tipo,chave;
 	Avancado* projA;
 	Projeto* projB;
+PROJ_NAME:
 	cout << "Nome do Projeto? \n";
 	cin >> nome;
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto PROJ_NAME;
+	}
 	cout << "Chave de acesso do Projeto? \n";
 	cin>>chave;
-	TIPO: cout << "Projeto Basico ou Avancado?(B/A)\n";
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto PROJ_NAME;
+	}
+TIPO:
+	cout << "Projeto Basico ou Avancado?(B/A)\n";
 	cin >> tipo; // Como e que implemento uma exception se ele der uma string vazia?
+
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto TIPO;
+	}
 	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
 		projB->setChaveAcesso(chave);
@@ -63,6 +81,10 @@ void Empresa::novoUtilizador() {
 NOME_UTI:
 	cout << "Nome do Utilizador: ";
 	cin>> nome;
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto NOME_UTI;
+	}
 
 	try {
 		repeteUser(nome);
@@ -74,22 +96,27 @@ NOME_UTI:
 
 
 	cout << "Data de Nascimento(d/m/a): ";
-	cin >> d;
-	//VERIFICACAO
-	cin >> m;
-	//VERIFICACAO
-
-	cin>> a;
-	//VERIFICACAO
-
+	cin >> d>>m>>a;
+	if (inputValidation() || d < 0 || d > 31 || m < 0 || m > 12 || a < 0) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto NOME_UTI;
+	}
 	cout << "Email: ";
 	cin >> email;
-	//VERIFICACAO???
+	size_t at_index = email.find_first_of('@', 0);
+	if (inputValidation() || !(at_index != std::string::npos && email.find_first_of('.', at_index) != std::string::npos)) {
+		cout << "Invalid input, please try again!\n\n";
+		goto NOME_UTI;
+	}
 
 NIF_UTI:
 	cout << "Digite NIF: ";
 	cin >> NIF;
-	//VERIFICACAO
+	if (inputValidation() || NIF > 9999999999 || NIF < 0) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto NIF_UTI;
+	}
+
 
 	try {
 		existeNIF(NIF);
@@ -103,6 +130,10 @@ NIF_UTI:
 TIPO_UNI:
 	cout << "Tipo(Gestor(G)/Programador(S/J)): ";
 	cin >> status;
+	if (inputValidation()) {
+			cout << "\n*Opcao invalida*\n\n";
+			goto TIPO_UNI;
+		}
 	if (status == "G") {
 		gestor = new Gestor(nome, d, m, a, email, 2500, NIF, "Gestor");
 		cout << "\nGestor criado!\n";
@@ -116,6 +147,10 @@ TIPO_UNI:
 	} else if (status == "J") {
 		cout << "Reputacao: ";
 		cin >> reput;
+		if (inputValidation() || reput < 0 || reput > 10000) {
+			cout << "\n*Opcao invalida*\n\n";
+			goto TIPO_UNI;
+		}
 		junior = new Junior(nome, d, m, a, email, reput, NIF, "Junior");
 		cout << "\nJunior criado!\n";
 		_utilizadores.push_back(junior);
@@ -268,13 +303,13 @@ void Empresa::imprimeProjetos() {
 	}
 }
 
-void Empresa::readUsers() {
+void Empresa::readUsers(string ficheiro) {
 	Utilizador* _gestor;
 	Utilizador* _junior;
 	Utilizador* _senior;
 
 	ifstream file;
-	file.open("utilizadores01.txt");
+	file.open(ficheiro);
 	string nome, rank, email, data, n, ids, reputacao, money;
 	char /*ch,*/b;
 	int d, m, a, /*id,*/nif, rep;
@@ -343,18 +378,19 @@ void Empresa::readUsers() {
 		file.close();
 
 	} else {
-		cout << "Ficheiro nao encontrado" << endl;
+		cout << "\n*Ficheiro de utilizadores nao encontrado*\n" << endl;
+		exit(0);
 	}
 }
 
-void Empresa::readProjetos(){
+void Empresa::readProjetos(string ficheiroP, string ficheiroC){
 	ifstream file;
-	file.open("projetos01.txt");
+	file.open(ficheiroP);
 
 	string temp, tipo, nome, pass, stringIDP, stringIDU, nomeBranch;
 	int IDP, IDU;
 
-	vector <Commit> commits = readCommits(_utilizadores);
+	vector <Commit> commits = readCommits(_utilizadores,ficheiroC);
 
 	vector <string> vecStringIDU;
 	vector <Utilizador *> users;
@@ -476,11 +512,15 @@ void Empresa::readProjetos(){
 		file.close();
 		setProjLastID();
 	}
+	else {
+			cout << "\n*Ficheiro de projetos nao encontrado*\n" << endl;
+			exit(0);
+		}
 }
 
-void Empresa::writeUsers() {
+void Empresa::writeUsers(string ficheiro) {
 	ofstream file;
-	file.open("utilizadores01.txt");
+	file.open(ficheiro);
 	string cargo;
 	for (unsigned int i = 0; i < _utilizadores.size(); i++) {
 		file << _utilizadores.at(i)->getNome() << endl;
@@ -512,9 +552,9 @@ void Empresa::writeUsers() {
 
 
 
-void Empresa::writeProjetos() {
+void Empresa::writeProjetos(string ficheiro) {
 	ofstream file;
-	file.open("projetos01.txt");
+	file.open(ficheiro);
 	string cargo;
 	for (unsigned int i = 0; i < _projetos.size(); i++) {
 		file << _projetos.at(i)->getTipo() << endl;
@@ -562,9 +602,9 @@ void Empresa::writeProjetos() {
 		}
 	}
 }
- void Empresa::writeCommits(){
+ void Empresa::writeCommits(string ficheiro){
 	ofstream file;
-	file.open("commits01.txt");
+	file.open(ficheiro);
 	vector <Projeto *> proj = getProjetos();
 	vector <Commit> commits;
 	vector <Commit> aux_commits;
@@ -592,9 +632,6 @@ void Empresa::writeProjetos() {
 		}
 
 	}
- 	for (unsigned int m = 0; m < commits.size(); ++m){
- 		cout << "commit : " << commits.at(m).getID();
- 	}
 
  	removeRepetidos(commits);
  	for (unsigned int k = 0; k < commits.size(); ++k) {
@@ -650,5 +687,20 @@ void Empresa::setProjLastID(){
 }
 
 
+bool inputValidation(){
+	if (cin.fail()) {
+			cin.clear();
+			cin.ignore(100000000, '\n');
+			return true;
+		}
+
+		string buffer;
+		getline(cin, buffer); //reads what is left in the buffer
+		if (!buffer.empty() && buffer.find_first_not_of(" ") != (size_t) -1) { //while buffer is not empty and doens't have only space characters
+			return true;
+		}
+
+		return false;
+}
 
 
