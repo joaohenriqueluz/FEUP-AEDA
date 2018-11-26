@@ -130,7 +130,7 @@ void Projeto::imprimeCoders()
 	{
 		if (_ranking.at(i)->getCargo() == "Gestor")
 			continue;
-		cout << i + 1 << "# " << _ranking.at(i)->getNome() << _ranking.at(i)->getCargo() <<  endl;
+		cout << i + 1 << "# " << _ranking.at(i)->getNome() <<"  "<< _ranking.at(i)->getCargo() <<  endl;
 	}
 }
 

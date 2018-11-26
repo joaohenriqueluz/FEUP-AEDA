@@ -103,6 +103,7 @@ NIF_UTI:
 	if (inputValidation() || NIF > 9999999999 || NIF < 99999999) {
 		cout << "\n*Opcao invalida*\n\n";
 		goto NIF_UTI;
+
 	}
 
 
@@ -639,7 +640,7 @@ void Empresa::writeProjetos(string ficheiro) {
 
 
 
-void Empresa::converteJunior(Utilizador * junior) {
+bool Empresa::converteJunior(Utilizador * junior) {
 vector<int> projetoSenior;
 	if (dynamic_cast <Junior*> (junior)->getReputacao() > 9999) {
 		string nome = junior->getNome();
@@ -653,12 +654,24 @@ vector<int> projetoSenior;
 				NIF, "Senior");
 		for(unsigned int i = 0; i < projetoSenior.size();i++)
 			novoSenior->addProjeto(projetoSenior.at(i));
+		for(unsigned int i = 0; i< novoSenior->getProjetos().size(); i++)
+		{	try
+			{
+			editProj(novoSenior->getProjetos().at(i))->addUtilizador(novoSenior);
+			}catch(NoSuchProject & e)
+			{
+				cout << "\n*Falha a converter Junior para Senior*\n";
+				return false;
+			}
+		}
 		removeUtilizador(junior->getNome());
 		getUsers().push_back(novoSenior);
+		return true;
 
 
 
 	}
+	return false;
 }
 
 void Empresa::setProjLastID(){

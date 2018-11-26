@@ -165,7 +165,7 @@ public:
 	 * @brief Converte um utilizador junior em senior
 	 * @param junior - junior a ser convertido
 	 */
-	void converteJunior(Utilizador* junior);
+	bool converteJunior(Utilizador* junior);
 
 	/**
 	 * @brief Encontra o projeto com o maior id e atribui esse valor a variavel lastId

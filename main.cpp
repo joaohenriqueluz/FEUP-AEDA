@@ -735,7 +735,7 @@ HIST_PROJ:
 
 	if(dynamic_cast<Junior*>(logger)->getReputacao() > 5000)
 	{
-		cout << "\n*Utilizador promovido! (novas tarefas)*\n"
+		cout << "\n* promovido! (novas tarefas)*\n"
 			 << "*Faca novo login*\n";
 		opcao=0;
 	}
@@ -1110,21 +1110,30 @@ SEL_MERGE_BRANCH:
 								goto SEL_MERGE_BRANCH;
 							}
 		try{
-		if (nome1 == "MASTER" && nome2 != "MASTER")
-			dynamic_cast <Avancado*>(proj)->merge(nome2);
-		else if(nome1 != "MASTER" && nome2 == "MASTER")
-			dynamic_cast <Avancado*>(proj)->merge(nome1);
-		else if(nome1 != "MASTER" && nome2 != "MASTER")
-			dynamic_cast <Avancado*>(proj)->merge(nome1, nome2);
-		else
-		{
-			cout << "\n*Pelo menos um dos branches deve ser diferente de MASTER*\n";
-			goto SEL_MERGE_BRANCH;
+			if(nome1!=nome2)
+			{	if (nome1 == "MASTER" && nome2 != "MASTER")
+					dynamic_cast <Avancado*>(proj)->merge(nome2);
+				else if(nome1 != "MASTER" && nome2 == "MASTER")
+					dynamic_cast <Avancado*>(proj)->merge(nome1);
+				else if(nome1 != "MASTER" && nome2 != "MASTER")
+					dynamic_cast <Avancado*>(proj)->merge(nome1, nome2);
+				else
+				{
+					cout << "\n*Pelo menos um dos branches deve ser diferente de MASTER*\n";
+					goto SEL_MERGE_BRANCH;
+				}
+			}
+			else{
+				cout << "\n*Deve selecionar branches diferentes*\n";
+				goto SEL_MERGE_BRANCH;
+
+			}
 		}
-		}
-		catch(NoSuchBranch &b){
-			cout << "\n*Nao existe um branch com o nome " << b.getName() << ". Tente outra vez*\n\n";
-		}
+
+
+			catch(NoSuchBranch &b) {
+				cout << "\n*Nao existe um branch com o nome " << b.getName() << ". Tente outra vez*\n\n";
+			}
 		break;
 default:
 	cout<< "\n*Opcao invalida*\n";
@@ -1346,7 +1355,8 @@ RANK_PROJ:
 			goto CASE_1;
 		}
 		break;
-
+	case 0:
+		break;
 	default:
 		cout<< "\n*Opcao invalida*\n";
 		break;
@@ -1457,12 +1467,15 @@ SEL_BRANCH:
 
 	if(logger->getCargo()== "Junior")
 	{
-		empresa.converteJunior(logger);
+		if(empresa.converteJunior(logger))
+		{
+			rotinaEmpresa(empresa);
+			return;
+		}
 
 	}
 
 }
-
 
 void editarProjetos(Empresa & empresa, int ID, int opcao){
 	Projeto* proj;
