@@ -1,5 +1,2 @@
 # Projeto-1-AEDA
-Está lá??
-Está lá??
-Quero falar com o meu papá!
-
+Projeto desenvolvido na FEUP para a cadeira de Algoritmos e Estruturas de Dados
