@@ -123,7 +123,7 @@ public:
 
 /**
  * @brief Classe utilizada para lancar uma excecao quando nao e encontrado um branch com o nome fornecido
- * @param name - nome do branch que nao foi possível encontrar
+ * @param name - nome do branch que nao foi possï¿½vel encontrar
  */
 class NoSuchBranch{
 	string name;
@@ -294,7 +294,7 @@ public:
     void setChaveAcesso(string chave);
 
     /**
-     * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em específico ou em todo o projeto conforme as datas que são recebidas
+     * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em especï¿½fico ou em todo o projeto conforme as datas que sï¿½o recebidas
      * @param nome_user - nome do utilizador
      * @param d1 - primeiro limite do intervalo de datas a pesquisar
      * @param d2 - segundo limite do intervalo de datas a pesquisar
@@ -303,7 +303,7 @@ public:
 	virtual int getVolume(string nome_user, Data d1, Data d2) const;
 
 	/**
-	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que são recebidas
+	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que sï¿½o recebidas
      * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
 	 * @return volume
@@ -317,7 +317,7 @@ public:
 	virtual void imprimeHistorico();
 
 	/**
-	 * @brief Retorna a frequencia de commits realizados por um utilizador dado entre duas datas em específico ou em todo o projeto conforme as datas que são recebidas
+	 * @brief Retorna a frequencia de commits realizados por um utilizador dado entre duas datas em especï¿½fico ou em todo o projeto conforme as datas que sï¿½o recebidas
 	 * @param user - nome do utilizador
 	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
@@ -350,6 +350,14 @@ public:
 	 */
 	virtual void getInfo();
 
+};
+
+class ProjetoPtr{
+	Projeto* projeto;
+public:
+	ProjetoPtr(Projeto* proj);
+	string getName() const;
+	unsigned int getID() const;
 };
 
 
@@ -404,7 +412,7 @@ public:
 
 
 	/**
-	 * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em específico ou em todo o projeto conforme as datas que são recebidas (inclui o volume dos branches)
+	 * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em especï¿½fico ou em todo o projeto conforme as datas que sï¿½o recebidas (inclui o volume dos branches)
 	 * @param nome_user - nome do utilizador
 	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
@@ -413,7 +421,7 @@ public:
 	int getVolume(string nome_user, Data d1, Data d2) const;
 
 	/**
-	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que são recebidas (inclui o volume dos branches)
+	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que sï¿½o recebidas (inclui o volume dos branches)
 	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
 	 * @return volume
@@ -449,7 +457,7 @@ public:
 
 /**
  * @brief Classe utilizada para lancar uma excecao quando nao e encontrado um projeto com o id fornecido
- * @param id - id do projeto que nao foi possível encontrar
+ * @param id - id do projeto que nao foi possï¿½vel encontrar
  */
 class NoSuchProject{
 	unsigned int id;
@@ -499,7 +507,7 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 
 
 /**
- * @brief Lê os commits de todos os utilizadores a partir de um ficheiro
+ * @brief Lï¿½ os commits de todos os utilizadores a partir de um ficheiro
  * @param users - autores dos commits
  * @return vetor de commits
  */

@@ -3,9 +3,33 @@
 
 #include <vector>
 #include <string>
+#include <unordered_set>
 #include "projeto.h"
+#include "client.h"
+#include "BST.h"
 
 using namespace std;
+
+struct  ProjetoPtrHash
+{
+	int operator() (const ProjetoPtr& proj) const
+	{
+		int sum = 0;
+
+		for(unsigned i = 0; i < proj.getName().size(); i++){
+			sum = 37*sum + proj.getName().at(i);
+		}
+
+		return sum;
+	}
+
+	bool operator() (const ProjetoPtr& proj1, const ProjetoPtr& proj2) const
+	{
+		return proj1.getID() == proj2.getID();
+	}
+};
+
+typedef unordered_set<ProjetoPtr, ProjetoPtrHash, ProjetoPtrHash> HashTabProjetos;
 
 /**
  * @brief Classe da empresa
@@ -15,7 +39,11 @@ using namespace std;
 class Empresa {
 	vector<Projeto *> _projetos;
 	vector<Utilizador *> _utilizadores;
+	BST<Client> clients;
+	HashTabProjetos pastProjects;
 public:
+
+	Empresa():clients(Client("","",0,0)){};f
 
 	/**
 	 * @brief Adiciona um novo utilizador a empresa
@@ -25,7 +53,7 @@ public:
 	/**
 	 * @brief Remove o utilizador identificado pelo nome fornecido
 	 * @param nome - nome do utilizador
-	 * @return verdadeiro se o utilizador é removido com sucesso
+	 * @return verdadeiro se o utilizador ï¿½ removido com sucesso
 	 */
 	bool removeUtilizador(string nome);
 
@@ -68,7 +96,7 @@ public:
 
 
 	/**
-	 * @brief Verifica se ja existe esse email, lançando uma excecao se for verdade
+	 * @brief Verifica se ja existe esse email, lanï¿½ando uma excecao se for verdade
 	 * @param email - email para verificar se e repetido ou nao
 	 */
 	void existeEmail(string email);
@@ -79,7 +107,7 @@ public:
 	 */
 	void repeteUser(string nome);
 	/**
-	 * @brief Devolve endereço do projeto com id dado, lançando uma excecao no caso de nao existir ou de o utilizador nao pertencer a esse projeto
+	 * @brief Devolve endereï¿½o do projeto com id dado, lanï¿½ando uma excecao no caso de nao existir ou de o utilizador nao pertencer a esse projeto
 	 * @param id - ID do projeto a ser retornado
 	 * @return apontador para Projeto com ID pedido
 	 */
@@ -171,6 +199,10 @@ public:
 	 * @brief Encontra o projeto com o maior id e atribui esse valor a variavel lastId
 	 */
 	void setProjLastID();
+
+	void addClient(Client c);
+
+	void removeClient(Client c);
 };
 
 /**

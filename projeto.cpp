@@ -152,7 +152,7 @@ int Projeto::getVolume(string nome_user, Data d1, Data d2) const {
 	{
 		if (_commits.at(i).getUser()->getNome() == nome_user)
 		{
-			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //não quer de um periodo especifico
+			if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //nï¿½o quer de um periodo especifico
 			{
 				volume += _commits.at(i).getVolume();
 			}
@@ -248,6 +248,18 @@ void Projeto::getInfo(){
 		 <<"#Chave de acesso: "<<_chaveAcesso << endl
 		 <<"#Volume:          "<< getVolumeTotal(d1, d1) << endl;
 
+}
+//---------------------------------------------------------------------
+ProjetoPtr::ProjetoPtr(Projeto* proj){
+	projeto = proj;
+}
+
+string ProjetoPtr::getName() const{
+	return projeto->getNome();
+}
+
+unsigned int ProjetoPtr::getID() const{
+	return projeto->getId();
 }
 //---------------------------------------------------------------------
 
@@ -377,7 +389,7 @@ commits= _branches.at(j)->getCommits();
 		{
 			if (commits.at(i).getUser()->getNome() == nome_user)
 			{
-				if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //não quer de um periodo especifico
+				if (d1 == Data(0, 0, 0) && d2 == Data(0, 0, 0)) //nï¿½o quer de um periodo especifico
 				{
 					volume += commits.at(i).getVolume();
 				}

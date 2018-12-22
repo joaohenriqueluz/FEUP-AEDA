@@ -687,6 +687,14 @@ void Empresa::setProjLastID(){
 	p->setLastID(maior);
 }
 
+void Empresa::addClient(Client c){
+	clients.insert(c);
+}
+
+void Empresa::removeClient(Client c){
+	clients.remove(c);
+}
+
 
 bool inputValidation(){
 	if (cin.fail()) {

@@ -933,7 +933,7 @@ CRIA_BRANCH:
 			goto CRIA_BRANCH;
 		}
 		if (proj->getTipo() == "Basico") {
-			cout << "\n*Este é do tipo Basico (sem branches)*\n"
+			cout << "\n*Este ï¿½ do tipo Basico (sem branches)*\n"
 					"|Selecione outro Projeto\n";
 			goto CRIA_BRANCH;
 		}
