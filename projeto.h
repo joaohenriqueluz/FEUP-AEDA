@@ -168,6 +168,7 @@ public:
  * @param _chave de acesso - chave de acesso do projeto
  * @param _ranking - utilizadores do projeto
  * @param _tipo - tipo de projeto
+ * @param _clientNIF - nif do cliente que encomendou o projeto
  */
 class Projeto {
 protected:
@@ -178,6 +179,7 @@ protected:
     vector<Commit> _commits;
     vector<Utilizador *> _ranking;
 	string _tipo; //Basico ou Avancado
+    unsigned _clientNIF;
 public:
 
 	/**
@@ -220,7 +222,7 @@ public:
 	 * @brief Retorna id do projeto
 	 * @return id
 	 */
-    unsigned int getId();
+    unsigned int getId() const;
 
     /**
      * @brief Altera o id do projeto;
@@ -285,7 +287,7 @@ public:
 	 * @brief Retorna a chave de acesso do projeto
 	 * @return chave de acesso
 	 */
-    string getChaveAcesso();
+    string getChaveAcesso() const;
 
     /**
      * @brief Altera a chave de acesso do projeto
@@ -329,7 +331,7 @@ public:
 	 * @brief Retorna copia do vetor de utilizadores que pertencem ao projeto
 	 * @return utilizadores do projeto
 	 */
-	vector<Utilizador *> getUsers() { return _ranking; };
+	vector<Utilizador *> getUsers() const { return _ranking; };
 
 	/**
 	 * @brief Retorna referencia para o vetor de utilizadores que pertencem ao projeto
@@ -348,16 +350,20 @@ public:
 	/**
 	 * @brief Mostra os valores de nome,ID,tipo,chave de Acesso e volume do projeto
 	 */
-	virtual void getInfo();
+	virtual void getInfo() const;
 
-};
+    /**
+     * @brief Retorna nif do cliente que encomendou o projeto
+     * @return nif do cliente
+     */
+    unsigned getClient() const;
 
-class ProjetoPtr{
-	Projeto* projeto;
-public:
-	ProjetoPtr(Projeto* proj);
-	string getName() const;
-	unsigned int getID() const;
+    /**
+     * @brief Altera o nif cliente que encomendou o projeto
+     * @param cl_nif - novo nif cliente que passa a ter a encomenta do projeto associada a si
+     */
+    void setClient(unsigned cl_nif);
+
 };
 
 
@@ -451,9 +457,68 @@ public:
 	/**
 	 * @brief Mostra os valores de nome, ID, tipo, chave de Acesso, volume e Branches do projeto
 	 */
-	void getInfo();
+	void getInfo() const;
 
 };
+
+/**
+ * @brief Classe de apontador de um projeto ??????????????????????????????????????
+ * @param projeto - projeto para o qual aponta??????????????????????????????????????
+ */
+class ProjetoPtr{
+	Projeto* projeto;
+public:
+
+	/**
+	 * @brief Construtor da classe de apontador de um projeto ????????????????????????
+	 * @param projeto - projeto para o qual aponta ????????????????????????????
+	 */
+	ProjetoPtr(Projeto* proj);
+
+	/**
+	 * @brief Devolve o projeto para o qual aponta????????
+	 * @return projeto
+	 */
+	Projeto* getProjeto () const;
+
+    /**
+     * @brief Retorna nome do projeto
+     * @return nome
+     */
+	string getName() const;
+
+    /**
+     * @brief Retorna id do projeto
+     * @return id
+     */
+	unsigned int getID() const;
+
+    /**
+     * @brief Retorna nif do cliente que encomendou o projeto
+     * @return nif do cliente
+     */
+	unsigned getClient() const;
+
+	/**
+	 * @brief Retorna copia do vetor de utilizadores que pertencem ao projeto
+	 * @return utilizadores do projeto
+	 */
+	vector <Utilizador*> getUsers() const;
+
+    /**
+     * @brief Altera o nome do projeto
+     * @param nome - novo nome
+     */
+    void setNome(string nome){projeto->setNome(nome);}
+
+    /**
+     * @brief Altera a chave de acesso do projeto
+     * @param chave - nova chave de acesso
+     */
+    void setChaveAcesso(string chave);
+};
+
+
 
 /**
  * @brief Classe utilizada para lancar uma excecao quando nao e encontrado um projeto com o id fornecido
@@ -507,7 +572,7 @@ void sortRanking(vector<Utilizador *> &vec, T *objeto, Data d1 = Data(0, 0, 0), 
 
 
 /**
- * @brief L� os commits de todos os utilizadores a partir de um ficheiro
+ * @brief Le os commits de todos os utilizadores a partir de um ficheiro
  * @param users - autores dos commits
  * @return vetor de commits
  */

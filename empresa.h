@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <list>
+#include <queue>
 #include <unordered_set>
 #include "projeto.h"
 #include "client.h"
@@ -10,17 +12,12 @@
 
 using namespace std;
 
+//TODO: documentacao desta parte
 struct  ProjetoPtrHash
 {
-	int operator() (const ProjetoPtr& proj) const
+	unsigned int operator() (const ProjetoPtr& proj) const
 	{
-		int sum = 0;
-
-		for(unsigned i = 0; i < proj.getName().size(); i++){
-			sum = 37*sum + proj.getName().at(i);
-		}
-
-		return sum;
+		return proj.getID()*2654435761 % (2^32);
 	}
 
 	bool operator() (const ProjetoPtr& proj1, const ProjetoPtr& proj2) const
@@ -28,22 +25,25 @@ struct  ProjetoPtrHash
 		return proj1.getID() == proj2.getID();
 	}
 };
-
+//TODO: documentacao desta parte
 typedef unordered_set<ProjetoPtr, ProjetoPtrHash, ProjetoPtrHash> HashTabProjetos;
+
 
 /**
  * @brief Classe da empresa
  * @param _projetos - projetos da empresa
  * @param _utilizadores - utilizadores da empresa
+ * @param _clients - clientes da empresa
+ * @param _pasteProjects - projetos da empresa terminados
  */
 class Empresa {
 	vector<Projeto *> _projetos;
 	vector<Utilizador *> _utilizadores;
-	BST<Client> clients;
-	HashTabProjetos pastProjects;
+	BST<Client> _clients;
+	HashTabProjetos _pastProjects;
 public:
 
-	Empresa():clients(Client("","",0,0)){};f
+	Empresa():_clients(Client("","",0,0)){};
 
 	/**
 	 * @brief Adiciona um novo utilizador a empresa
@@ -53,7 +53,7 @@ public:
 	/**
 	 * @brief Remove o utilizador identificado pelo nome fornecido
 	 * @param nome - nome do utilizador
-	 * @return verdadeiro se o utilizador ï¿½ removido com sucesso
+	 * @return verdadeiro se o utilizador e removido com sucesso
 	 */
 	bool removeUtilizador(string nome);
 
@@ -68,6 +68,12 @@ public:
 	 * @param proj - projeto a remover
 	 */
 	void removeProjeto(Projeto * proj);
+
+	/**
+	 * @brief Adiciona o projeto fornecido à empresa
+	 * @param proj - projeto a adicionar
+	 */
+	void addProject (Projeto* proj);
 
 	/**
 	 * @brief Imprime no ecra os utilizadores, os respetivos cargos e salarios e o total de todos os salarios
@@ -96,18 +102,19 @@ public:
 
 
 	/**
-	 * @brief Verifica se ja existe esse email, lanï¿½ando uma excecao se for verdade
+	 * @brief Verifica se ja existe esse email, lancando uma excecao se for verdade
 	 * @param email - email para verificar se e repetido ou nao
 	 */
 	void existeEmail(string email);
 
 	/**
-	 *
-	 * @param nome
+	 * @brief Verifica se o utilizador com nome fornecido já existe, lancando execeçao se não existir nenhum com esse nome
+	 * @param nome - nome do utilizador a verigicar se já existe ou não
 	 */
 	void repeteUser(string nome);
+
 	/**
-	 * @brief Devolve endereï¿½o do projeto com id dado, lanï¿½ando uma excecao no caso de nao existir ou de o utilizador nao pertencer a esse projeto
+	 * @brief Devolve endereco do projeto com id dado, lancando uma excecao no caso de nao existir ou de o utilizador nao pertencer a esse projeto
 	 * @param id - ID do projeto a ser retornado
 	 * @return apontador para Projeto com ID pedido
 	 */
@@ -192,6 +199,7 @@ public:
 	/**
 	 * @brief Converte um utilizador junior em senior
 	 * @param junior - junior a ser convertido
+	 * @return verdadeiro se não conseguir realizar a conversão, caso contrário retorna falso
 	 */
 	bool converteJunior(Utilizador* junior);
 
@@ -200,9 +208,112 @@ public:
 	 */
 	void setProjLastID();
 
+	/**
+	 * @brief Adiciona cliente à árvore binária com os clientes da empresa
+	 * @param c - cliente a adicionar à empresa
+	 */
 	void addClient(Client c);
 
+	/**
+	 * @brief Remove cliente da árvore binária com os clientes da empresa
+	 * @param c - cliente a remover da empresa
+	 */
 	void removeClient(Client c);
+
+	/**
+	 * @brief Procura cliente fornecido e devolve os projetos encomendados por este
+	 * @param c - cliente
+	 * @return projetos encomendados pelo cliente
+	 */
+	vector<Projeto*> getProjectsOfClient(Client c);
+
+	/**
+	 * @brief Procura cliente com nif fornecido
+	 * @param nif - nif do cliente
+	 * @return cliente
+	 */
+	Client getClient (unsigned nif);
+
+	/**
+	 * @brief Adiciona projeto ao cliente com nif fornecido
+	 * @param nif - nif do cliente
+	 * @param proj - projeto a adicionar ao cliente
+	 */
+	void addProjectToClient (unsigned nif, Projeto * proj);
+
+	/**
+	 * @brief Remove projeto do cliente com nif fornecido
+	 * @param nif - nif do cliente
+	 * @param id_proj - id do projeto a remover do cliente
+	 */
+	void removeProjectFromClient (unsigned nif, unsigned int id_proj);
+
+	/**
+	 * @brief Alterar numero do contacto do cliente com nif fornecido
+	 * @param nif - nif do cliente
+	 * @param novo_num - novo numero de contacto
+	 * @return verdadeiro se encontrou o cliente, caso contrario falso
+	 */
+	bool modifyContacto (unsigned nif, unsigned novo_num);
+
+	/**
+	 * @brief Altera chave de acesso do projeto terminado
+	 * @param proj - projeto
+	 * @param novaChave - nova chave de acesso
+	 */
+	void alterarChavePastProj (Projeto* proj, string novaChave);
+
+	/**
+	 * @brief Altera nome do projeto terminado
+	 * @param proj - projeto
+	 * @param novaChave - novo nome do projeto
+	 */
+	void alterarNomePastProj (Projeto* proj, string novoNome);
+
+	/**
+	 * @brief Coloca projeto na tabela de dispersão dos projetos terminados, removendo-o dos projetos em desenvolvimento
+	 * @param id - id do projeto em desenvolvimento a passar a projeto terminado
+	 */
+	void toPastProject (unsigned int id);
+
+	/**
+	 * @brief Coloca projeto np vetor de projetos em desenvolvimento, removendo-o dos projetos terminados
+	 * @param id - id do projeto terminado a ser reativado
+	 */
+	void toWorkingProject (unsigned int id);
+
+	/**
+	 * @brief Adiciona projeto à tabela de dispersão dos projetos terminados
+	 * @param proj - projeto a ser adicionado aos projetos terminados
+	 */
+	void addPastProject (Projeto* proj);
+
+	/**
+	 * @brief Remove projeto da tabela de dispersão dos projetos terminados, lançando exceção se não existir nenhum projeto com o id fornecido
+	 * @param proj - projeto a ser removido dos projetos terminados
+	 */
+	void removePastProject (unsigned int id);
+
+	/**
+	 * @brief Procura o projeto terminado com id fornecido, lançando exceção se não o encontrar
+	 * @param id - id do projeto a procurar
+	 * @return projeto terminado com id fornecido
+	 */
+	Projeto* getPastProject (unsigned int id);
+
+	/**
+	 * @brief Procura os projetos terminados nos quais o utilizador com NIF fornecido participou
+	 * @param NIF - NIF do utilizador
+	 * @return lista dos projetos terminados
+	 */
+	list<unsigned int> pastProjectsWithUser (int NIF);
+
+	/**
+	 * @brief Procura os projetos terminados os quais o cliente com NIF fornecido encomendou
+	 * @param NIF - NIF do cliente
+	 * @return lista dos projetos terminados
+	 */
+	list<unsigned int> pastProjectsWithClient (unsigned int NIF);
 };
 
 /**

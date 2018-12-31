@@ -52,6 +52,10 @@ TIPO:
 
 }
 
+void Empresa::addProject (Projeto* proj){
+	_projetos.push_back(proj);
+}
+
 void Empresa::removeProjeto(Projeto* proj) {
 	cout<< "\n"<< proj->getNome()<<" removido\n";
 	removeObjeto<Projeto*>(_projetos, proj);
@@ -687,14 +691,191 @@ void Empresa::setProjLastID(){
 	p->setLastID(maior);
 }
 
+
+//--------- BINARY TREE ----------------------------------------------------
+
 void Empresa::addClient(Client c){
-	clients.insert(c);
+	_clients.insert(c);
 }
 
 void Empresa::removeClient(Client c){
-	clients.remove(c);
+	_clients.remove(c);
 }
 
+vector<Projeto*> Empresa::getProjectsOfClient(Client c){
+
+	vector <Projeto*> projetos;
+
+	Client ItemNotFound ("","",0, 0);
+	Client tmp(c.getNome(), c.getEmail(), c.getContacto(), c.getNif());
+	Client finder = _clients.find(tmp);
+
+	if (finder == ItemNotFound){
+		return projetos;
+	}
+
+	projetos = finder.getProjetos();
+
+	return projetos;
+}
+
+Client Empresa::getClient (unsigned nif){
+	Client cliente ("","",0, 0);
+	BSTItrIn <Client> it (_clients);
+
+	while (!it.isAtEnd()){
+		if (it.retrieve().getNif() == nif){
+			return it.retrieve();
+		}
+		it.advance();
+	}
+
+	return cliente;
+}
+
+void Empresa::addProjectToClient (unsigned nif, Projeto * proj){ //TODO: bool???????????????
+
+	Client temp = getClient(nif);
+	_clients.remove(temp);
+	temp.addProj(proj);
+	_clients.insert(temp);
+
+}
+
+void Empresa::removeProjectFromClient (unsigned nif, unsigned int id_proj){
+
+	Client temp = getClient(nif);
+	_clients.remove(temp);
+	temp.removeProj(id_proj);
+	_clients.insert(temp);
+
+}
+
+bool Empresa::modifyContacto (unsigned nif, unsigned novo_num){
+
+	Client cl = getClient(nif);
+	if (cl.getNome().empty()){
+		return false;
+	}
+	_clients.remove(cl);
+	cl.setContacto(novo_num);
+	_clients.insert(cl);
+	return true;
+}
+
+
+
+//--------- HASH TABLE ----------------------------------------------------
+
+void Empresa::alterarChavePastProj (Projeto* proj, string novaChave){
+	ProjetoPtr tmp_p (proj);
+	HashTabProjetos::const_iterator it;
+
+	it = _pastProjects.find(tmp_p);
+
+	_pastProjects.erase(it);
+	tmp_p.setChaveAcesso(novaChave);
+	_pastProjects.insert (tmp_p);
+}
+
+void Empresa::alterarNomePastProj (Projeto* proj, string novoNome){
+	ProjetoPtr tmp_p (proj);
+	HashTabProjetos::const_iterator it;
+
+	it = _pastProjects.find(tmp_p);
+
+	_pastProjects.erase(it);
+	tmp_p.setNome(novoNome);
+	_pastProjects.insert (tmp_p);
+}
+
+void Empresa::toPastProject (unsigned int id){
+	Projeto * proj = editProj(id); //TODO: ver excecao??
+	removeProjeto(proj);
+	addPastProject(proj);
+	proj->removeAUsers();
+	unsigned cl = proj->getClient();
+	removeProjectFromClient(cl, id);
+}
+
+void Empresa::toWorkingProject (unsigned int id){
+	Projeto * proj = getPastProject(id);
+	removePastProject(id);
+	this->addProject(proj);
+
+	vector<Utilizador*> users = proj->getUsers();
+	for (unsigned int i = 0; i < users.size(); i++){
+		users.at(i)->addProjeto(id);
+	}
+	unsigned cl = proj->getClient(); //TODO: ver se n existe?? pode ja ter sido eliminado
+	this->addProjectToClient(cl, proj);
+
+}
+
+void Empresa::addPastProject (Projeto* proj){
+	_pastProjects.insert(proj);
+}
+
+void Empresa::removePastProject (unsigned int id){
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+	while (it != _pastProjects.end()){
+		if (it->getID() == id){
+			it = _pastProjects.erase(it);
+			return;
+		}
+		it++;
+	}
+	throw NoSuchProject(id);
+}
+
+Projeto* Empresa::getPastProject (unsigned int id){
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+		while (it != _pastProjects.end()){
+			if (it->getID() == id){
+				return it->getProjeto();
+			}
+			it++;
+		}
+		throw NoSuchProject(id);
+}
+
+list<unsigned int> Empresa::pastProjectsWithUser (int NIF){
+	list<unsigned int> res;
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+	while (it != _pastProjects.end()){
+		vector<Utilizador*> users = it->getUsers();
+		for (unsigned int i = 0; i < users.size(); i++){
+			if (users.at(i)->getNIF() == NIF){
+				res.push_back(it->getID());
+				break;
+			}
+		}
+		it++;
+	}
+
+	return res;
+}
+
+list<unsigned int> Empresa::pastProjectsWithClient (unsigned int NIF){
+	list<unsigned int> res;
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+	while (it != _pastProjects.end()){
+		if (it->getClient() == NIF){
+			res.push_back(it->getID());
+		}
+		it++;
+	}
+
+	return res;
+}
+
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 bool inputValidation(){
 	if (cin.fail()) {

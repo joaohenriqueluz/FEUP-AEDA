@@ -8,24 +8,28 @@ Client::Client(string nome, string email, unsigned numero, unsigned nif){
     _numeroProj = 0;
 }
 
-string Client::getNome(){
+string Client::getNome() const{
     return _nome;
 }
 
-string Client::getEmail(){
+string Client::getEmail() const{
     return _email;
 }
 
-unsigned Client::getContacto(){
+unsigned Client::getContacto() const{
     return _contacto;
 }
 
-unsigned Client::getNif(){
+unsigned Client::getNif() const{
     return _NIF;
 }
 
-unsigned Client::getNProj(){
+int Client::getNProj() const{
     return _numeroProj;
+}
+
+vector<Projeto* > Client::getProjetos() const{
+	return _projetos;
 }
 
 void Client::setNome(string nome){
@@ -50,16 +54,26 @@ void Client::incrementaProj(){
 
 void Client::addProj(Projeto* proj){
 	_projetos.push_back(proj);
+	incrementaProj();
+}
+
+void Client::removeProj (unsigned id){
+	for (unsigned int i = 0; i < _projetos.size(); i++){
+		if (_projetos.at(i)->getId() == id){
+			_projetos.erase(_projetos.begin()+i);
+			break;
+		}
+	}
 }
 
 bool Client::operator<(const Client& c1) const{
-	if(_numeroProj == c1._numeroProj){
-		return _nome < c1._nome;
+	if(_numeroProj == c1.getNProj()){
+		return _nome < c1.getNome();
 	}
-	return _numeroProj < c1._numeroProj;
+	return _numeroProj < c1.getNProj();
 }
 
 bool Client::operator==(const Client& c1) const{
-	return _email == c1._email;
+	return _NIF == c1.getNif();
 }
 

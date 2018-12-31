@@ -99,6 +99,7 @@ void Utilizador::removeProjeto (int id){
 		if (_projetos.at(i) == id)
 		{
 			_projetos.erase(_projetos.begin()+i);
+			return;
 		}
 	}
 }

@@ -65,13 +65,14 @@ Projeto::Projeto(string nome,string tipo){
     _nome = nome;
 	_tipo = tipo;
     _id = ++lastId;
+    _clientNIF = 0;
 }
 
 string Projeto::getNome (){
 	return _nome;
 }
 
-unsigned int Projeto::getId(){
+unsigned int Projeto::getId() const{
 	return _id;
 }
 
@@ -134,7 +135,7 @@ void Projeto::imprimeCoders()
 	}
 }
 
-string Projeto::getChaveAcesso(){
+string Projeto::getChaveAcesso() const{
 	return _chaveAcesso;
 }
 
@@ -240,7 +241,7 @@ vector <Commit> Projeto::filterCommits(vector<int> id) {
 	return commits;
 }
 
-void Projeto::getInfo(){
+void Projeto::getInfo() const{
 	Data d1(0,0,0);
 	cout <<"#Nome:            "<< _nome << endl
 		 <<"#ID:              "<< _id   << endl
@@ -249,18 +250,7 @@ void Projeto::getInfo(){
 		 <<"#Volume:          "<< getVolumeTotal(d1, d1) << endl;
 
 }
-//---------------------------------------------------------------------
-ProjetoPtr::ProjetoPtr(Projeto* proj){
-	projeto = proj;
-}
 
-string ProjetoPtr::getName() const{
-	return projeto->getNome();
-}
-
-unsigned int ProjetoPtr::getID() const{
-	return projeto->getId();
-}
 //---------------------------------------------------------------------
 
 Avancado::Avancado(string nome): Projeto(nome,"Avancado"){}
@@ -418,7 +408,7 @@ int Avancado::getVolumeTotal(Data d1, Data d2) const
 	return volume;
 }
 
-void Avancado::getInfo(){ //Nao e chamada a funcao do projeto porque o volume e calculado de maneira diferente
+void Avancado::getInfo() const{ //Nao e chamada a funcao do projeto porque o volume e calculado de maneira diferente
 	Data d1(0,0,0);
 		cout <<"#Nome:            "<< _nome << endl
 			 <<"#ID:              "<< _id   << endl
@@ -519,4 +509,45 @@ vector<Commit> readCommits(vector <Utilizador *> users, string ficheiroC) {
 	return commits;
 }
 
+
+
+//-----------------------------2 parte---------------------------------
+//---------------------------------------------------------------------
+unsigned Projeto::getClient() const{
+	return _clientNIF;
+}
+
+void Projeto::setClient(unsigned cl_nif){
+	_clientNIF = cl_nif;
+	//TODO: decrementar o numero de projetos do cliente anterior??
+}
+
+//---------------------------------------------------------------------
+ProjetoPtr::ProjetoPtr(Projeto* proj){
+	projeto = proj;
+}
+
+Projeto* ProjetoPtr::getProjeto () const{
+	return projeto;
+}
+
+string ProjetoPtr::getName() const{
+	return projeto->getNome();
+}
+
+unsigned ProjetoPtr::getID() const{
+	return projeto->getId();
+}
+
+unsigned ProjetoPtr::getClient() const{
+	return projeto->getClient();
+}
+
+vector <Utilizador*> ProjetoPtr::getUsers() const{
+	return projeto->getUsers();
+}
+
+void ProjetoPtr::setChaveAcesso(string chave){
+	projeto->setChaveAcesso(chave);
+}
 
