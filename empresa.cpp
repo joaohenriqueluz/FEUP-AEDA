@@ -7,6 +7,7 @@ using namespace std;
 bool inputValidation();
 
 int Empresa::novoProjeto() {
+	int d,m,a,u;
 	string nome, tipo,chave;
 	Avancado* projA;
 	Projeto* projB;
@@ -23,6 +24,33 @@ PROJ_NAME:
 		cout << "\n*Opcao invalida*\n\n";
 		goto PROJ_NAME;
 	}
+
+
+	cout << "Data de estimada para a conclusao: ";
+	cin >> d>>m>>a;
+	while(inputValidation() || d < 0 || d > 31 || m < 0 || m > 12 || a < 0) {
+		cout << "\n*Data invalida*\n\nVolte a tentar: ";
+		cin >> d>>m>>a;
+	}
+	Data d1(d,m,a);
+
+
+	cout << "Data de limite de conclusao: ";
+	cin >> d>>m>>a;
+	while(inputValidation() || d < 0 || d > 31 || m < 0 || m > 12 || a < 0) {
+		cout << "\n*Data invalida*\n\nVolte a tentar: ";
+		cin >> d>>m>>a;
+	}
+
+	Data d2(d,m,a);
+
+	cout <<"Urgencia do Projeto 1-10 [muito urgente]-[pouco urgente]: ";
+	while(inputValidation() || u <1 || u > 10) {
+		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
+		cin >>u;
+	}
+
+
 TIPO:
 	cout << "Projeto Basico ou Avancado?(B/A)\n";
 	cin >> tipo;
@@ -37,6 +65,8 @@ TIPO:
 		_projetos.push_back(projB);
 		cout << "Projeto " << nome << " criado com ID " << projB->getId()
 				<< endl;
+		Ticket T(d1,d2,u,projB);
+		_tickets.push(T);
 		return projB->getId();
 	} else if (tipo == "A") {
 		projA = new Avancado(nome);
@@ -44,6 +74,8 @@ TIPO:
 		_projetos.push_back(projA);
 		cout << "Projeto " << nome << " criado com ID " << projA->getId()
 				<< endl;
+		Ticket T(d1,d2,u,projA);
+		_tickets.push(T);
 		return projA->getId();
 	} else {
 		cout << "Opcao invalida! Tenta outra vez. \n\n";
@@ -58,7 +90,9 @@ void Empresa::addProject (Projeto* proj){
 
 void Empresa::removeProjeto(Projeto* proj) {
 	cout<< "\n"<< proj->getNome()<<" removido\n";
+	removeTicket(proj);
 	removeObjeto<Projeto*>(_projetos, proj);
+
 }
 
 
@@ -872,8 +906,53 @@ list<unsigned int> Empresa::pastProjectsWithClient (unsigned int NIF){
 
 	return res;
 }
+//--------------------PRIORITY_QUEUE---------------------------------------
+
+Projeto* Empresa::getMostUrgent()
+{
+	return _tickets.top().getProjeto();
+}
 
 
+
+
+Ticket Empresa::getNextTicket()
+{
+	priority_queue<Ticket> temp = _tickets;
+	while(!temp.empty())
+	{
+		if(temp.top().feasible())
+		{
+			return temp.top();
+		}
+		temp.pop();
+	}
+
+	throw(NoFeasibleTicket());
+
+	return Ticket(Data(1,1,1),Data(1,1,1),0,NULL);
+}
+
+
+bool Empresa::removeTicket(Projeto* P)
+{	bool removed = false;
+	priority_queue<Ticket> temp = _tickets;
+	while(!_tickets.empty())
+	{
+		_tickets.pop();
+	}
+	while(!temp.empty())
+	{
+		if(temp.top().getProjeto() == P)
+		{	temp.pop();
+			removed= true;
+			continue;
+		}
+		_tickets.push(temp.top());
+		temp.pop();
+	}
+	return removed;
+}
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 

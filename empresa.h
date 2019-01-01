@@ -9,6 +9,8 @@
 #include "projeto.h"
 #include "client.h"
 #include "BST.h"
+#include "ticket.h"
+
 
 using namespace std;
 
@@ -35,12 +37,14 @@ typedef unordered_set<ProjetoPtr, ProjetoPtrHash, ProjetoPtrHash> HashTabProjeto
  * @param _utilizadores - utilizadores da empresa
  * @param _clients - clientes da empresa
  * @param _pasteProjects - projetos da empresa terminados
+ * @param _tickets - tickets dos projetos em desenvolvimento
  */
 class Empresa {
 	vector<Projeto *> _projetos;
 	vector<Utilizador *> _utilizadores;
 	BST<Client> _clients;
 	HashTabProjetos _pastProjects;
+	priority_queue<Ticket> _tickets;
 public:
 
 	Empresa():_clients(Client("","",0,0)){};
@@ -314,6 +318,26 @@ public:
 	 * @return lista dos projetos terminados
 	 */
 	list<unsigned int> pastProjectsWithClient (unsigned int NIF);
+
+	/**
+	 * @brief Retorna o projeto mais urgente
+	 * @return projeto
+	 */
+	Projeto* getMostUrgent();
+
+	/**
+	 * @brief Retorna o proximo ticked exequivel
+	 * @return ticket
+	 */
+	Ticket getNextTicket();
+
+	/**
+	 * @brief Remove o ticket correspondente ao projeto fornecido
+	 * @param P - Projeto associado ao ticket a ser removido
+	 * @return verdaderio se a operação é efetuada com sucesso, senao retorna falso
+	 */
+	bool removeTicket(Projeto* P);
+
 };
 
 /**
