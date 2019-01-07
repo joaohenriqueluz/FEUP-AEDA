@@ -70,6 +70,7 @@ Utilizador::Utilizador(string nome, int d, int m, int a,string email,float salar
     _salario=salario;
     _NIF= NIF;
 	_cargo = cargo;
+	_currentProj = 0;
 }
 
 string Utilizador::getNome()const {
@@ -135,6 +136,10 @@ void Utilizador::getInfo() {
 		 << getDataNascimento().getAno()<< endl;
 }
 
+//------------------ 2 parte -------------------------------
+void Utilizador::setNextProject(int next_proj){
+	_currentProj = next_proj;
+}
 
 //---------------------------------------------------------------------
 

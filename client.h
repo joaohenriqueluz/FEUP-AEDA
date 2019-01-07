@@ -33,6 +33,7 @@ public:
     void removeProj (unsigned id);
     bool operator<(const Client& c1) const;
     bool operator==(const Client& c1) const;
+    void printProjects();
 
 };
 

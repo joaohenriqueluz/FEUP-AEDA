@@ -269,8 +269,8 @@ public:
 
 	/**
 	 * @brief Altera nome do projeto terminado
-	 * @param proj - projeto
-	 * @param novaChave - novo nome do projeto
+	 * @param proj
+	 * @param novoNome
 	 */
 	void alterarNomePastProj (Projeto* proj, string novoNome);
 
@@ -281,7 +281,7 @@ public:
 	void toPastProject (unsigned int id);
 
 	/**
-	 * @brief Coloca projeto np vetor de projetos em desenvolvimento, removendo-o dos projetos terminados
+	 * @brief Coloca projeto no vetor de projetos em desenvolvimento, removendo-o dos projetos terminados
 	 * @param id - id do projeto terminado a ser reativado
 	 */
 	void toWorkingProject (unsigned int id);
@@ -326,10 +326,11 @@ public:
 	Projeto* getMostUrgent();
 
 	/**
-	 * @brief Retorna o proximo ticked exequivel
-	 * @return ticket
+	 * @brief Retorna o id do proximo proximo projeto com ticket exequivel para o utilizador fornecido
+	 * @param user - utilizador a saber proximo projeto a realizar
+	 * @return id do projeto a realizar a seguir
 	 */
-	Ticket getNextTicket();
+	int getNextTicket(Utilizador* user);
 
 	/**
 	 * @brief Remove o ticket correspondente ao projeto fornecido
@@ -337,6 +338,41 @@ public:
 	 * @return verdaderio se a operação é efetuada com sucesso, senao retorna falso
 	 */
 	bool removeTicket(Projeto* P);
+
+	/**
+	 * @brief Imprime todos os clientes e o numero de projetos encomendados por ordem descrecente;
+	 */
+	void printClientNumProj();
+
+	/**
+	 * @brief Imprime todos os projetos emcomendados pelo cliente identificado pelo NIF fornecido
+	 * @param NIF - NIF do cliente
+	 */
+	void printClientProj(unsigned NIF);
+
+	/**
+	 * @brief Atualiza o projeto atual dos utilizadores do projeto identificado pelo id fornecido
+	 * @param id - ID do projeto
+	 */
+	void updateCurretProj(int id);
+
+	/**
+	 * @brief Imprime todos os projetos terminados, presentes na tabela de dispersao
+	 */
+	void printPastproj();
+
+	/**
+	 * @brief Verifica se existe um projeto terminado com o id fornecido;
+	 * @param id - id do projeto procurado
+	 * @return Verdadeiro se existir projeto com o id dado, senao retorna falso;
+	 */
+	bool existePastProj(int id);
+
+	/**
+	 * @brief Adiciona novo ticket a fila de prioridade
+	 * @param t - novo ticket a adicionar
+	 */
+	void addTicket(Ticket t);
 
 };
 

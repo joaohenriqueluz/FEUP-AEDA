@@ -7,7 +7,7 @@ using namespace std;
 bool inputValidation();
 
 int Empresa::novoProjeto() {
-	int d,m,a,u;
+	int d,m,a,u,nif;
 	string nome, tipo,chave;
 	Avancado* projA;
 	Projeto* projB;
@@ -45,10 +45,19 @@ PROJ_NAME:
 	Data d2(d,m,a);
 
 	cout <<"Urgencia do Projeto 1-10 [muito urgente]-[pouco urgente]: ";
+	cin >> u;
 	while(inputValidation() || u <1 || u > 10) {
 		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
 		cin >>u;
 	}
+
+	cout<< "NIF do cliente: "<<endl;
+	cin>>nif;
+	while(inputValidation() || nif >= 1000000000 || nif <= 99999999 || getClient(nif).getContacto()== 0) {
+		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
+		cin >>nif;
+		}
+
 
 
 TIPO:
@@ -62,6 +71,7 @@ TIPO:
 	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
 		projB->setChaveAcesso(chave);
+		projB->setClient(nif);
 		_projetos.push_back(projB);
 		cout << "Projeto " << nome << " criado com ID " << projB->getId()
 				<< endl;
@@ -71,6 +81,7 @@ TIPO:
 	} else if (tipo == "A") {
 		projA = new Avancado(nome);
 		projA->setChaveAcesso(chave);
+		projA->setClient(nif);
 		_projetos.push_back(projA);
 		cout << "Projeto " << nome << " criado com ID " << projA->getId()
 				<< endl;
@@ -324,10 +335,12 @@ void Empresa::imprimeCoders() {
 }
 
 void Empresa::imprimeProjetos() {
+
 	for (unsigned int i = 0; i < _projetos.size(); i++) {
 		cout << _projetos.at(i)->getNome() << " ID: "
 				<< _projetos.at(i)->getId() << endl;
 	}
+	cout <<"\n("<<_projetos.size()<<")\n";
 }
 
 void Empresa::readUsers(string ficheiro) {
@@ -906,6 +919,41 @@ list<unsigned int> Empresa::pastProjectsWithClient (unsigned int NIF){
 
 	return res;
 }
+
+
+
+void Empresa::printPastproj()
+{
+	HashTabProjetos::iterator it = _pastProjects.begin();
+	HashTabProjetos:: iterator ite = _pastProjects.end();
+	int i = 0;
+	while(it != ite)
+	{	i++;
+		cout<<"|ID: "<< it->getID()
+			<<" Nome: "<< it->getName()
+			<<" Tipo: "<< it->getProjeto()->getTipo() << endl;
+
+		it++;
+
+	}
+	if(i == 0)
+	{
+		cout << "\n*Ainda nao existem projetos terminados*\n";
+	}
+}
+
+bool Empresa::existePastProj(int id)
+{
+	HashTabProjetos::iterator it = _pastProjects.begin();
+	HashTabProjetos:: iterator ite = _pastProjects.end();
+	while(it != ite)
+	{
+	if(it->getID()== (unsigned)id)
+		return true;
+	}
+
+	return false;
+}
 //--------------------PRIORITY_QUEUE---------------------------------------
 
 Projeto* Empresa::getMostUrgent()
@@ -913,24 +961,29 @@ Projeto* Empresa::getMostUrgent()
 	return _tickets.top().getProjeto();
 }
 
-
-
-
-Ticket Empresa::getNextTicket()
+void Empresa::addTicket(Ticket t)
 {
+	_tickets.push(t);
+}
+
+
+int Empresa::getNextTicket(Utilizador* user)
+{
+	vector<int> projects = user->getProjetos();
 	priority_queue<Ticket> temp = _tickets;
 	while(!temp.empty())
 	{
-		if(temp.top().feasible())
-		{
-			return temp.top();
+		for (unsigned int i = 0; i < projects.size(); i++){
+			if (temp.top().getProjeto()->getId() == (unsigned)projects.at(i)){
+				if(temp.top().feasible())
+				{
+					return projects.at(i);
+				}
+			}
 		}
 		temp.pop();
 	}
-
-	throw(NoFeasibleTicket());
-
-	return Ticket(Data(1,1,1),Data(1,1,1),0,NULL);
+	return 0;
 }
 
 
@@ -952,6 +1005,49 @@ bool Empresa::removeTicket(Projeto* P)
 		temp.pop();
 	}
 	return removed;
+}
+
+
+void Empresa::printClientNumProj()
+{
+	BSTItrIn <Client> it (_clients);
+	int i= 1;
+	if(_clients.isEmpty())
+	{
+		cout<<"\n*Não existem clientes*\n\n";
+		return;
+	}
+	while(!it.isAtEnd())
+	{
+		cout <<i<<"# - "<<it.retrieve().getNome() <<"	"<< it.retrieve().getProjetos().size();
+		i++;
+		it.advance();
+	}
+}
+
+void Empresa::printClientProj(unsigned NIF)
+{
+	BSTItrIn <Client> it (_clients);
+	while(!it.isAtEnd())
+	{	if(it.retrieve().getNif() == NIF)
+		{
+		cout <<"Projetos encomendados por "<< it.retrieve().getNome()<<endl;
+		it.retrieve().printProjects();
+		}
+		it.advance();
+	}
+
+}
+
+
+
+void Empresa::updateCurretProj(int id) {
+	Projeto* proj = editProj(id);
+	for (unsigned int i = 0; i < proj->getUsers().size(); i++) {
+
+		id = getNextTicket(proj->getUsers().at(i));
+		proj->getUsers().at(i)->setNextProject(id);
+	}
 }
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------

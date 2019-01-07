@@ -109,6 +109,7 @@ protected:
     vector<int> _projetos;
     float _salario;
     int _NIF;
+    int _currentProj;
 
 public:
     /**
@@ -127,7 +128,7 @@ public:
     /**
      * @brief Construtor da classe sem parametros, colocando a zero o NIF e o salario do utilizador
      */
-	Utilizador() {_NIF = 0; _salario = 0;};
+	Utilizador() {_NIF = 0; _salario = 0; _currentProj = 0;};
 
 	/**
 	 * @brief Destrutor da class Utilizador
@@ -157,7 +158,6 @@ public:
      * @return data de nascimento do utilizador
      */
     Data* getDataNascimentoRef();
-
 
     /**
      * @brief Retorna email do utilizador
@@ -225,6 +225,12 @@ public:
 	 * @brief Mostra no ecra as informacoes do utilizador
 	 */
 	virtual void getInfo();
+
+	/**
+	 * @brief Altera o projeto que o utilizador esta a desenvolver atualmente
+	 * @return novo id de projeto
+	 */
+	void setNextProject(int next_proj);
 
 };
 

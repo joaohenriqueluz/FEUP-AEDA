@@ -17,6 +17,12 @@ void mostraMenu(Utilizador * logger);
 bool imprimeProj(Empresa & emp, Utilizador* logger);
 bool inputValidation();
 int verificaFile(string &newFileU,string &newFileP, string &newFileC);
+void criaCliente(Empresa& empresa);
+void LoginCliente(Empresa& empresa);
+void mostraClientes(Empresa & empresa);
+Projeto * selectProj(Empresa & empresa, Utilizador* logger);
+Projeto * selectPastProj(Empresa & empresa);
+void reativarPastProj(Empresa & empresa, Utilizador* logger);
 
 int main() {
 
@@ -111,6 +117,11 @@ void rotinaEmpresa(Empresa & empresa) {
 				<< "|4 - Remover utilizador\n"
 				<< "|5 - Entrar com utilizador\n"
 				<< "|6 - Guardar progresso\n"
+				<< "|7 - Entrar como novo cliente\n"
+				<< "|8 - Entrar como cliente existente\n"
+				<< "|9 - Informacoes de clientes\n"
+				<< "|10 - Ver projetos em desenvolvimento\n"
+				<< "|11 - Ver projetos terminados\n"
 				<< "|0 - Sair\n"
 				<< "\n|Selecione uma opcao: ";
 
@@ -160,6 +171,23 @@ void rotinaEmpresa(Empresa & empresa) {
 			empresa.writeUsers(fileu);
 			empresa.writeCommits(filec);
 			empresa.writeProjetos(filep);
+			break;
+		case 7:
+			criaCliente(empresa);
+			cout<< "\n*Inicio de sessao*\n";
+			LoginCliente(empresa);
+			break;
+		case 8:
+			LoginCliente(empresa);
+			break;
+		case 9:
+			mostraClientes(empresa);
+			break;
+		case 10:
+			empresa.imprimeProjetos();
+			break;
+		case 11:
+			empresa.printPastproj();
 			break;
 		case 0:
 			exit(0);
@@ -226,6 +254,8 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 				<< "|7 - Editar nome/chave de acesso de um projeto\n"
 				<< "|8 - Ver informacoes do utilizador\n"
 				<< "|9 - Editar informacoes do utilizador\n"
+				<< "|10 - Terminar projeto\n"
+				<< "|11 - Reativar projeto\n"
 				<< "|0 - Voltar atras\n";
 		cin >> opcao;
 		if(inputValidation())
@@ -437,46 +467,11 @@ REM_PROJ:
 			imprimeProj(empresa, logger);
 			break;
 
-INFO_PROJ:
+
 		case 6:
 
-			if(!imprimeProj(empresa, logger))
-			{
-				break;
-			}
-			cout << "|Selecione um projeto(ID): ";
-			cin >> opcao;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto INFO_PROJ;
-				}
-
-			if (opcao == 0)
-				break;
-			try
-			{
-				proj = empresa.editProj(opcao);
-			}
-			catch(NoSuchProject & e)
-			{
-				cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-				goto INFO_PROJ;
-			}
-			cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-			cin>>chave;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto INFO_PROJ;
-				}
-			if(chave != proj->getChaveAcesso())
-			{
-				cout<<"\n*Chave de acesso errada, volte tentar*\n";
-				goto INFO_PROJ;
-			}
+			proj = selectProj(empresa,logger);
+			cout<<endl;
 			proj->getInfo();
 			break;
 
@@ -552,11 +547,22 @@ EDITA_UTIG:	case 9:
 			editarUtilizador(empresa,logger,opcao);
 			break;
 
+		case 10:
+			proj = selectProj(empresa,logger);
+			empresa.removeTicket(proj);
+			empresa.updateCurretProj(proj->getId());
+			empresa.toPastProject(proj->getId());
+			break;
+
+		case 11:
+			reativarPastProj(empresa,logger);
+			break;
+
 		case 0:
 			break;
 
 		default:
-			cout << "\n*Escolha uma opcao valida*\n";
+			cout <<"\n*Escolha uma opcao valida*\n";
 			break;
 		}
 	} while (opcao != 0);
@@ -1637,3 +1643,264 @@ int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 	return i;
 	}
 
+
+void criaCliente(Empresa& empresa)
+{
+	string nome;
+    string email;
+	size_t at_index;
+    unsigned contacto;
+    unsigned NIF;
+	cout<<"Nome: ";
+	cin >>nome;
+	while(inputValidation())
+	{
+		cout << "\n*Nome invalido*\n\n";
+		cin>> nome;
+	}
+
+	cout<<"Digite o email: ";
+	cin>>email;
+
+	at_index = email.find_first_of('@', 0);
+	while(inputValidation()
+			|| !(at_index != std::string::npos
+					&& email.find_first_of('.', at_index)
+							!= std::string::npos))
+	{
+		cout << "Invalid input, please try again!\n\n";
+		cin >> email;
+		at_index = email.find_first_of('@', 0);
+	}
+
+	cout << "Digite o numero de telemovel: ";
+	cin >> contacto;
+	while(inputValidation() || contacto >= 1000000000 || contacto <= 99999999) {
+			cout << "\n*Valor invalido*\n\nVolte a tentar: ";
+			cin >>contacto;
+			}
+
+	cout << "Digite o seu NIF: ";
+	cin >> NIF;
+	while(inputValidation() || NIF >= 1000000000 || NIF <= 99999999 || empresa.getClient(NIF).getContacto()!= 0)
+	{
+		cout << "\n*Valor invalido ou já atribuido*\n\nVolte a tentar: ";
+		cin >>NIF;
+	}
+
+    Client cliente(nome,email, contacto ,NIF);
+    empresa.addClient(cliente);
+}
+
+
+void LoginCliente(Empresa & empresa) {
+	unsigned NIF;
+	int opcao;
+
+	cout << "Digite o seu NIF: ";
+	cin >> NIF;
+	if (inputValidation() || NIF >= 1000000000 || NIF <= 99999999
+			|| empresa.getClient(NIF).getContacto() == 0) {
+		cout << "\n*NIF nao atribuido*\n\n";
+		return;
+	}
+	OP: cout << "Opcoes: " << endl;
+	cout << "|1 - Ver projetos encomendados\n"
+			<< "|2 - Ver informacoes do cliente\n" << "|3 - Voltar\n"
+			<< " Selecione uma opcao: ";
+
+	cin >> opcao;
+
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto OP;
+	}
+	switch (opcao) {
+	case 1:
+		empresa.getClient(NIF).printProjects();
+		goto OP;
+		break;
+	case 2:
+		cout << endl;
+		cout << "|Nome: " << empresa.getClient(NIF).getNome() << endl;
+		cout << "|Contacto: " << empresa.getClient(NIF).getContacto() << endl;
+		cout << "|Email: " << empresa.getClient(NIF).getEmail() << endl;
+		cout << "|NIF: " << empresa.getClient(NIF).getNif() << endl;
+		cout << "|Nº de projetos: "
+				<< empresa.getClient(NIF).getProjetos().size() << endl<< endl<< endl ;
+		goto OP;
+		break;
+	case 3:
+		return;
+	default:
+		cout << "\n*Opcao invalida*\n\n";
+		goto OP;
+		break;
+
+	}
+
+}
+
+
+
+void mostraClientes(Empresa & empresa)
+{
+int opcao;
+unsigned NIF;
+
+COP:
+	cout << "Opcao: \n"
+		 << "|1 - Ver clientes ordenados por numero de projetos\n"
+		 << "|2 - Ver os projetos de um cliente\n"
+		 << "|3 - Voltar\n"
+		 << " Selecione uma opcao: \n";
+	cin>> opcao;
+	if(inputValidation())
+		{
+			cout << "\n*Opcao invalida*\n\n";
+			goto COP;
+		}
+
+	switch(opcao)
+	{
+	case 1:
+
+		empresa.printClientNumProj();
+		break;
+
+	case 2:
+		cout << "Digite o seu NIF: ";
+		cin >> NIF;
+		if (inputValidation() || NIF >= 1000000000 || NIF <= 99999999
+				|| empresa.getClient(NIF).getContacto() == 0) {
+			cout << "\n*NIF nao atribuido*\n\n";
+			goto COP;
+		}
+		empresa.printClientProj(NIF);
+		break;
+
+	case 3:
+		return;
+
+	default:
+		cout << "\n*Opcao invalida*\n\n";
+		goto COP;
+		break;
+	}
+
+}
+
+
+
+Projeto * selectProj(Empresa & empresa, Utilizador* logger)
+{
+	int opcao;
+	string chave;
+	Projeto * proj = new Projeto("","");
+	SEL_OP: if (!imprimeProj(empresa, logger)) {
+		proj->setID(0);
+		return proj;
+	}
+	cout << "|Selecione um projeto(ID): ";
+	cin >> opcao;
+
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto SEL_OP;
+	}
+
+	if (opcao == 0)
+	{
+		proj->setID(0);
+		return proj;
+	}
+	try {
+		proj = empresa.editProj(opcao);
+	} catch (NoSuchProject & e) {
+		cout << "\n*Projeto com ID " << e.getId() << " nao existe*\n";
+		goto SEL_OP;
+	}
+	cout << "|Digite a chave de acesso do projeto " << proj->getNome() << ": ";
+	cin >> chave;
+
+	if (inputValidation()) {
+		cout << "\n*Opcao invalida*\n\n";
+		goto SEL_OP;
+	}
+	if (chave != proj->getChaveAcesso()) {
+		cout << "\n*Chave de acesso errada, volte tentar*\n";
+		goto SEL_OP;
+	}
+
+	return proj;
+
+}
+
+Projeto * selectPastProj(Empresa & empresa)
+{
+	Projeto * proj = new Projeto("","");
+	proj->setID(0);
+	int id;
+	cout<<endl;
+	empresa.printPastproj();
+	cout<< "\n Selecione um projeto(ID): ";
+	cin >>id;
+	try{
+		proj = empresa.getPastProject(id);
+	}
+	catch(NoSuchProject &e)
+	{
+		cout << "\n\n* Nao existe um projeto terminado com o id " << e.getId()<<"*\n";
+	}
+
+	return proj;
+
+}
+
+void reativarPastProj(Empresa & empresa, Utilizador* logger)
+{
+	int u,d,m,a;
+	string chave;
+	Projeto* proj = selectPastProj(empresa);
+
+	if(proj->getId() == 0)
+	{
+		cout << "\n*Operacao sem sucesso*\n";
+		return;
+	}
+	cout << "Nova chave de acesso do Projeto? \n";
+		cin>>chave;
+		while(inputValidation()) {
+			cout << "\n*Opcao invalida*\n\n";
+			cin >> chave;
+		}
+
+	cout << "\nData de estimada para a conclusao: ";
+	cin >> d>>m>>a;
+	while(inputValidation() || d < 0 || d > 31 || m < 0 || m > 12 || a < 0) {
+		cout << "\n*Data invalida*\n\nVolte a tentar: ";
+		cin >> d>>m>>a;
+	}
+	Data d1(d,m,a);
+
+
+	cout << "Data de limite de conclusao: ";
+	cin >> d>>m>>a;
+	while(inputValidation() || d < 0 || d > 31 || m < 0 || m > 12 || a < 0) {
+		cout << "\n*Data invalida*\n\nVolte a tentar: ";
+		cin >> d>>m>>a;
+	}
+
+	Data d2(d,m,a);
+
+	cout <<"Urgencia do Projeto 1-10 [muito urgente]-[pouco urgente]: ";
+	cin >> u;
+	while(inputValidation() || u <1 || u > 10) {
+		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
+		cin >>u;
+	}
+	empresa.toWorkingProject(proj->getId());
+	Ticket T(d1,d2,u,proj);
+	empresa.addTicket(T);
+	cout << "*Projeto com ID "<<T.getProjeto()->getId() << " adicionado com sucesso!*\n"; // Estou a usar o T para ter o projeto para ter a certeza que estao associados
+}
