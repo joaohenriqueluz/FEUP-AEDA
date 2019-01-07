@@ -29,11 +29,11 @@ public:
     void setContacto(unsigned numero);
     void setNIF(unsigned nif);
     void incrementaProj();
+    void setNProj(int n);
     void addProj(Projeto* proj);
     void removeProj (unsigned id);
     bool operator<(const Client& c1) const;
     bool operator==(const Client& c1) const;
-    void printProjects();
 
 };
 

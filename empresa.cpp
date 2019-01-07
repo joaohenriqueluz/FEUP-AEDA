@@ -7,7 +7,7 @@ using namespace std;
 bool inputValidation();
 
 int Empresa::novoProjeto() {
-	int d,m,a,u,nif;
+	int d,m,a,u;
 	string nome, tipo,chave;
 	Avancado* projA;
 	Projeto* projB;
@@ -45,19 +45,10 @@ PROJ_NAME:
 	Data d2(d,m,a);
 
 	cout <<"Urgencia do Projeto 1-10 [muito urgente]-[pouco urgente]: ";
-	cin >> u;
 	while(inputValidation() || u <1 || u > 10) {
 		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
 		cin >>u;
 	}
-
-	cout<< "NIF do cliente: "<<endl;
-	cin>>nif;
-	while(inputValidation() || nif >= 1000000000 || nif <= 99999999 || getClient(nif).getContacto()== 0) {
-		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
-		cin >>nif;
-		}
-
 
 
 TIPO:
@@ -71,7 +62,6 @@ TIPO:
 	if (tipo == "B") {
 		projB = new Projeto(nome, "Basico");
 		projB->setChaveAcesso(chave);
-		projB->setClient(nif);
 		_projetos.push_back(projB);
 		cout << "Projeto " << nome << " criado com ID " << projB->getId()
 				<< endl;
@@ -81,7 +71,6 @@ TIPO:
 	} else if (tipo == "A") {
 		projA = new Avancado(nome);
 		projA->setChaveAcesso(chave);
-		projA->setClient(nif);
 		_projetos.push_back(projA);
 		cout << "Projeto " << nome << " criado com ID " << projA->getId()
 				<< endl;
@@ -335,12 +324,10 @@ void Empresa::imprimeCoders() {
 }
 
 void Empresa::imprimeProjetos() {
-
 	for (unsigned int i = 0; i < _projetos.size(); i++) {
 		cout << _projetos.at(i)->getNome() << " ID: "
 				<< _projetos.at(i)->getId() << endl;
 	}
-	cout <<"\n("<<_projetos.size()<<")\n";
 }
 
 void Empresa::readUsers(string ficheiro) {
@@ -423,12 +410,170 @@ void Empresa::readUsers(string ficheiro) {
 	}
 }
 
+void Empresa::readclients(string ficheiro){
+	ifstream file;
+	file.open(ficheiro);
+
+	string nome, email, nP, stringNif, stringCont, stringID;
+	int nproj, id;
+	vector<int> ids;
+	unsigned nif, cont;
+
+	if(!file.is_open()){
+		cout << "File not found" << endl;
+		return;
+	}
+
+	while(file.good()){
+		getline(file,nome);
+		if(nome.empty()){
+			continue;
+		}
+		getline(file,email);
+
+		getline(file,nP);
+		nproj = stoi(nP);
+
+		getline(file,stringNif);
+		nif = stoi(stringNif);
+
+		getline(file,stringCont);
+		cont = stoi(stringCont);
+
+		while(1){
+			getline(file,stringID);
+			if(stringID == "endP"){
+				break;
+			}
+			id = stoi(stringID);
+			ids.push_back(id);
+		}
+
+		Client c(nome,email,cont,nif);
+
+		for(int i = 0; i < ids.size(); i++){
+			for(int j = 0; j < _projetos.size(); j++){
+				if(ids.at(i) == _projetos.at(j)->getId()){
+					c.addProj(_projetos.at(j));
+				}
+			}
+		}
+
+		c.setNProj(nproj);
+
+		addClient(c);
+		ids.clear();
+	}
+}
+
+void Empresa::writeClients(string ficheiro){
+	ofstream file;
+	file.open(ficheiro);
+
+	BSTItrIn <Client> it (_clients);
+
+	while (!it.isAtEnd()){
+		file << it.retrieve().getNome() << endl;
+		file << it.retrieve().getEmail() << endl;
+		file << it.retrieve().getNProj() << endl;
+		file << it.retrieve().getNif() << endl;
+		file << it.retrieve().getContacto() << endl;
+
+		for(int i = 0;  i < it.retrieve().getProjetos().size(); i++){
+			file << it.retrieve().getProjetos().at(i)->getId() << endl;
+		}
+
+		file << "endP" << endl;
+		file << endl;
+
+		it.advance();
+	}
+
+
+}
+
+void Empresa::readTickets(string ficheiro){
+	ifstream file;
+	file.open(ficheiro);
+
+	Projeto* proj;
+
+	int d1, m1, a1, d2, m2, a2, urgencia, IDP;
+	string temp, stringU, stringIDP, n;
+	char b;
+
+	if(!file.is_open()){
+		cout << "File not found" << endl;
+		return;
+	}
+
+	while (file.good()){
+		file >> d1 >> b >> m1 >> b >> a1;
+		getline(file, n);
+		file >> d2 >> b >> m2 >> b >> a2;
+		getline(file, n);
+
+		getline(file, stringU);
+		urgencia = stoi(stringU);
+
+		getline(file, stringIDP);
+		IDP = stoi(stringIDP);
+
+
+		for (int i = 0; i < _projetos.size(); i++) {
+			if (IDP == _projetos.at(i)->getId()) {
+				proj = _projetos.at(i);
+			}
+		}
+
+		Data ECT(d1, m1, a1);
+		Data TTC(d2, a2, m2);
+
+		Ticket t(ECT, TTC, urgencia, proj);
+
+		_tickets.push(t);
+
+		getline(file,temp);
+	}
+}
+
+void Empresa::writeTickets(string ficheiro){
+	ofstream file;
+	file.open(ficheiro);
+
+	queue<Ticket> temp;
+
+	while(!_tickets.empty()){
+		Ticket t = _tickets.top();
+		_tickets.pop();
+
+		file << t.getECT().getDia() << "/"
+				<< t.getECT().getMes() << "/"
+				<< t.getECT().getAno() << endl;
+
+		file << t.getTTC().getDia() << "/"
+				<< t.getTTC().getMes() << "/"
+				<< t.getTTC().getAno() << endl;
+
+		file << t.getUrgencia() << endl;
+		file << t.getProjeto()->getId() << endl;
+		file << endl;
+
+		temp.push(t);
+	}
+
+	while(!temp.empty()){
+		_tickets.push(temp.front());
+		temp.pop();
+	}
+}
+
 void Empresa::readProjetos(string ficheiroP, string ficheiroC){
 	ifstream file;
 	file.open(ficheiroP);
 
-	string temp, tipo, nome, pass, stringIDP, stringIDU, nomeBranch;
-	int IDP, IDU;
+	string temp, tipo, nome, pass, stringIDP, stringIDU, stringIDC, nomeBranch, terminado;
+	int IDP, IDU, IDC;
 
 	vector <Commit> commits = readCommits(_utilizadores,ficheiroC);
 
@@ -453,6 +598,9 @@ void Empresa::readProjetos(string ficheiroP, string ficheiroC){
 			getline(file,pass);
 			getline(file,stringIDP);
 			IDP = stoi(stringIDP);
+			getline(file,stringIDC);
+			IDC = stoi(stringIDC);
+			getline(file,terminado);
 
 			getline(file,temp);
 
@@ -521,6 +669,7 @@ void Empresa::readProjetos(string ficheiroP, string ficheiroC){
 				Avancado *av = new Avancado(nome);
 				av->setID(IDP);
 				av->setChaveAcesso(pass);
+				av->setClient(IDC);
 
 				for(unsigned int i = 0; i < users.size(); i++){
 					av->addUtilizador(users.at(i));
@@ -532,12 +681,18 @@ void Empresa::readProjetos(string ficheiroP, string ficheiroC){
 				for(unsigned int i = 0; i < branches.size(); i++){
 					av->addBranch_ref(branches.at(i));
 				}
-				_projetos.push_back(av);
+				if(terminado == "ter"){
+					 addPastProject (av);
+				}
+				else{
+					_projetos.push_back(av);
+				}
 			}
 			else{
 				Projeto *proj = new Projeto(nome,tipo);
 				proj->setID(IDP);
 				proj->setChaveAcesso(pass);
+				proj->setClient(IDC);
 
 				for(unsigned int i = 0; i < users.size(); i++){
 					proj->addUtilizador(users.at(i));
@@ -546,7 +701,12 @@ void Empresa::readProjetos(string ficheiroP, string ficheiroC){
 					proj->addCommit(vecCommits.at(i));
 				}
 
-				_projetos.push_back(proj);
+				if(terminado == "ter"){
+					addPastProject (proj);
+				}
+				else{
+					_projetos.push_back(proj);
+				}
 			}
 		}
 		file.close();
@@ -601,6 +761,8 @@ void Empresa::writeProjetos(string ficheiro) {
 		file << _projetos.at(i)->getNome() << endl;
 		file << _projetos.at(i)->getChaveAcesso()<< endl;
 		file << _projetos.at(i)->getId() << endl;
+		file << _projetos.at(i)->getClient() << endl;
+		file << "des" << endl;
 		file << "Users" << endl;
  		vector<Utilizador*> users = _projetos.at(i)->getUsers();
 		for (unsigned int j = 0; j < users.size(); j++){
@@ -629,6 +791,47 @@ void Empresa::writeProjetos(string ficheiro) {
  		}
 			file << endl;
 	}
+
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+	while (it != _pastProjects.end()) {
+		file << it->getProjeto()->getTipo() << endl;
+		file << it->getProjeto()->getNome() << endl;
+		file << it->getProjeto()->getChaveAcesso() << endl;
+		file << it->getProjeto()->getId() << endl;
+		file << it->getProjeto()->getClient() << endl;
+		file << "ter" << endl;
+		file << "Users" << endl;
+		vector<Utilizador*> users = it->getProjeto()->getUsers();
+		for (unsigned int j = 0; j < users.size(); j++) {
+			file << users.at(j)->getNIF() << endl;
+		}
+		file << "endU" << endl;
+		file << "Commits" << endl;
+		vector<Commit> com = it->getProjeto()->getCommits();
+		for (unsigned int j = 0; j < com.size(); j++) {
+			file << com.at(j).getID() << endl;
+		}
+		file << "endC" << endl;
+		if (it->getProjeto()->getTipo() == "Avancado") {
+			vector<Branch*> branches =
+					dynamic_cast<Avancado*>(it->getProjeto())->getBranches();
+			if (branches.size() != 0) {
+				for (unsigned int j = 0; j < branches.size(); j++) {
+					file << branches.at(j)->getNome() << endl;
+					com = branches.at(j)->getCommits();
+					for (unsigned int k = 0; k < com.size(); k++) {
+						file << com.at(k).getID() << endl;
+					}
+					file << "endC" << endl;
+				}
+			}
+			file << "endB" << endl;
+		}
+		file << endl;
+		it++;
+	}
+
 	file.close();
 
  }
@@ -919,41 +1122,6 @@ list<unsigned int> Empresa::pastProjectsWithClient (unsigned int NIF){
 
 	return res;
 }
-
-
-
-void Empresa::printPastproj()
-{
-	HashTabProjetos::iterator it = _pastProjects.begin();
-	HashTabProjetos:: iterator ite = _pastProjects.end();
-	int i = 0;
-	while(it != ite)
-	{	i++;
-		cout<<"|ID: "<< it->getID()
-			<<" Nome: "<< it->getName()
-			<<" Tipo: "<< it->getProjeto()->getTipo() << endl;
-
-		it++;
-
-	}
-	if(i == 0)
-	{
-		cout << "\n*Ainda nao existem projetos terminados*\n";
-	}
-}
-
-bool Empresa::existePastProj(int id)
-{
-	HashTabProjetos::iterator it = _pastProjects.begin();
-	HashTabProjetos:: iterator ite = _pastProjects.end();
-	while(it != ite)
-	{
-	if(it->getID()== (unsigned)id)
-		return true;
-	}
-
-	return false;
-}
 //--------------------PRIORITY_QUEUE---------------------------------------
 
 Projeto* Empresa::getMostUrgent()
@@ -961,29 +1129,24 @@ Projeto* Empresa::getMostUrgent()
 	return _tickets.top().getProjeto();
 }
 
-void Empresa::addTicket(Ticket t)
-{
-	_tickets.push(t);
-}
 
 
-int Empresa::getNextTicket(Utilizador* user)
+
+Ticket Empresa::getNextTicket()
 {
-	vector<int> projects = user->getProjetos();
 	priority_queue<Ticket> temp = _tickets;
 	while(!temp.empty())
 	{
-		for (unsigned int i = 0; i < projects.size(); i++){
-			if (temp.top().getProjeto()->getId() == (unsigned)projects.at(i)){
-				if(temp.top().feasible())
-				{
-					return projects.at(i);
-				}
-			}
+		if(temp.top().feasible())
+		{
+			return temp.top();
 		}
 		temp.pop();
 	}
-	return 0;
+
+	throw(NoFeasibleTicket());
+
+	return Ticket(Data(1,1,1),Data(1,1,1),0,NULL);
 }
 
 
@@ -1005,49 +1168,6 @@ bool Empresa::removeTicket(Projeto* P)
 		temp.pop();
 	}
 	return removed;
-}
-
-
-void Empresa::printClientNumProj()
-{
-	BSTItrIn <Client> it (_clients);
-	int i= 1;
-	if(_clients.isEmpty())
-	{
-		cout<<"\n*Não existem clientes*\n\n";
-		return;
-	}
-	while(!it.isAtEnd())
-	{
-		cout <<i<<"# - "<<it.retrieve().getNome() <<"	"<< it.retrieve().getProjetos().size();
-		i++;
-		it.advance();
-	}
-}
-
-void Empresa::printClientProj(unsigned NIF)
-{
-	BSTItrIn <Client> it (_clients);
-	while(!it.isAtEnd())
-	{	if(it.retrieve().getNif() == NIF)
-		{
-		cout <<"Projetos encomendados por "<< it.retrieve().getNome()<<endl;
-		it.retrieve().printProjects();
-		}
-		it.advance();
-	}
-
-}
-
-
-
-void Empresa::updateCurretProj(int id) {
-	Projeto* proj = editProj(id);
-	for (unsigned int i = 0; i < proj->getUsers().size(); i++) {
-
-		id = getNextTicket(proj->getUsers().at(i));
-		proj->getUsers().at(i)->setNextProject(id);
-	}
 }
 //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
