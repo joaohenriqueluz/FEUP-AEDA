@@ -74,7 +74,7 @@ public:
 	void removeProjeto(Projeto * proj);
 
 	/**
-	 * @brief Adiciona o projeto fornecido ï¿½ empresa
+	 * @brief Adiciona o projeto fornecido a empresa
 	 * @param proj - projeto a adicionar
 	 */
 	void addProject (Projeto* proj);
@@ -112,8 +112,8 @@ public:
 	void existeEmail(string email);
 
 	/**
-	 * @brief Verifica se o utilizador com nome fornecido jï¿½ existe, lancando execeï¿½ao se nï¿½o existir nenhum com esse nome
-	 * @param nome - nome do utilizador a verigicar se jï¿½ existe ou nï¿½o
+	 * @brief Verifica se o utilizador com nome fornecido ja existe, lancando execeçao se nao existir nenhum com esse nome
+	 * @param nome - nome do utilizador a verigicar se ja existe ou nao
 	 */
 	void repeteUser(string nome);
 
@@ -184,7 +184,7 @@ public:
 	/**
 	 * @brief Retira informacao sobre os clientes da empresa a partir de um ficheiro
 	 * @param ficheiro - ficheiro lido
-	*/
+	 */
 	void readclients(string ficheiro);
 
 	/**
@@ -206,9 +206,9 @@ public:
 	void writeProjetos(string ficheiro);
 
 	/**
-	* @brief Regista clientes num ficheiro de texto
-	* @param ficheiro - ficheiro escrito
-	*/
+	 * @brief Regista clientes num ficheiro de texto
+	 * @param ficheiro - ficheiro escrito
+	 */
 	void writeClients(string ficheiro);
 
 	/**
@@ -227,7 +227,7 @@ public:
 	/**
 	 * @brief Converte um utilizador junior em senior
 	 * @param junior - junior a ser convertido
-	 * @return verdadeiro se nï¿½o conseguir realizar a conversï¿½o, caso contrï¿½rio retorna falso
+	 * @return verdadeiro se nao conseguir realizar a conversao, caso contrario retorna falso
 	 */
 	bool converteJunior(Utilizador* junior);
 
@@ -237,13 +237,13 @@ public:
 	void setProjLastID();
 
 	/**
-	 * @brief Adiciona cliente ï¿½ ï¿½rvore binï¿½ria com os clientes da empresa
-	 * @param c - cliente a adicionar ï¿½ empresa
+	 * @brief Adiciona cliente à arvore binaria com os clientes da empresa
+	 * @param c - cliente a adicionar à empresa
 	 */
 	void addClient(Client c);
 
 	/**
-	 * @brief Remove cliente da ï¿½rvore binï¿½ria com os clientes da empresa
+	 * @brief Remove cliente da arvore binaria com os clientes da empresa
 	 * @param c - cliente a remover da empresa
 	 */
 	void removeClient(Client c);
@@ -293,37 +293,37 @@ public:
 
 	/**
 	 * @brief Altera nome do projeto terminado
-	 * @param proj - projeto
-	 * @param novaChave - novo nome do projeto
+	 * @param proj - projeto a ser alterado
+	 * @param novoNome - novo nome do projeto
 	 */
 	void alterarNomePastProj (Projeto* proj, string novoNome);
 
 	/**
-	 * @brief Coloca projeto na tabela de dispersï¿½o dos projetos terminados, removendo-o dos projetos em desenvolvimento
+	 * @brief Coloca projeto na tabela de dispersao dos projetos terminados, removendo-o dos projetos em desenvolvimento
 	 * @param id - id do projeto em desenvolvimento a passar a projeto terminado
 	 */
 	void toPastProject (unsigned int id);
 
 	/**
-	 * @brief Coloca projeto np vetor den projetos em desenvolvimento, removendo-o dos projetos terminados
+	 * @brief Coloca projeto no vetor de projetos em desenvolvimento, removendo-o dos projetos terminados
 	 * @param id - id do projeto terminado a ser reativado
 	 */
 	void toWorkingProject (unsigned int id);
 
 	/**
-	 * @brief Adiciona projeto ï¿½ tabela de dispersï¿½o dos projetos terminados
+	 * @brief Adiciona projeto à tabela de dispersao dos projetos terminados
 	 * @param proj - projeto a ser adicionado aos projetos terminados
 	 */
 	void addPastProject (Projeto* proj);
 
 	/**
-	 * @brief Remove projeto da tabela de dispersï¿½o dos projetos terminados, lanï¿½ando exceï¿½ï¿½o se nï¿½o existir nenhum projeto com o id fornecido
+	 * @brief Remove projeto da tabela de dispersao dos projetos terminados, lançando exceçao se nao existir nenhum projeto com o id fornecido
 	 * @param proj - projeto a ser removido dos projetos terminados
 	 */
 	void removePastProject (unsigned int id);
 
 	/**
-	 * @brief Procura o projeto terminado com id fornecido, lanï¿½ando exceï¿½ï¿½o se nï¿½o o encontrar
+	 * @brief Procura o projeto terminado com id fornecido, lançando exceçao se nao o encontrar
 	 * @param id - id do projeto a procurar
 	 * @return projeto terminado com id fornecido
 	 */
@@ -350,17 +350,53 @@ public:
 	Projeto* getMostUrgent();
 
 	/**
-	 * @brief Retorna o proximo ticked exequivel
-	 * @return ticket
+	 * @brief Retorna o id do proximo proximo projeto com ticket exequivel para o utilizador fornecido
+	 * @param user - utilizador a saber proximo projeto a realizar
+	 * @return id do projeto a realizar a seguir
 	 */
-	Ticket getNextTicket();
+	int getNextTicket(Utilizador* user);
 
 	/**
 	 * @brief Remove o ticket correspondente ao projeto fornecido
 	 * @param P - Projeto associado ao ticket a ser removido
-	 * @return verdaderio se a operaï¿½ï¿½o ï¿½ efetuada com sucesso, senao retorna falso
+	 * @return verdaderio se a operaçao é efetuada com sucesso, senao retorna falso
 	 */
 	bool removeTicket(Projeto* P);
+
+	/**
+	 * @brief Imprime todos os clientes e o numero de projetos encomendados por ordem descrecente;
+	 */
+	void printClientNumProj();
+
+	/**
+	 * @brief Imprime todos os projetos emcomendados pelo cliente identificado pelo NIF fornecido
+	 * @param NIF - NIF do cliente
+	 */
+	void printClientProj(unsigned NIF);
+
+	/**
+	 * @brief Atualiza o projeto atual dos utilizadores do projeto identificado pelo id fornecido
+	 * @param id - ID do projeto
+	 */
+	void updateCurretProj(int id);
+
+	/**
+	 * @brief Imprime todos os projetos terminados, presentes na tabela de dispersao
+	 */
+	void printPastproj();
+
+	/**
+	 * @brief Verifica se existe um projeto terminado com o id fornecido;
+	 * @param id - id do projeto procurado
+	 * @return Verdadeiro se existir projeto com o id dado, senao retorna falso;
+	 */
+	bool existePastProj(int id);
+
+	/**
+	 * @brief Adiciona novo ticket a fila de prioridade
+	 * @param t - novo ticket a adicionar
+	 */
+	void addTicket(Ticket t);
 
 };
 
