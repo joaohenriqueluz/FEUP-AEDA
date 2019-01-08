@@ -121,7 +121,7 @@ void Projeto::imprimeUsers()
 	cout << "Utilizadores do projeto com ID " << getId() << endl;
 for (unsigned int i = 0; i < _ranking.size(); i++)
 	{
-		cout <<i+1<<"# "<< _ranking.at(i)->getNome()<<"     Cargo: "<<_ranking.at(i)->getCargo()<< endl;
+		cout <<(i+1)<<"# "<< _ranking.at(i)->getNome()<<"     Cargo: "<<_ranking.at(i)->getCargo()<< endl;
 	}
 }
 
