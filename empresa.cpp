@@ -350,9 +350,9 @@ void Empresa::readUsers(string ficheiro) {
 
 	ifstream file;
 	file.open(ficheiro);
-	string nome, rank, email, data, n, ids, reputacao, money;
+	string nome, rank, email, data, n, ids, reputacao, money, stringProj;
 	char /*ch,*/b;
-	int d, m, a, /*id,*/nif, rep;
+	int d, m, a, /*id,*/nif, rep, proj;
 	float salario;
 	vector<int> dataV;
 	vector<int> projId;
@@ -386,6 +386,8 @@ void Empresa::readUsers(string ficheiro) {
 				getline(file, money);
 				salario = stof(money);
 			}
+			getline(file,stringProj);
+			proj = stoi(stringProj);
 			getline(file, n);
 
 			if (rank == "G") {
@@ -394,6 +396,7 @@ void Empresa::readUsers(string ficheiro) {
 				for (unsigned int i = 0; i < projId.size(); ++i) {
 					_gestor->addProjeto(projId.at(i));
 				}
+				_gestor->setNextProject(proj);
 				_utilizadores.push_back(_gestor);
 			}
 			if (rank == "S") {
@@ -402,6 +405,7 @@ void Empresa::readUsers(string ficheiro) {
 				for (unsigned int i = 0; i < projId.size(); ++i) {
 					_senior->addProjeto(projId.at(i));
 				}
+				_senior->setNextProject(proj);
 				_utilizadores.push_back(_senior);
 			}
 
@@ -411,6 +415,7 @@ void Empresa::readUsers(string ficheiro) {
 				for (unsigned int i = 0; i < projId.size(); ++i) {
 					_junior->addProjeto(projId.at(i));
 				}
+				_junior->setNextProject(proj);
 				_utilizadores.push_back(_junior);
 			}
 
@@ -753,6 +758,7 @@ void Empresa::writeUsers(string ficheiro) {
 		if (_utilizadores.at(i)->getCargo() != "Junior") {
 			file << _utilizadores.at(i)->getSalario() << endl;
 		}
+		file << _utilizadores.at(i)->getNextProject() << endl;
 		file<<endl;
 	}
 	file.close();

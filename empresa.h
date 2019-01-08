@@ -46,7 +46,9 @@ class Empresa {
 	HashTabProjetos _pastProjects;
 	priority_queue<Ticket> _tickets;
 public:
-
+	/**
+	 * @brief Construtor da classe empresa
+	 */
 	Empresa():_clients(Client("","",0,0)){};
 
 	/**
@@ -112,7 +114,7 @@ public:
 	void existeEmail(string email);
 
 	/**
-	 * @brief Verifica se o utilizador com nome fornecido ja existe, lancando execeçao se nao existir nenhum com esse nome
+	 * @brief Verifica se o utilizador com nome fornecido ja existe, lancando execeï¿½ao se nao existir nenhum com esse nome
 	 * @param nome - nome do utilizador a verigicar se ja existe ou nao
 	 */
 	void repeteUser(string nome);
@@ -237,8 +239,8 @@ public:
 	void setProjLastID();
 
 	/**
-	 * @brief Adiciona cliente à arvore binaria com os clientes da empresa
-	 * @param c - cliente a adicionar à empresa
+	 * @brief Adiciona cliente ï¿½ arvore binaria com os clientes da empresa
+	 * @param c - cliente a adicionar ï¿½ empresa
 	 */
 	void addClient(Client c);
 
@@ -311,19 +313,19 @@ public:
 	void toWorkingProject (unsigned int id);
 
 	/**
-	 * @brief Adiciona projeto à tabela de dispersao dos projetos terminados
+	 * @brief Adiciona projeto ï¿½ tabela de dispersao dos projetos terminados
 	 * @param proj - projeto a ser adicionado aos projetos terminados
 	 */
 	void addPastProject (Projeto* proj);
 
 	/**
-	 * @brief Remove projeto da tabela de dispersao dos projetos terminados, lançando exceçao se nao existir nenhum projeto com o id fornecido
+	 * @brief Remove projeto da tabela de dispersao dos projetos terminados, lanï¿½ando exceï¿½ao se nao existir nenhum projeto com o id fornecido
 	 * @param proj - projeto a ser removido dos projetos terminados
 	 */
 	void removePastProject (unsigned int id);
 
 	/**
-	 * @brief Procura o projeto terminado com id fornecido, lançando exceçao se nao o encontrar
+	 * @brief Procura o projeto terminado com id fornecido, lanï¿½ando exceï¿½ao se nao o encontrar
 	 * @param id - id do projeto a procurar
 	 * @return projeto terminado com id fornecido
 	 */
@@ -359,7 +361,7 @@ public:
 	/**
 	 * @brief Remove o ticket correspondente ao projeto fornecido
 	 * @param P - Projeto associado ao ticket a ser removido
-	 * @return verdaderio se a operaçao é efetuada com sucesso, senao retorna falso
+	 * @return verdaderio se a operaï¿½ao ï¿½ efetuada com sucesso, senao retorna falso
 	 */
 	bool removeTicket(Projeto* P);
 

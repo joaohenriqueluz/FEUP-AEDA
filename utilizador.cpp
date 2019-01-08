@@ -141,6 +141,9 @@ void Utilizador::setNextProject(int next_proj){
 	_currentProj = next_proj;
 }
 
+int Utilizador::getNextProject(){
+	return _currentProj;
+}
 //---------------------------------------------------------------------
 
 Gestor::Gestor(string nome, int d, int m, int a,string email,float salario,int NIF, string cargo): Utilizador(nome,d,m,a,email,salario,NIF,cargo){
