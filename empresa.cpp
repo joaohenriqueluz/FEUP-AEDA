@@ -54,9 +54,13 @@ PROJ_NAME:
 	cout<< "NIF do cliente: "<<endl;
 	cin>>nif;
 	while(inputValidation() || nif >= 1000000000 || nif <= 99999999 || getClient(nif).getContacto()== 0) {
-		cout << "\n*Valor invalido*\n\nVolte a tentar: ";
+		cout << "\n*Valor invalido*\n\nVolte a tentar: [0 para voltar]";
 		cin >>nif;
+		if(nif == 0)
+		{
+			return 0;
 		}
+	}
 
 
 
@@ -77,12 +81,14 @@ TIPO:
 				<< endl;
 		Ticket T(d1,d2,u,projB);
 		_tickets.push(T);
+		addProjectToClient(nif, projB);
 		return projB->getId();
 	} else if (tipo == "A") {
 		projA = new Avancado(nome);
 		projA->setChaveAcesso(chave);
 		projA->setClient(nif);
 		_projetos.push_back(projA);
+		addProjectToClient(nif, projA);
 		cout << "Projeto " << nome << " criado com ID " << projA->getId()
 				<< endl;
 		Ticket T(d1,d2,u,projA);
@@ -204,17 +210,16 @@ TIPO_UNI:
 bool Empresa::removeUtilizador(string nome) {
 Utilizador* user = existeUser(nome);
 
-
-		for(unsigned int i=0; i < user->getProjetos().size();i++)
-		{
-			if(user->getCargo()== "Gestor")
-			{
-				removeProjeto(editProj(user->getProjetos().at(i)));
-			}
-			else{
-				editProj(user->getProjetos().at(i))->removeUser(nome);
-			}
+	removeUserFromPastProj(user->getNIF());
+	for (unsigned int i = 0; i < user->getProjetos().size(); i++) {
+		if (user->getCargo() == "Gestor") {
+			removeProjeto(editProj(user->getProjetos().at(i)));
+		} else {
+			editProj(user->getProjetos().at(i))->removeUser(nome);
 		}
+	}
+
+
 		cout<<"\n"<<user->getNome()<<" removido\n";
 	return removeObjeto<Utilizador*>(_utilizadores, user);
 }
@@ -514,7 +519,8 @@ void Empresa::readclients(string ficheiro){
 	ifstream file;
 	file.open(ficheiro);
 
- 	Projeto* proj;
+ 	Projeto* proj =new Projeto("","");
+	proj->setID(0);
 
  	int d1, m1, a1, d2, m2, a2, urgencia, IDP;
 	string temp, stringU, stringIDP, n;
@@ -1080,17 +1086,17 @@ void Empresa::addPastProject (Projeto* proj){
 	_pastProjects.insert(proj);
 }
 
-void Empresa::removePastProject (unsigned int id){
+bool Empresa::removePastProject (unsigned int id){
 	HashTabProjetos::const_iterator it = _pastProjects.begin();
 
 	while (it != _pastProjects.end()){
 		if (it->getID() == id){
 			it = _pastProjects.erase(it);
-			return;
+			return true;
 		}
 		it++;
 	}
-	throw NoSuchProject(id);
+	return false;
 }
 
 Projeto* Empresa::getPastProject (unsigned int id){
@@ -1105,15 +1111,15 @@ Projeto* Empresa::getPastProject (unsigned int id){
 		throw NoSuchProject(id);
 }
 
-list<unsigned int> Empresa::pastProjectsWithUser (int NIF){
-	list<unsigned int> res;
+list<Projeto*> Empresa::pastProjectsWithUser (int NIF){
+	list<Projeto*> res;
 	HashTabProjetos::const_iterator it = _pastProjects.begin();
 
 	while (it != _pastProjects.end()){
 		vector<Utilizador*> users = it->getUsers();
 		for (unsigned int i = 0; i < users.size(); i++){
 			if (users.at(i)->getNIF() == NIF){
-				res.push_back(it->getID());
+				res.push_back(it->getProjeto());
 				break;
 			}
 		}
@@ -1123,13 +1129,13 @@ list<unsigned int> Empresa::pastProjectsWithUser (int NIF){
 	return res;
 }
 
-list<unsigned int> Empresa::pastProjectsWithClient (unsigned int NIF){
-	list<unsigned int> res;
+list<Projeto*> Empresa::pastProjectsWithClient (unsigned int NIF){
+	list<Projeto*> res;
 	HashTabProjetos::const_iterator it = _pastProjects.begin();
 
 	while (it != _pastProjects.end()){
 		if (it->getClient() == NIF){
-			res.push_back(it->getID());
+			res.push_back(it->getProjeto());
 		}
 		it++;
 	}
@@ -1170,6 +1176,56 @@ bool Empresa::existePastProj(int id)
 	}
 
 	return false;
+}
+
+
+void Empresa::removeUserFromPastProj(int NIF)
+{
+
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+	while (it != _pastProjects.end()) {
+		vector<Utilizador*> users = it->getUsers();
+		for (unsigned int i = 0; i < users.size(); i++) {
+			if (users.at(i)->getNIF() == NIF) {
+				users.erase(i + users.begin());
+				ProjetoPtr p(it->getProjeto());
+				p.getProjeto()->setUsers(users);
+				break;
+			}
+		}
+		it++;
+	}
+}
+
+void Empresa::removeClientFromPastProj(unsigned int NIF) {
+	HashTabProjetos::const_iterator it = _pastProjects.begin();
+
+	while (it != _pastProjects.end()) {
+		if (it->getClient() == NIF) {
+			_pastProjects.erase(it);
+
+			break;
+		}
+
+		it++;
+	}
+}
+
+
+void Empresa::printPPClient(list<Projeto*> lista)
+{
+	list<Projeto*>::iterator it = lista.begin();
+	list<Projeto*>::iterator ite = lista.end();
+	int i= 0;
+	while(it!= ite)
+	{
+		cout<< i+1 << "# - "<< (*it)->getNome()<<"	"
+			<<"Tipo: " << (*it)->getTipo()
+			<<"	Volume: "<< (*it)->getVolumeTotal(Data(0,0,0), Data(0,0,0)) << endl;
+		i++;
+		it++;
+	}
 }
 //--------------------PRIORITY_QUEUE---------------------------------------
 
@@ -1250,6 +1306,7 @@ void Empresa::printClientProj(unsigned NIF)
 		{
 		cout <<"Projetos encomendados por "<< it.retrieve().getNome()<<endl;
 		it.retrieve().printProjects();
+		return;
 		}
 		it.advance();
 	}
@@ -1266,7 +1323,45 @@ void Empresa::updateCurretProj(int id) {
 		proj->getUsers().at(i)->setNextProject(id);
 	}
 }
-//--------------------------------------------------------------------------
+
+void Empresa::removeClientEmp(unsigned int NIF)
+{
+/*
+ * proj->removeAUsers();
+	logger->removeProjeto(proj->getId());
+	empresa.removeProjeto(proj);*/
+	for(unsigned int i = 0; i < _projetos.size(); i++)
+	{
+		if(_projetos.at(i)->getClient() == NIF)
+		{
+			_projetos.at(i)->removeAUsers();
+			for(unsigned int j = 0; j < _utilizadores.size();j++)
+			{
+				if(_utilizadores.at(j)->getCargo() == "Gestor")
+				{
+
+					removeProjFromGest( _utilizadores.at(j), _projetos.at(i)->getId());
+				}
+			}
+			removeProjeto(_projetos.at(i));
+			i--;
+
+		}
+	}
+}
+
+ void Empresa::removeProjFromGest(Utilizador* user, unsigned int id)
+ {
+	 for(unsigned int i = 0; i < user->getProjetos().size(); i++)
+	 {
+		 if((unsigned int)user->getProjetos().at(i) == id)
+		 {
+			 user->removeProjeto(id);
+		 }
+	 }
+
+ }
+ //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 
 bool inputValidation(){

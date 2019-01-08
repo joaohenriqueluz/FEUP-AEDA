@@ -91,6 +91,10 @@ void Utilizador::setEmail(string email){
 }
 
 void Utilizador::addProjeto (int id){
+	if(_currentProj == 0)
+	{
+		_currentProj = id;
+	}
 	_projetos.push_back(id);
 }
 
@@ -133,7 +137,8 @@ void Utilizador::getInfo() {
 		 << " Data de nascimento "
 		 << getDataNascimento().getDia() << "/"
 		 << getDataNascimento().getMes() << "/"
-		 << getDataNascimento().getAno()<< endl;
+		 << getDataNascimento().getAno()
+		 <<"\n Projeto atual: "<<getCurrentProj()<< endl;
 }
 
 //------------------ 2 parte -------------------------------
@@ -141,9 +146,6 @@ void Utilizador::setNextProject(int next_proj){
 	_currentProj = next_proj;
 }
 
-int Utilizador::getNextProject(){
-	return _currentProj;
-}
 //---------------------------------------------------------------------
 
 Gestor::Gestor(string nome, int d, int m, int a,string email,float salario,int NIF, string cargo): Utilizador(nome,d,m,a,email,salario,NIF,cargo){

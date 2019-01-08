@@ -95,13 +95,5 @@ public:
 
 };
 
-class NoFeasibleTicket{
-public:
-	/**
-	 * @brief Construtor da classe da excecao
-	 */
-	NoFeasibleTicket(){ cout << "Não existem projetos exequíveis";}
-
-};
 
 #endif

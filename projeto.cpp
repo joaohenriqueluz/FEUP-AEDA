@@ -77,6 +77,10 @@ unsigned int Projeto::getId() const{
 }
 
 void Projeto::setID(int id){
+	if(id == 0)
+	{
+	lastId--;
+	}
 	_id = id;
 }
 
@@ -121,7 +125,7 @@ void Projeto::imprimeUsers()
 	cout << "Utilizadores do projeto com ID " << getId() << endl;
 for (unsigned int i = 0; i < _ranking.size(); i++)
 	{
-		cout <<i+1<<"# "<< _ranking.at(i)->getNome()<<"     Cargo: "<<_ranking.at(i)->getCargo()<< endl;
+		cout <<(i+1)<<"# "<< _ranking.at(i)->getNome()<<"     Cargo: "<<_ranking.at(i)->getCargo()<< endl;
 	}
 }
 
@@ -249,6 +253,11 @@ void Projeto::getInfo() const{
 		 <<"#Chave de acesso: "<<_chaveAcesso << endl
 		 <<"#Volume:          "<< getVolumeTotal(d1, d1) << endl;
 
+}
+
+void Projeto::setUsers(vector<Utilizador*> newU)
+{
+	_ranking = newU;
 }
 
 //---------------------------------------------------------------------

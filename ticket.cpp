@@ -53,10 +53,10 @@ void Ticket::setProjeto(Projeto* projeto)
 
 bool Ticket::operator <(const Ticket& other) const
 {
-	return (_urgencia > other.getUrgencia()? false:true);
+	return _urgencia > other.getUrgencia();
 }
 
 bool Ticket::feasible() const
 {
-	return ( _ECT < _TTC? true:false);
+	return _ECT <= _TTC;
 }

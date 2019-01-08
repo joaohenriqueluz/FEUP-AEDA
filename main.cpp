@@ -16,7 +16,7 @@ void editarUtilizador(Empresa & emp,Utilizador* logger, int opcao);
 void mostraMenu(Utilizador * logger);
 bool imprimeProj(Empresa & emp, Utilizador* logger);
 bool inputValidation();
-int verificaFile(string &newFileU,string &newFileP, string &newFileC);
+int verificaFile(string &newFileU,string &newFileP, string &newFileC,  string &newFileT,  string &newFileCli);
 void criaCliente(Empresa& empresa);
 void LoginCliente(Empresa& empresa);
 void mostraClientes(Empresa & empresa);
@@ -28,7 +28,7 @@ int main() {
 
 	int opcao, idFile;
 	Empresa empresa;
-	string userFile,commitFile,projFile;
+	string userFile,commitFile,projFile, ticketFile, clientsFile;
 
 INICIO:
 	cout << "|-------------------|\n";
@@ -70,18 +70,23 @@ INICIO:
 		userFile =  "utilizadores0"+to_string(idFile)+".txt";
 		commitFile= "commits0"+to_string(idFile)+".txt";
 		projFile= "projetos0"+to_string(idFile)+".txt";
+		ticketFile= "tickets0"+to_string(idFile)+".txt";
+		clientsFile= "clients0"+to_string(idFile)+".txt";
 		}
 		else
 		{
 			userFile +=  "utilizadores"+to_string(idFile)+".txt";
 			commitFile= "commits"+to_string(idFile)+".txt";
 			projFile= "projetos"+to_string(idFile)+".txt";
-
+			ticketFile= "tickets"+to_string(idFile)+".txt";
+			clientsFile= "clients"+to_string(idFile)+".txt";
 		}
 
 
 		empresa.readUsers(userFile);
 		empresa.readProjetos(projFile,commitFile);
+		empresa.readclients(clientsFile);
+		empresa.readTickets(ticketFile);
 		rotinaEmpresa(empresa);
 		break;
 	case 0:
@@ -102,8 +107,9 @@ INICIO:
 
 void rotinaEmpresa(Empresa & empresa) {
 	int indice = 0;
-	string opcao, fileu,filep,filec;
+	string opcao, fileu,filep,filec, nome, filet,fileCli;
 	int op = 1; 
+	Utilizador* logger;
 	while (op != 0) {
 		cout<<"\n\n|-------------------------------|\n";
 		cout<<"|         Menu Principal        |\n";
@@ -112,7 +118,7 @@ void rotinaEmpresa(Empresa & empresa) {
 		cout 	<<endl
 				<<endl
 				<< "|1 - Ver rankings\n"
-				<< "|2 - Ver salarios de todos o pessoal\n"
+				<< "|2 - Ver salarios de todas as pessoas\n"
 				<< "|3 - Adicionar utilizador\n"
 				<< "|4 - Remover utilizador\n"
 				<< "|5 - Entrar com utilizador\n"
@@ -122,6 +128,7 @@ void rotinaEmpresa(Empresa & empresa) {
 				<< "|9 - Informacoes de clientes\n"
 				<< "|10 - Ver projetos em desenvolvimento\n"
 				<< "|11 - Ver projetos terminados\n"
+				<< "|12 - Ver Projetos terminados de um utilizador\n"
 				<< "|0 - Sair\n"
 				<< "\n|Selecione uma opcao: ";
 
@@ -164,17 +171,19 @@ void rotinaEmpresa(Empresa & empresa) {
 		case 6:
 			if(indice == 0)
 			{
-				indice= verificaFile(fileu,filep,filec);
+				indice= verificaFile(fileu,filep,filec, filet, fileCli);
 			}
 
 			cout << "\n Progresso guardado em ficheiros com o sufixo "<< indice<<endl;
 			empresa.writeUsers(fileu);
 			empresa.writeCommits(filec);
 			empresa.writeProjetos(filep);
+			empresa.writeClients(fileCli);
+			empresa.writeTickets(filet);
 			break;
 		case 7:
 			criaCliente(empresa);
-			cout<< "\n*Inicio de sessao*\n";
+			cout<< "\n*Inicio de sessao*\n\n";
 			LoginCliente(empresa);
 			break;
 		case 8:
@@ -188,6 +197,33 @@ void rotinaEmpresa(Empresa & empresa) {
 			break;
 		case 11:
 			empresa.printPastproj();
+			break;
+
+PPROJ:
+		case 12:
+
+			cout << "|Digite nome do utilizador: ";
+			cin >> nome;
+
+				while(inputValidation())
+				{
+					cout << "\n*Input invalido*\n\n";
+					cin >> nome;
+				}
+
+				try {
+					logger = empresa.existeUser(nome);
+					if(logger->getCargo()== "Gestor")
+					{
+						cout <<"\n*Operacao invalida para gestores*\n\n";
+						break;
+					}
+				} catch (NoSuchUser &e) {
+					cout << "\n*Nao existe um utilizador com nome " << e.getName() <<"*\n"<< endl
+							<< endl;
+					goto PPROJ;
+				}
+			empresa.printPPClient(empresa.pastProjectsWithUser(logger->getNIF()));
 			break;
 		case 0:
 			exit(0);
@@ -268,52 +304,26 @@ void rotinaGestor(Utilizador* logger, Empresa & empresa) {
 		switch (opcao) {
 		case 1:
 			novoProjeto = empresa.novoProjeto();
+			if(novoProjeto != 0)
+			{
 			logger->addProjeto(novoProjeto);
+			}
+			else
+			{
+				cout << "\n*Operacao anulada*\n\n";
+			}
 			break;
 
 AD_UTI: case 2:
 
-			if (logger->getProjetos().size() == 0) {
-				cout << endl << "\n*Este gestor nao possui projetos*\n";
-				break;
-			}
-			else {
-
-				imprimeProj(empresa, logger);
-				cout << "|Selecione um projeto(ID): \n";
-				cin >> opcao;
-
-				if(inputValidation())
-					{
-						cout << "\n*Opcao invalida*\n\n";
-						goto AD_UTI;
-					}
-
-				try
+				proj = selectProj(empresa,logger);
+				if(proj->getId()== 0)
 				{
-				proj = empresa.editProj(opcao);
-				}
-				catch(NoSuchProject & e)
-				{
-					cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-					goto AD_UTI;
-				}
-				cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-				cin>>chave;
-
-				if(inputValidation())
-					{
-						cout << "\n*Opcao invalida*\n\n";
-						goto AD_UTI;
-					}
-
-				if(chave != proj->getChaveAcesso())
-				{
-					cout<<"\n*Chave de acesso errada, volte tentar*\n";
-					goto AD_UTI;
+					break;
 				}
 				proj->imprimeUsers();
-				cout << "|Utilizadores da empresa: \n" << endl;
+				cout << "---------------------------------------\n"
+					 << "|Utilizadores da empresa: \n" << endl;
 				empresa.imprimeUser();
 				cout << "|Selecione o Utilizador: \n";
 				cin >> nome;
@@ -342,47 +352,11 @@ AD_UTI: case 2:
 
 				proj->addUtilizador(user);
 				user->addProjeto(proj->getId());
-			}
+
 			break;
 REM_UTI: case 3:
 
-			if(!imprimeProj(empresa, logger))
-			{
-				break;
-			}
-			cout << "|Selecione um projeto(ID): ";
-			cin >> opcao;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto REM_UTI;
-				}
-
-			try
-			{
-				proj = empresa.editProj(opcao);
-			}
-			catch(NoSuchProject & e)
-			{
-				cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-				goto REM_UTI;
-			}
-
-			cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-			cin>>chave;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto REM_UTI;
-				}
-
-			if(chave != proj->getChaveAcesso())
-			{
-				cout<<"\n*Chave de acesso errada, volte tentar*\n";
-				goto REM_UTI;
-			}
+			proj= selectProj(empresa,logger);
 			proj->imprimeUsers();
 			cout << "|Utilizadores da empresa: " << endl;
 			empresa.imprimeUser();
@@ -414,49 +388,10 @@ REM_UTI: case 3:
 			user->removeProjeto(proj->getId());
 			proj->removeUser(nome);
 			break;
-REM_PROJ:
+
 		case 4:
 
-			if(!imprimeProj(empresa, logger))
-			{
-				break;
-			}
-			cout << "|Selecione um projeto (ID): ";
-			cin >> opcao;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto REM_PROJ;
-				}
-
-			if (opcao == 0)
-				break;
-
-			try
-			{
-				proj = empresa.editProj(opcao);
-			}
-			catch(NoSuchProject & e)
-			{
-				cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-				goto REM_PROJ;
-			}
-
-			cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-			cin>>chave;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto REM_PROJ;
-				}
-
-			if(chave != proj->getChaveAcesso())
-			{
-				cout<<"\n*Chave de acesso errada, volte tentar*\n";
-				goto REM_PROJ;
-			}
+			proj= selectProj(empresa,logger);
 			cout << "\nProjeto " << proj->getNome() << " de ID " << proj->getId()
 					<< "removido\n";
 			proj->removeAUsers();
@@ -471,51 +406,16 @@ REM_PROJ:
 		case 6:
 
 			proj = selectProj(empresa,logger);
-			cout<<endl;
-			proj->getInfo();
+			if(proj->getId()!= 0)
+			{
+				cout<<endl;
+				proj->getInfo();
+			}
 			break;
 
 EDITA_PROJ:
 		case 7:
-			if(!imprimeProj(empresa, logger))
-			{
-				break;
-			}
-			cout << "|Selecione um projeto(ID): ";
-			cin >> opcao;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto EDITA_PROJ;
-				}
-
-			if (opcao == 0)
-				break;
-
-			try
-			{
-				proj = empresa.editProj(opcao);
-			}
-			catch(NoSuchProject & e)
-			{
-				cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-				goto EDITA_PROJ;
-			}
-
-			cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-			cin>>chave;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto EDITA_PROJ;
-				}
-			if(chave != proj->getChaveAcesso())
-			{
-				cout<<"\n*Chave de acesso errada, volte tentar*\n";
-				goto EDITA_PROJ;
-			}
+			proj = selectProj(empresa,logger);
 			cout<< "|Selecione uma opcao: \n"
 				<< "|1 - Mudar nome;\n"
 				<< "|2 - Mudar chave de acesso;\n";
@@ -548,10 +448,12 @@ EDITA_UTIG:	case 9:
 			break;
 
 		case 10:
+
 			proj = selectProj(empresa,logger);
 			empresa.removeTicket(proj);
 			empresa.updateCurretProj(proj->getId());
 			empresa.toPastProject(proj->getId());
+			logger->removeProjeto(proj->getId());
 			break;
 
 		case 11:
@@ -601,116 +503,34 @@ void rotinaJunior(Utilizador* logger, Empresa & empresa) {
 	case 1:
 		imprimeProj(empresa, logger);
 		break;
-EDITA_PROJJ:
+
 	case 2:
-
-		if(!imprimeProj(empresa, logger))
+		proj= selectProj(empresa,logger);
+		if(proj->existeUser(logger->getNome()))
 		{
-			break;
+			proj->getInfo();
 		}
-		cout << "|Selecione um projeto(ID): ";
-		cin >> opcao;
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto EDITA_PROJJ;
-			}
-		if (opcao == 0)
-			break;
-
-		try
+		else
 		{
-			proj = empresa.editProj(opcao);
+			cout<<endl<<logger->getNome()<<" nao pertence a este projeto!\n\n";
 		}
-		catch(NoSuchProject & e)
-		{
-			cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-			goto EDITA_PROJJ;
-		}
-
-
-		if(!proj->existeUser(logger->getNome()))
-		{
-			cout <<"\n*" << logger->getNome() << " nao pertence a este projeto*\n";
-			break;
-		}
-		cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-		cin>>chave;
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto EDITA_PROJJ;
-			}
-
-		if(chave != proj->getChaveAcesso())
-		{
-			cout<<"\n*Chave de acesso errada, volte tentar*\n";
-			goto EDITA_PROJJ;
-		}
-		proj->getInfo();
 		break;
 
 	case 3:
-
 		addCommit(logger, empresa);
 		break;
 
-HIST_PROJ:
+
 	case 4:
-		if(!imprimeProj(empresa, logger))
+		proj= selectProj(empresa,logger);
+		if(proj->existeUser(logger->getNome()))
 		{
-			break;
+			proj->imprimeHistorico();
 		}
-		cout << "|Selecione um projeto(ID): ";
-		cin >> opcao;
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto HIST_PROJ;
-			}
-
-		if (opcao == 0)
-			break;
-
-
-
-		try
+		else
 		{
-			proj = empresa.editProj(opcao);
+			cout<<endl<<logger->getNome()<<" nao pertence a este projeto!\n\n";
 		}
-		catch(NoSuchProject & e)
-		{
-			cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-			goto HIST_PROJ;
-		}
-
-
-
-
-		if(!proj->existeUser(logger->getNome()))
-		{
-			cout <<"\n*" << logger->getNome() << " nao pertence a este projeto*\n";
-			break;
-		}
-
-
-		cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-		cin>>chave;
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto HIST_PROJ;
-			}
-		if(chave != proj->getChaveAcesso())
-		{
-			cout<<"\n*Chave de acesso errada, volte tentar*\n";
-			goto HIST_PROJ;
-		}
-		proj->imprimeHistorico();
 		break;
 
 	case 5:
@@ -728,7 +548,6 @@ HIST_PROJ:
 		if(inputValidation())
 			{
 				cout << "\n*Opcao invalida*\n\n";
-				goto HIST_PROJ;
 			}
 		editarUtilizador(empresa,logger,opcao);
 		break;
@@ -785,159 +604,40 @@ void rotinaSenior(Utilizador* logger, Empresa& empresa) {
 		imprimeProj(empresa, logger);
 		break;
 
-EDITA_PROJS:
 	case 2:
-
-			if(!imprimeProj(empresa, logger))
-			{
-				break;
-			}
-			cout << "|Selecione um projeto(ID): ";
-			cin >> opcao;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto EDITA_PROJS;
-				}
-
-			if (opcao == 0)
-				break;
-
-			try
-			{
-				proj = empresa.editProj(opcao);
-			}
-			catch(NoSuchProject & e)
-			{
-				cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-				goto EDITA_PROJS;
-			}
-
-
-			if(!proj->existeUser(logger->getNome()))
-			{
-				cout <<"\n*" << logger->getNome() << " nao pertence a este projeto*\n";
-				break;
-			}
-			cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-			cin>>chave;
-
-			if(inputValidation())
-				{
-					cout << "\n*Opcao invalida*\n\n";
-					goto EDITA_PROJS;
-				}
-
-			if(chave != proj->getChaveAcesso())
-			{
-				cout<<"\n*Chave de acesso errada, volte tentar*\n";
-				goto EDITA_PROJS;
-			}
+		proj = selectProj(empresa, logger);
+		if (proj->existeUser(logger->getNome())) {
 			proj->getInfo();
-			break;
+		} else {
+			cout << endl << logger->getNome()
+					<< " nao pertence a este projeto!\n\n";
+		}
+		break;
+
 	case 3:
 		addCommit(logger, empresa);
 		break;
 
-HIST:
+
 	case 4:
-		if(!imprimeProj(empresa, logger))
-			break;
-		cout << "|Selecione um projeto(ID): ";
-		cin >> opcao;
-
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto HIST;
-			}
-
-		if (opcao == 0)
-			break;
-
-		try
-		{
-			proj = empresa.editProj(opcao);
+		proj = selectProj(empresa, logger);
+		if (proj->existeUser(logger->getNome())) {
+			proj->imprimeHistorico();
+		} else {
+			cout << endl << logger->getNome()
+					<< " nao pertence a este projeto!\n\n";
 		}
-		catch(NoSuchProject & e)
-		{
-			cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-			goto HIST;
-		}
-
-		if (!proj->existeUser(logger->getNome()))
-		{
-			cout << endl <<"*"<< logger->getNome()<< " nao pertence a este projeto*\n";
-			break;
-		}
-
-
-		cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-
-		cin>>chave;
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto HIST;
-			}
-		if(chave != proj->getChaveAcesso())
-		{
-			cout<<"\n*Chave de acesso errada, volte tentar*\n";
-			goto HIST;
-		}
-		proj->imprimeHistorico();
 		break;
 
 CRIA_BRANCH:
 	case 5:
 		//cria branch
-		if(!imprimeProj(empresa, logger))
+		proj= selectProj(empresa,logger);
+		if(!proj->existeUser(logger->getNome()))
 		{
-			break;
-		}
-		cout << "|Selecione um projeto(ID): ";
-		cin >> opcao;
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto CRIA_BRANCH;
-			}
-
-		if (opcao == 0)
-			break;
-
-		try
-		{
-			proj = empresa.editProj(opcao);
-		}
-		catch(NoSuchProject & e)
-		{
-			cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
 			goto CRIA_BRANCH;
 		}
 
-		if (!proj->existeUser(logger->getNome()))
-		{
-			cout << endl <<"*"<< logger->getNome()<< " nao pertence a este projeto*\n";
-			break;
-		}
-
-		cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-		cin>>chave;
-
-		if(inputValidation())
-			{
-				cout << "\n*Opcao invalida*\n\n";
-				goto CRIA_BRANCH;
-			}
-		if(chave != proj->getChaveAcesso())
-		{
-			cout<<"\n*Chave de acesso errada, volte tentar*\n";
-			goto CRIA_BRANCH;
-		}
 		if (proj->getTipo() == "Basico") {
 			cout << "\n*Este � do tipo Basico (sem branches)*\n"
 					"|Selecione outro Projeto\n";
@@ -961,53 +661,9 @@ CRIA_BRANCH:
 APAGA_BRANCH:
 	case 6:
 		//apaga branch
-		if(!imprimeProj(empresa, logger))
+		proj= selectProj(empresa,logger);
+		if(!proj->existeUser(logger->getNome()))
 		{
-			break;
-		}
-		cout << "|Selecione um projeto(ID): ";
-		cin >> opcao;
-
-		if(inputValidation())
-					{
-						cout << "\n*Opcao invalida*\n\n";
-						goto APAGA_BRANCH;
-					}
-		if (opcao == 0)
-			break;
-
-
-		try
-		{
-			proj = empresa.editProj(opcao);
-		}
-		catch(NoSuchProject & e)
-		{
-			cout<< "\n*Projeto com ID "<< e.getId()<<" nao existe*\n";
-			goto APAGA_BRANCH;
-		}
-
-
-
-		if (!proj->existeUser(logger->getNome()))
-		{
-			cout << endl <<"*"<< logger->getNome()<< " nao pertence a este projeto*\n";
-			break;
-		}
-
-		cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-		cin>>chave;
-
-
-		if (inputValidation())
-		{
-			cout << "\n*Opcao invalida*\n\n";
-			goto APAGA_BRANCH;
-		}
-
-		if(chave != proj->getChaveAcesso())
-		{
-			cout<<"\n*Chave de acesso errada, volte tentar*\n";
 			goto APAGA_BRANCH;
 		}
 
@@ -1052,47 +708,9 @@ SET_INFO:
 	case 7:
 		// Merge de branches
 SEL_PROJ:
-		if(!imprimeProj(empresa, logger))
+		proj= selectProj(empresa,logger);
+		if(proj->existeUser(logger->getNome()))
 		{
-			break;
-		}
-		cout << "|Selecione um projeto(ID): ";
-		cin >> opcao;
-
-			if (inputValidation()) {
-				cout << "\n*Opcao invalida*\n\n";
-				goto SEL_PROJ;
-			}
-		if (opcao == 0)
-			break;
-
-		try
-		{
-		proj = empresa.editProj(opcao);
-
-		}
-		catch(NoSuchProject & e)
-		{
-			cout << "\n*Projeto com ID "<< e.getId() << "nao existe*\n";
-			goto SEL_PROJ;
-		}
-
-		if (!proj->existeUser(logger->getNome()))
-		{
-			cout << endl <<"*"<< logger->getNome()<< " nao pertence a este projeto*\n";
-			break;
-		}
-		cout<< "|Digite a chave de acesso do projeto "<< proj->getNome()<<": ";
-		cin>>chave;
-
-		if (inputValidation()) {
-						cout << "\n*Opcao invalida*\n\n";
-						goto SEL_PROJ;
-					}
-
-		if(chave != proj->getChaveAcesso())
-		{
-			cout<<"\n*Chave de acesso errada, volte tentar*\n";
 			goto SEL_PROJ;
 		}
 
@@ -1558,6 +1176,8 @@ void editarUtilizador(Empresa & emp,Utilizador* logger, int opcao){
 		}
 		logger->setData(d, m, a);
 		break;
+	default:
+		cout<< "\n\n*Opcao invalida, operacao anulada*\n";
 	}
 }
 
@@ -1605,7 +1225,7 @@ Projeto * proj;
 return true;
 }
 
-int verificaFile(string &newFileU,string &newFileP, string &newFileC)
+int verificaFile(string &newFileU,string &newFileP, string &newFileC,  string &newFileT,  string &newFileCli)
 {
 	ifstream file;
 
@@ -1614,6 +1234,8 @@ int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 		newFileU = "utilizadores" + to_string(i + 100).substr(1) + ".txt";
 		newFileP = "projetos" + to_string(i + 100).substr(1) + ".txt";
 		newFileC = "commits" + to_string(i + 100).substr(1) + ".txt";
+		newFileT = "tickets" + to_string(i + 100).substr(1) + ".txt";
+		newFileCli = "clients" + to_string(i + 100).substr(1) + ".txt";
 		file.open(newFileU);
 
 		if (file.is_open())
@@ -1637,6 +1259,25 @@ int verificaFile(string &newFileU,string &newFileP, string &newFileC)
 			file.close();
 			continue;
 		}
+
+		file.open(newFileT);
+
+		if (file.is_open())
+		{
+			file.close();
+			continue;
+		}
+
+		file.open(newFileCli);
+
+		if (file.is_open()) {
+			file.close();
+			continue;
+		}
+
+
+
+
 		break;
 
 	}
@@ -1694,8 +1335,9 @@ void criaCliente(Empresa& empresa)
 
 
 void LoginCliente(Empresa & empresa) {
-	unsigned NIF;
-	int opcao;
+	unsigned int NIF;
+	int opcao, id;
+	Projeto* proj;
 
 	cout << "Digite o seu NIF: ";
 	cin >> NIF;
@@ -1706,8 +1348,12 @@ void LoginCliente(Empresa & empresa) {
 	}
 	OP: cout << "Opcoes: " << endl;
 	cout << "|1 - Ver projetos encomendados\n"
-			<< "|2 - Ver informacoes do cliente\n" << "|3 - Voltar\n"
-			<< " Selecione uma opcao: ";
+		 << "|2 - Ver projetos terminados\n"
+		 << "|3 - Ver informacoes do cliente\n"
+		 << "|4 - Anular conta\n"
+		 << "|5 - Remover permanentemente um projeto terminado\n"
+		 << "|0 - Voltar\n"
+		 << " Selecione uma opcao: ";
 
 	cin >> opcao;
 
@@ -1717,10 +1363,14 @@ void LoginCliente(Empresa & empresa) {
 	}
 	switch (opcao) {
 	case 1:
-		empresa.getClient(NIF).printProjects();
+		empresa.printClientProj(NIF);
 		goto OP;
 		break;
+
 	case 2:
+		empresa.printPPClient(empresa.pastProjectsWithClient(NIF));
+		break;
+	case 3:
 		cout << endl;
 		cout << "|Nome: " << empresa.getClient(NIF).getNome() << endl;
 		cout << "|Contacto: " << empresa.getClient(NIF).getContacto() << endl;
@@ -1730,7 +1380,23 @@ void LoginCliente(Empresa & empresa) {
 				<< empresa.getClient(NIF).getProjetos().size() << endl<< endl<< endl ;
 		goto OP;
 		break;
-	case 3:
+
+	case 4:
+		empresa.removeClientFromPastProj(NIF);
+		empresa.removeClientEmp(NIF);
+		empresa.removeClient(empresa.getClient(NIF));
+		break;
+
+	case 5:
+		proj = selectPastProj(empresa);
+		id = proj->getId();
+		if(empresa.removePastProject(proj->getId()))
+		{
+			cout << "\n*Removido permanentemente projeto com ID "<< id<<"*\n\n";
+		}
+
+		break;
+	case 0:
 		return;
 	default:
 		cout << "\n*Opcao invalida*\n\n";
@@ -1752,7 +1418,7 @@ COP:
 	cout << "Opcao: \n"
 		 << "|1 - Ver clientes ordenados por numero de projetos\n"
 		 << "|2 - Ver os projetos de um cliente\n"
-		 << "|3 - Voltar\n"
+		 << "|0 - Voltar\n"
 		 << " Selecione uma opcao: \n";
 	cin>> opcao;
 	if(inputValidation())
@@ -1779,7 +1445,7 @@ COP:
 		empresa.printClientProj(NIF);
 		break;
 
-	case 3:
+	case 0:
 		return;
 
 	default:
@@ -1801,7 +1467,7 @@ Projeto * selectProj(Empresa & empresa, Utilizador* logger)
 		proj->setID(0);
 		return proj;
 	}
-	cout << "|Selecione um projeto(ID): ";
+	cout << "|Selecione um projeto (ID) [0 para voltar]: ";
 	cin >> opcao;
 
 	if (inputValidation()) {
@@ -1815,6 +1481,7 @@ Projeto * selectProj(Empresa & empresa, Utilizador* logger)
 		return proj;
 	}
 	try {
+		proj->setID(0);
 		proj = empresa.editProj(opcao);
 	} catch (NoSuchProject & e) {
 		cout << "\n*Projeto com ID " << e.getId() << " nao existe*\n";
@@ -1846,6 +1513,7 @@ Projeto * selectPastProj(Empresa & empresa)
 	cout<< "\n Selecione um projeto(ID): ";
 	cin >>id;
 	try{
+		proj->setID(0);
 		proj = empresa.getPastProject(id);
 	}
 	catch(NoSuchProject &e)
@@ -1902,5 +1570,6 @@ void reativarPastProj(Empresa & empresa, Utilizador* logger)
 	empresa.toWorkingProject(proj->getId());
 	Ticket T(d1,d2,u,proj);
 	empresa.addTicket(T);
+	logger->addProjeto(proj->getId());
 	cout << "*Projeto com ID "<<T.getProjeto()->getId() << " adicionado com sucesso!*\n"; // Estou a usar o T para ter o projeto para ter a certeza que estao associados
 }

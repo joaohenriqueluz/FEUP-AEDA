@@ -142,7 +142,7 @@ public:
     string getNome() const;
 
     /**
-     * @brief Altera o nome do utilizador
+     * @brief Altera o valor nome do utilizador
      * @param nome - novo nome
      */
     void setNome(string nome);
@@ -228,14 +228,21 @@ public:
 
 	/**
 	 * @brief Altera o projeto que o utilizador esta a desenvolver atualmente
+	 * @param id - id do projeto seguinte
 	 */
 	void setNextProject(int next_proj);
+
+	int getCurrentProj() const{
+		return _currentProj;
+	}
 
 	/**
 	 * @brief Retorna o projeto que o utilizador esta a desenvolver atualmente
 	 * @return id de projeto que o utilizador esta a desenvolver atualmente
 	 */
-	int getNextProject();
+	int getNextProject(){
+		return _currentProj;
+	}
 
 };
 
@@ -338,7 +345,7 @@ public:
 
 /**
  * @brief Classe utilizada para lancar uma excecao quando nao e encontrado um utilizador com o nome fornecido
- * @param name - nome do utilizador que nao foi poss�vel encontrar
+ * @param name - nome do utilizador que nao foi possivel encontrar
  */
 class NoSuchUser{
 	string name;

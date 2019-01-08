@@ -46,6 +46,7 @@ class Empresa {
 	HashTabProjetos _pastProjects;
 	priority_queue<Ticket> _tickets;
 public:
+
 	/**
 	 * @brief Construtor da classe empresa
 	 */
@@ -114,7 +115,7 @@ public:
 	void existeEmail(string email);
 
 	/**
-	 * @brief Verifica se o utilizador com nome fornecido ja existe, lancando execeï¿½ao se nao existir nenhum com esse nome
+	 * @brief Verifica se o utilizador com nome fornecido ja existe, lancando exececao se nao existir nenhum com esse nome
 	 * @param nome - nome do utilizador a verigicar se ja existe ou nao
 	 */
 	void repeteUser(string nome);
@@ -239,8 +240,8 @@ public:
 	void setProjLastID();
 
 	/**
-	 * @brief Adiciona cliente ï¿½ arvore binaria com os clientes da empresa
-	 * @param c - cliente a adicionar ï¿½ empresa
+	 * @brief Adiciona cliente a arvore binaria com os clientes da empresa
+	 * @param c - cliente a adicionar a empresa
 	 */
 	void addClient(Client c);
 
@@ -313,19 +314,20 @@ public:
 	void toWorkingProject (unsigned int id);
 
 	/**
-	 * @brief Adiciona projeto ï¿½ tabela de dispersao dos projetos terminados
+	 * @brief Adiciona projeto a tabela de dispersao dos projetos terminados
 	 * @param proj - projeto a ser adicionado aos projetos terminados
 	 */
 	void addPastProject (Projeto* proj);
 
 	/**
-	 * @brief Remove projeto da tabela de dispersao dos projetos terminados, lanï¿½ando exceï¿½ao se nao existir nenhum projeto com o id fornecido
-	 * @param proj - projeto a ser removido dos projetos terminados
+	 * @brief Remove projeto da tabela de dispersao dos projetos terminados, lancando excecao se nao existir nenhum projeto com o id fornecido
+	 * @param id - id do projeto a ser removido dos projetos terminados
+	 * @return Verdadeiro se o projeto existir, senao devolve falso
 	 */
-	void removePastProject (unsigned int id);
+	bool removePastProject (unsigned int id);
 
 	/**
-	 * @brief Procura o projeto terminado com id fornecido, lanï¿½ando exceï¿½ao se nao o encontrar
+	 * @brief Procura o projeto terminado com id fornecido, lancando excecao se nao o encontrar
 	 * @param id - id do projeto a procurar
 	 * @return projeto terminado com id fornecido
 	 */
@@ -336,14 +338,14 @@ public:
 	 * @param NIF - NIF do utilizador
 	 * @return lista dos projetos terminados
 	 */
-	list<unsigned int> pastProjectsWithUser (int NIF);
+	list<Projeto*> pastProjectsWithUser (int NIF);
 
 	/**
 	 * @brief Procura os projetos terminados os quais o cliente com NIF fornecido encomendou
 	 * @param NIF - NIF do cliente
 	 * @return lista dos projetos terminados
 	 */
-	list<unsigned int> pastProjectsWithClient (unsigned int NIF);
+	list<Projeto*> pastProjectsWithClient(unsigned int NIF);
 
 	/**
 	 * @brief Retorna o projeto mais urgente
@@ -361,7 +363,7 @@ public:
 	/**
 	 * @brief Remove o ticket correspondente ao projeto fornecido
 	 * @param P - Projeto associado ao ticket a ser removido
-	 * @return verdaderio se a operaï¿½ao ï¿½ efetuada com sucesso, senao retorna falso
+	 * @return verdaderio se a operacao é efetuada com sucesso, senao retorna falso
 	 */
 	bool removeTicket(Projeto* P);
 
@@ -400,6 +402,15 @@ public:
 	 */
 	void addTicket(Ticket t);
 
+	void removeUserFromPastProj(int NIF);
+
+	void removeClientFromPastProj(unsigned int NIF);
+
+	void removeClientEmp(unsigned int NIF);
+
+	void removeProjFromGest(Utilizador* user, unsigned int id);
+
+	void printPPClient(list<Projeto*> list);
 };
 
 /**

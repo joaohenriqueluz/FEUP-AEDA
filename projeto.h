@@ -364,6 +364,7 @@ public:
      */
     void setClient(unsigned cl_nif);
 
+    void setUsers(vector<Utilizador*> newU);
 };
 
 
@@ -516,6 +517,8 @@ public:
      * @param chave - nova chave de acesso
      */
     void setChaveAcesso(string chave);
+
+
 };
 
 
