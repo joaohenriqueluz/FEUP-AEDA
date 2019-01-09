@@ -296,7 +296,7 @@ public:
     void setChaveAcesso(string chave);
 
     /**
-     * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em espec�fico ou em todo o projeto conforme as datas que s�o recebidas
+     * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em espec�fico ou em todo o projeto conforme as datas que sao recebidas
      * @param nome_user - nome do utilizador
      * @param d1 - primeiro limite do intervalo de datas a pesquisar
      * @param d2 - segundo limite do intervalo de datas a pesquisar
@@ -305,7 +305,7 @@ public:
 	virtual int getVolume(string nome_user, Data d1, Data d2) const;
 
 	/**
-	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que s�o recebidas
+	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que sao recebidas
      * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
 	 * @return volume
@@ -319,7 +319,7 @@ public:
 	virtual void imprimeHistorico();
 
 	/**
-	 * @brief Retorna a frequencia de commits realizados por um utilizador dado entre duas datas em espec�fico ou em todo o projeto conforme as datas que s�o recebidas
+	 * @brief Retorna a frequencia de commits realizados por um utilizador dado entre duas datas em espec�fico ou em todo o projeto conforme as datas que sao recebidas
 	 * @param user - nome do utilizador
 	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
@@ -419,7 +419,7 @@ public:
 
 
 	/**
-	 * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em espec�fico ou em todo o projeto conforme as datas que s�o recebidas (inclui o volume dos branches)
+	 * @brief Retorna volume de commits realizados por um utilizador dado entre duas datas em espec�fico ou em todo o projeto conforme as datas que sao recebidas (inclui o volume dos branches)
 	 * @param nome_user - nome do utilizador
 	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
@@ -428,7 +428,7 @@ public:
 	int getVolume(string nome_user, Data d1, Data d2) const;
 
 	/**
-	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que s�o recebidas (inclui o volume dos branches)
+	 * @brief Retorna volume adicionado entre duas datas em especifico ou o volume total conforme as datas que sao recebidas (inclui o volume dos branches)
 	 * @param d1 - primeiro limite do intervalo de datas a pesquisar
 	 * @param d2 - segundo limite do intervalo de datas a pesquisar
 	 * @return volume

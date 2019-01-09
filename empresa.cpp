@@ -341,12 +341,38 @@ void Empresa::imprimeCoders() {
 
 void Empresa::imprimeProjetos() {
 
+	Ticket t(Data(0,0,0),Data(0,0,0), 1,new Projeto("",""));
 	for (unsigned int i = 0; i < _projetos.size(); i++) {
-		cout << _projetos.at(i)->getNome() << " ID: "
-				<< _projetos.at(i)->getId() << endl;
+		t = getTicket(_projetos.at(i));
+		cout
+			<<"|Nome:"<< _projetos.at(i)->getNome()
+			<< "\tID:"
+			<< _projetos.at(i)->getId()
+			<< "\tUrgencia:"<<t.getUrgencia()
+			<< "\tECT:"<< t.getECT().getDia()<<"/"<<t.getECT().getMes()<<"/"<<t.getECT().getAno()
+			<< "\tTTC:"<<t.getTTC().getDia()<<"/"<<t.getTTC().getMes()<<"/"<<t.getTTC().getAno()
+			<< endl;
 	}
-	cout <<"\n("<<_projetos.size()<<")\n";
+
 }
+
+
+Ticket Empresa::getTicket(Projeto* proj)
+{
+
+	priority_queue<Ticket> temp = _tickets;
+
+		while(!temp.empty())
+		{
+			if(temp.top().getProjeto()->getId()== proj->getId())
+				return temp.top();
+
+			temp.pop();
+		}
+		Ticket t(Data(0,0,0),Data(0,0,0), 1,new Projeto("",""));
+		return t;
+}
+
 
 void Empresa::readUsers(string ficheiro) {
 	Utilizador* _gestor;
@@ -1003,7 +1029,7 @@ Client Empresa::getClient (unsigned nif){
 	return cliente;
 }
 
-void Empresa::addProjectToClient (unsigned nif, Projeto * proj){ //TODO: bool???????????????
+void Empresa::addProjectToClient (unsigned nif, Projeto * proj){
 
 	Client temp = getClient(nif);
 	_clients.remove(temp);
@@ -1060,7 +1086,7 @@ void Empresa::alterarNomePastProj (Projeto* proj, string novoNome){
 }
 
 void Empresa::toPastProject (unsigned int id){
-	Projeto * proj = editProj(id); //TODO: ver excecao??
+	Projeto * proj = editProj(id);
 	removeProjeto(proj);
 	addPastProject(proj);
 	proj->removeAUsers();
@@ -1077,7 +1103,7 @@ void Empresa::toWorkingProject (unsigned int id){
 	for (unsigned int i = 0; i < users.size(); i++){
 		users.at(i)->addProjeto(id);
 	}
-	unsigned cl = proj->getClient(); //TODO: ver se n existe?? pode ja ter sido eliminado
+	unsigned cl = proj->getClient();
 	this->addProjectToClient(cl, proj);
 
 }
@@ -1217,6 +1243,11 @@ void Empresa::printPPClient(list<Projeto*> lista)
 {
 	list<Projeto*>::iterator it = lista.begin();
 	list<Projeto*>::iterator ite = lista.end();
+	if(it == ite)
+	{
+		cout <<"\n\n*Nao existem projetos terminados associados a este NIF*\n";
+		return;
+	}
 	int i= 0;
 	while(it!= ite)
 	{
@@ -1361,6 +1392,9 @@ void Empresa::removeClientEmp(unsigned int NIF)
 	 }
 
  }
+
+
+
  //--------------------------------------------------------------------------
 //--------------------------------------------------------------------------
 

@@ -1346,7 +1346,12 @@ void LoginCliente(Empresa & empresa) {
 		cout << "\n*NIF nao atribuido*\n\n";
 		return;
 	}
-	OP: cout << "Opcoes: " << endl;
+	OP:
+
+	cout<<"\n\n|-------------------------------|\n";
+	cout<<    "|          Menu Cliente         |\n";
+	cout<<    "|-------------------------------|\n";
+	cout << "Opcoes: " << endl;
 	cout << "|1 - Ver projetos encomendados\n"
 		 << "|2 - Ver projetos terminados\n"
 		 << "|3 - Ver informacoes do cliente\n"

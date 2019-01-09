@@ -14,20 +14,33 @@
 
 using namespace std;
 
-//TODO: documentacao desta parte
+/**
+ * @brief Struct com o apontador de um projeto
+ */
 struct  ProjetoPtrHash
 {
+	/**
+	 * @brief Devolve o indice do projeto na tabela de dispersao
+	 * @param proj - projeto a ser colocado
+	 * @return indice
+	 */
 	unsigned int operator() (const ProjetoPtr& proj) const
 	{
 		return proj.getID()*2654435761 % (2^32);
 	}
 
+	/**
+	 * @brief Compara dois projetos
+	 * @param proj1 - projeto a ser comparado
+	 * @param proj2 - projeto a ser comparado
+	 * @return Verdadeiro se os projetos tiverem o mesmo ID, senao devolve falso
+	 */
 	bool operator() (const ProjetoPtr& proj1, const ProjetoPtr& proj2) const
 	{
 		return proj1.getID() == proj2.getID();
 	}
 };
-//TODO: documentacao desta parte
+
 typedef unordered_set<ProjetoPtr, ProjetoPtrHash, ProjetoPtrHash> HashTabProjetos;
 
 
@@ -402,15 +415,45 @@ public:
 	 */
 	void addTicket(Ticket t);
 
+	/**
+	 * @brief Apaga o Utilizador com o NIF dado dos projetos concluidos
+	 * @param NIF - NIF do Utilizador
+	 */
 	void removeUserFromPastProj(int NIF);
 
+	/**
+	 * @brief Apaga o Cliente com o NIF dado dos projetos concluidos
+	 * @param NIF - NIF do Cliente
+	 */
 	void removeClientFromPastProj(unsigned int NIF);
 
+	/**
+	 * @brief Apaga o Cliente com o NIF dado dos projetos em desenvolvimento
+	 * @param NIF - NIF do Cliente
+	 */
 	void removeClientEmp(unsigned int NIF);
 
+	/**
+	 * @brief Desassocia o gestor do projeto identificado por id
+	 * @param user - Gestor
+	 * @param id - ID do projeto
+	 */
 	void removeProjFromGest(Utilizador* user, unsigned int id);
 
+	/**
+	 * @brief Imprime todos os projetos presentes na lista fornecida como argumento
+	 * @param list - lista de projetos a ser impressos
+	 */
 	void printPPClient(list<Projeto*> list);
+
+	/**
+	 * @brief Devolve uma do ticket associado ao projeto fornecido
+	 * @param proj - projeto
+	 * @return Ticket do projeto
+	 */
+	Ticket getTicket(Projeto* proj);
+
+
 };
 
 /**

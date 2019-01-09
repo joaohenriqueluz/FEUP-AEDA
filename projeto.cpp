@@ -528,7 +528,7 @@ unsigned Projeto::getClient() const{
 
 void Projeto::setClient(unsigned cl_nif){
 	_clientNIF = cl_nif;
-	//TODO: decrementar o numero de projetos do cliente anterior??
+
 }
 
 //---------------------------------------------------------------------
